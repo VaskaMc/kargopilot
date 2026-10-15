@@ -1,0 +1,72 @@
+# Environments and Secrets
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.pub
+id_*
+known_hosts
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Databases & Local Data
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+data/
+storage/
+invoices/
+screenshots/
+backups/
+
+# Logs & Debug
+*.log
+*.tmp
+temp_*
+
+# WhatsApp & Platform Session Stores
+wa-session/
+sessions/
+creds.json
+auth_info_baileys/
+*.session
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo

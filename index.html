@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KargoPilot — Autonomous AI Copilot for Cross-Border Logistics & Customs</title>
+    <meta name="description" content="KargoPilot automates cross-border e-commerce freight-forwarding, multi-carrier landed-cost arbitrage, and state customs declarations for emerging Silk Road markets.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .gradient-glow {
+            background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Glow Effect -->
+    <div class="fixed inset-0 gradient-glow pointer-events-none z-0"></div>
+
+    <!-- Navigation -->
+    <header class="relative z-10 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <span class="text-white font-black text-lg">⚡</span>
+                </div>
+                <div class="flex items-baseline space-x-2">
+                    <span class="text-xl font-extrabold tracking-tight text-white">Kargo<span class="text-indigo-400">Pilot</span></span>
+                    <span class="px-2 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full">v4.0 Live</span>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                <a href="#features" class="hover:text-white transition">Features</a>
+                <a href="#carriers" class="hover:text-white transition">Carriers</a>
+                <a href="#customs" class="hover:text-white transition">SmartCustoms</a>
+                <a href="#architecture" class="hover:text-white transition">Architecture</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <a href="https://github.com/VaskaMc" target="_blank" class="text-sm font-medium text-slate-400 hover:text-white transition flex items-center space-x-1.5">
+                    <span>GitHub</span>
+                    <span>↗</span>
+                </a>
+                <a href="#contact" class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition shadow-md shadow-indigo-600/30">
+                    Get Access
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative z-10 pt-24 pb-20 px-6 max-w-6xl mx-auto text-center">
+        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs font-mono text-slate-300 mb-8 shadow-inner">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Production MVP v4.0 Active • 140/140 Tests Passing</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] max-w-4xl mx-auto">
+            Autonomous AI Copilot for <br class="hidden sm:block">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-300 to-violet-400">
+                Cross-Border Logistics & Customs
+            </span>
+        </h1>
+
+        <p class="mt-6 text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto font-normal leading-relaxed">
+            Eliminating friction in Silk Road e-commerce. From Taobao, Trendyol, and Amazon to multi-carrier forwarding in Baku, automated invoice OCR, and 1-click state customs declaration.
+        </p>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <a href="#architecture" class="px-6 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold shadow-lg shadow-indigo-600/25 transition">
+                Explore Tech Architecture
+            </a>
+            <a href="https://github.com/VaskaMc/kargopilot" target="_blank" class="px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-semibold transition flex items-center space-x-2">
+                <span>View GitHub Repository</span>
+                <span>→</span>
+            </a>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur">
+                <div class="text-3xl font-bold text-white font-mono">4+</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider font-medium">Integrated Carriers</div>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur">
+                <div class="text-3xl font-bold text-indigo-400 font-mono">76</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider font-medium">Pickup Branches</div>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur">
+                <div class="text-3xl font-bold text-emerald-400 font-mono">37/37</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider font-medium">Customs Categories</div>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur">
+                <div class="text-3xl font-bold text-violet-400 font-mono">140</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider font-medium">Automated Tests</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Capabilities -->
+    <section id="features" class="relative z-10 py-20 px-6 max-w-6xl mx-auto border-t border-slate-850">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <h2 class="text-xs font-mono font-bold tracking-widest text-indigo-400 uppercase">Core Capabilities</h2>
+            <p class="mt-3 text-3xl font-bold text-white tracking-tight">Full Lifecycle Cross-Border Automation</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Card 1 -->
+            <div class="p-8 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition">
+                <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl font-bold mb-6">
+                    🤖
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">WhatsApp AI Assistant ("Loyd")</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    24/7 conversational copilot powered by Claude & low-latency LLMs. Handles receipt OCR photos, parcel tracking, landed tariffs, and quota alerts directly inside WhatsApp.
+                </p>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="p-8 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition">
+                <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center text-xl font-bold mb-6">
+                    ⚖️
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">SmartCustoms RegTech</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    Zero-shot multilingual mapping from noisy Chinese/Turkish titles into the 37 legal Azerbaijani customs classes, auto-generating compliant PDF invoices & pre-declarations.
+                </p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="p-8 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition">
+                <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center text-xl font-bold mb-6">
+                    📦
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">Multi-Carrier Consolidation</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    Live dynamic rate engine for Starex, Limak, Camex, and Dynamex with 0-1 Knapsack parcel optimization, branch mapping, and family quota tax-shield algorithms.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture & Cloud Stack -->
+    <section id="architecture" class="relative z-10 py-20 px-6 max-w-6xl mx-auto border-t border-slate-850">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-8 sm:p-12">
+            <div class="max-w-2xl mb-8">
+                <h2 class="text-xs font-mono font-bold tracking-widest text-indigo-400 uppercase">Engineering & Cloud</h2>
+                <p class="mt-2 text-2xl sm:text-3xl font-bold text-white tracking-tight">Built for Resilience & Scalability</p>
+                <p class="mt-3 text-sm text-slate-400">
+                    KargoPilot leverages modern asynchronous backends, sandboxed browser automation, and AWS/Azure AI inference.
+                </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
+                <div class="border-l-2 border-indigo-500 pl-4">
+                    <div class="text-xs text-slate-400 font-mono">Backend Engine</div>
+                    <div class="text-base font-bold text-white mt-1">Python FastAPI + SQLite WAL</div>
+                    <div class="text-xs text-slate-500 mt-1">Sub-millisecond query latency</div>
+                </div>
+                <div class="border-l-2 border-sky-500 pl-4">
+                    <div class="text-xs text-slate-400 font-mono">AI Inference</div>
+                    <div class="text-base font-bold text-white mt-1">Amazon Bedrock / Claude</div>
+                    <div class="text-xs text-slate-500 mt-1">Multimodal vision OCR & classification</div>
+                </div>
+                <div class="border-l-2 border-emerald-500 pl-4">
+                    <div class="text-xs text-slate-400 font-mono">Messaging Sidecar</div>
+                    <div class="text-base font-bold text-white mt-1">Node.js Baileys Sidecar</div>
+                    <div class="text-xs text-slate-500 mt-1">24/7 proactive WhatsApp agent</div>
+                </div>
+                <div class="border-l-2 border-violet-500 pl-4">
+                    <div class="text-xs text-slate-400 font-mono">Customs Automation</div>
+                    <div class="text-base font-bold text-white mt-1">Playwright & CDP</div>
+                    <div class="text-xs text-slate-500 mt-1">Headless state portal sync</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Contact -->
+    <footer id="contact" class="relative z-10 border-t border-slate-800/80 py-12 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-lg font-bold text-white">Kargo<span class="text-indigo-400">Pilot</span></span>
+                    <span class="text-xs text-slate-500">© 2026 Baku, Azerbaijan</span>
+                </div>
+                <p class="text-xs text-slate-400 mt-1">
+                    Founder: <span class="text-slate-200 font-medium">Vasif Majidli</span> (Founder & Lead Systems Architect)
+                </p>
+            </div>
+
+            <div class="flex items-center space-x-6 text-sm text-slate-400">
+                <a href="https://github.com/VaskaMc/kargopilot" target="_blank" class="hover:text-white transition">GitHub Repo</a>
+                <a href="https://github.com/VaskaMc" target="_blank" class="hover:text-white transition">Developer Profile</a>
+                <a href="mailto:vasif@kargopilot.com" class="hover:text-white transition">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="az" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PCS v3.5 — Kargo İdarəetmə, Ünvan Formatlayıcı və Tarif Mərkəzi (/carriers)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .copy-pill:active { transform: scale(0.96); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+    <!-- Top Navigation Bar (127.0.0.1:48481) -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <span class="px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-400 text-xs font-mono font-semibold border border-emerald-500/30">
+                    SSH TUNNEL ONLY • 127.0.0.1:48481
+                </span>
+                <h1 class="text-xl font-bold tracking-tight text-white">
+                    PCS v3.5 — Azərbaycan Kargo Daşıyıcıları İdarəetmə Mərkəzi
+                </h1>
+            </div>
+            <nav class="flex items-center space-x-5 text-sm text-slate-300">
+                <a href="/" class="hover:text-white">Dashboard</a>
+                <a href="/orders" class="hover:text-white">Sifarişlər</a>
+                <a href="/customs" class="hover:text-white">SmartCustoms</a>
+                <a href="/carriers" class="text-emerald-400 font-semibold border-b-2 border-emerald-400 pb-0.5">Kargo (/carriers)</a>
+                <a href="/connectors" class="hover:text-white">Konnektorlar</a>
+                <a href="/system" class="hover:text-white">Sistem</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        <!-- Action Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-4 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg">
+            <div>
+                <h2 class="text-lg font-semibold text-white">Vahid Kargo İzləmə, Ünvan Formatlayıcı və Dinamik Tarif Müqayisəsi</h2>
+                <p class="text-sm text-slate-400">
+                    Trendyol (🇹🇷) və Taobao (🇨🇳) bağlamalarını Starex, Limak, Camex və Dynamex üzərindən 1-kliklə ünvanlaşdırın və SmartCustoms-a bağlayın.
+                </p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="triggerCarrierSync()" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-sm font-medium text-white transition flex items-center space-x-2">
+                    <span>🔄 Kargoları Sinxronlaşdır</span>
+                </button>
+                <button onclick="document.getElementById('predeclare-modal').classList.remove('hidden')" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-medium text-white transition flex items-center space-x-2">
+                    <span>➕ 1-Kliklə Ön Bəyan</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 1. Carrier Accounts Widget -->
+        <section>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400">
+                    1. Daşıyıcı Hesabları və Filial Konfiqurasiyası
+                </h3>
+                <span class="text-xs text-slate-500">Müştəri ID və Sessiya Durumu</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="carrier-cards">
+                {{CARRIER_CARDS_HTML}}
+            </div>
+        </section>
+
+        <!-- 2. Address Formatter & 1-Click Clipboard Engine -->
+        <section class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl" id="address-engine-section">
+            <div class="border-b border-slate-800 pb-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                        <span>📍 Ağıllı Xarici Anbar və Filial Ünvan Formatlayıcısı</span>
+                        <span class="text-xs font-mono bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded">1-Click Clipboard</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">
+                        Daşıyıcı və Bakı təhvil filialını seçin; hədəf mağaza üçün (Trendyol, Taobao, Temu) tam xana-xana ünvan dərhal kopyalansın.
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Carrier Select -->
+                    <div>
+                        <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">Kargo</label>
+                        <select id="addr-carrier" onchange="loadFormattedAddress()" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-1.5 focus:border-emerald-500">
+                            <option value="STAREX" selected>STAREX (ST123456)</option>
+                            <option value="CAMEX">CAMEX (CAM-11111)</option>
+                            <option value="DYNAMEX">DYNAMEX (DYN-22222)</option>
+                            <option value="LIMAK">LIMAK (LMX-10294)</option>
+                        </select>
+                    </div>
+                    <!-- Branch Select -->
+                    <div>
+                        <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">Təhvil Filialı</label>
+                        <select id="addr-branch" onchange="loadFormattedAddress()" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-1.5 focus:border-emerald-500">
+                            <option value="28 May" selected>28 May Filialı</option>
+                            <option value="Gənclik">Gənclik Filialı</option>
+                            <option value="Əhmədli">Əhmədli Filialı</option>
+                            <option value="Xalqlar">Xalqlar Dostluğu</option>
+                            <option value="Yasamal">Yasamal (İnşaatçılar)</option>
+                            <option value="Sumqayıt">Sumqayıt Filialı</option>
+                        </select>
+                    </div>
+                    <!-- Target Platform -->
+                    <div>
+                        <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">Hədəf Platforma</label>
+                        <div class="inline-flex rounded-lg bg-slate-950 p-0.5 border border-slate-700">
+                            <button onclick="setPlatform('trendyol', 'TR')" id="btn-plat-trendyol" class="px-2.5 py-1 text-xs font-medium rounded-md bg-emerald-600 text-white transition">🇹🇷 Trendyol</button>
+                            <button onclick="setPlatform('taobao', 'CN')" id="btn-plat-taobao" class="px-2.5 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-white transition">🇨🇳 Taobao</button>
+                            <button onclick="setPlatform('temu', 'CN')" id="btn-plat-temu" class="px-2.5 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-white transition">Temu</button>
+                            <button onclick="setPlatform('amazon', 'US')" id="btn-plat-amazon" class="px-2.5 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-white transition">🇺🇸 Amazon</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Individual Field Breakdown -->
+                <div class="lg:col-span-2 space-y-3" id="address-fields-container">
+                    <div class="text-xs text-slate-400 animate-pulse">Ünvan sahələri yüklənir...</div>
+                </div>
+
+                <!-- Right: Full Address Block & 1-Click Copy -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Tam Ünvan Bloku</span>
+                            <span class="text-[11px] text-emerald-400 font-mono" id="addr-summary-tag">STAREX • TR ➔ 28 May</span>
+                        </div>
+                        <pre id="addr-full-block" class="text-xs font-mono text-slate-300 bg-slate-900 border border-slate-800/80 rounded-lg p-3 whitespace-pre-wrap select-all leading-relaxed"></pre>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800">
+                        <button onclick="copyFullBlock()" id="btn-copy-all" class="w-full py-2 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-950">
+                            <span>📋 Bütün Ünvanı Kopyala</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Multi-Carrier Dynamic Tariff Comparison Matrix -->
+        <section class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl" id="tariff-engine-section">
+            <div class="border-b border-slate-800 pb-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                        <span>⚡ Çox-Kargolu Dinamik Tarif və Səmərəlilik Kalkulyatoru</span>
+                        <span class="text-xs font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">Real-Time CBAR FX</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">
+                        Çəkini təyin edin və ya slinderi sürüşdürün; sistem ən ucuz kargonu avtomatik vurğulayaraq qənaət məbləğini hesablayacaq.
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Country Filter -->
+                    <div class="flex items-center space-x-2">
+                        <button onclick="setTariffCountry('TR')" id="tbtn-tr" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white border border-emerald-500">🇹🇷 Türkiyə</button>
+                        <button onclick="setTariffCountry('CN')" id="tbtn-cn" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:text-white border border-slate-700">🇨🇳 Çin</button>
+                        <button onclick="setTariffCountry('US')" id="tbtn-us" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:text-white border border-slate-700">🇺🇸 ABŞ</button>
+                        <button onclick="setTariffCountry('DE')" id="tbtn-de" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:text-white border border-slate-700">🇩🇪 Almaniya</button>
+                    </div>
+                    <!-- Liquid Checkbox -->
+                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-700">
+                        <input type="checkbox" id="tariff-liquid" onchange="loadTariffComparison()" class="rounded bg-slate-900 border-slate-700 text-emerald-500 focus:ring-0">
+                        <span>💧 Maye / Ətir (+1$)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Weight Slider & Numeric Control -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold uppercase text-slate-400">Bağlamanın Çəkisi:</span>
+                    <div class="flex items-center space-x-2">
+                        <input type="number" id="tariff-weight-num" min="0.05" max="30" step="0.05" value="0.5" oninput="syncWeightFromNum(this.value)"
+                               class="w-24 bg-slate-900 border border-slate-700 text-white font-mono text-sm rounded-lg px-2 py-1 text-right focus:border-emerald-500">
+                        <span class="text-sm font-semibold text-emerald-400">kq</span>
+                    </div>
+                </div>
+                <input type="range" id="tariff-weight-slider" min="0.05" max="10" step="0.05" value="0.5" oninput="syncWeightFromSlider(this.value)"
+                       class="w-full accent-emerald-500 h-2 bg-slate-800 rounded-lg cursor-pointer">
+                <div class="flex justify-between text-[11px] font-mono text-slate-500 mt-1">
+                    <span>0.05 kq (Zərf)</span>
+                    <span>1.0 kq</span>
+                    <span>2.5 kq</span>
+                    <span>5.0 kq</span>
+                    <span>10.0 kq</span>
+                </div>
+            </div>
+
+            <!-- Comparison Cards & Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-950 text-slate-400 text-xs uppercase border-b border-slate-800">
+                            <th class="py-3 px-4">Daşıyıcı</th>
+                            <th class="py-3 px-4">Çatdırılma Qiyməti (USD)</th>
+                            <th class="py-3 px-4">Məzənnə ilə (AZN)</th>
+                            <th class="py-3 px-4">Təxmini Müddət</th>
+                            <th class="py-3 px-4">Filial Sayı</th>
+                            <th class="py-3 px-4 text-right">Səmərəlilik Durumu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tariff-quotes-tbody" class="divide-y divide-slate-800/60">
+                        <tr><td colspan="6" class="py-6 text-center text-slate-500">Tariflər hesablanır...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 4. Active Cargo Tracking Table -->
+        <section class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
+            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                <div>
+                    <h3 class="text-base font-semibold text-white">
+                        4. Aktiv Kargo İzləmə Cədvəli (Üçtərəfli İzləmə Körpüsü)
+                    </h3>
+                    <span class="text-xs text-slate-400 font-mono">
+                        Origin Tracking ➔ International AWB (STRAZ/LMX/CAM) ➔ SmartCustoms №
+                    </span>
+                </div>
+                <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded">
+                    Sistem Sinxronlaşdırılıb
+                </span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-950/60 text-slate-400 text-xs uppercase border-b border-slate-800">
+                            <th class="py-3.5 px-4">Sifariş & Platforma</th>
+                            <th class="py-3.5 px-4">Daşıyıcı</th>
+                            <th class="py-3.5 px-4">Daxili İzləmə ➔ Beynəlxalq AWB</th>
+                            <th class="py-3.5 px-4">SmartCustoms №</th>
+                            <th class="py-3.5 px-4">Fiziki Status Xəritəsi</th>
+                            <th class="py-3.5 px-4 text-right">Dəyər & Çatdırılma</th>
+                            <th class="py-3.5 px-4 text-center">İnvoys PDF</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/70">
+                        {{SHIPMENT_ROWS_HTML}}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Token Update Modal -->
+    <div id="token-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                    <span>🔑 Kargo Hesabı / Kuki İdxalı</span>
+                </h3>
+                <button onclick="closeTokenModal()" class="text-slate-400 hover:text-white">✕</button>
+            </div>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Daşıyıcı Adı</label>
+                    <input id="modal-carrier" type="text" readonly class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Müştəri Kodu / Suite</label>
+                        <input id="modal-cust-id" type="text" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Təhvil Filialı</label>
+                        <input id="modal-branch" type="text" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Auth Token / JWT / PHPSESSID / _identity</label>
+                    <textarea id="modal-token" rows="4" placeholder="Kuki və ya Bearer JWT yapışdırın..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono text-xs"></textarea>
+                    <p class="text-[11px] text-slate-500 mt-1">Starex üçün Bearer token, Camex üçün PHPSESSID, Dynamex üçün _identity-frontend.</p>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-3 border-t border-slate-800">
+                <button onclick="closeTokenModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300">İmtina</button>
+                <button onclick="submitTokenUpdate()" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-medium text-white">Yadda Saxla</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white text-xs font-medium px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2 transform translate-y-20 opacity-0 transition duration-300">
+        <span id="toast-icon">✔</span>
+        <span id="toast-msg">Kopyalandı!</span>
+    </div>
+
+    <script>
+        let currentPlatform = 'trendyol';
+        let currentOriginCountry = 'TR';
+        let currentTariffCountry = 'TR';
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        function copyText(val, label) {
+            navigator.clipboard.writeText(val).then(() => {
+                showToast(`"${label}" kopyalandı!`);
+            }).catch(() => {
+                showToast("Kopyalandı!");
+            });
+        }
+
+        function copyFullBlock() {
+            const fullText = document.getElementById('addr-full-block').innerText;
+            navigator.clipboard.writeText(fullText).then(() => {
+                showToast("Bütün ünvan bloku kopyalandı!");
+            });
+        }
+
+        function setPlatform(plat, country) {
+            currentPlatform = plat;
+            currentOriginCountry = country;
+            ['trendyol', 'taobao', 'temu', 'amazon'].forEach(p => {
+                const b = document.getElementById(`btn-plat-${p}`);
+                if (b) {
+                    if (p === plat) {
+                        b.className = "px-2.5 py-1 text-xs font-medium rounded-md bg-emerald-600 text-white transition";
+                    } else {
+                        b.className = "px-2.5 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-white transition";
+                    }
+                }
+            });
+            loadFormattedAddress();
+        }
+
+        async function loadFormattedAddress() {
+            const carrier = document.getElementById('addr-carrier').value;
+            const branch = document.getElementById('addr-branch').value;
+            const container = document.getElementById('address-fields-container');
+            const summaryTag = document.getElementById('addr-summary-tag');
+            const fullBlock = document.getElementById('addr-full-block');
+
+            summaryTag.innerText = `${carrier} • ${currentOriginCountry} ➔ ${branch}`;
+
+            try {
+                const res = await fetch(`/carriers/api/address?carrier=${carrier}&country=${currentOriginCountry}&platform=${currentPlatform}&branch=${encodeURIComponent(branch)}`);
+                if (!res.ok) throw new Error("Ünvan əldə edilmədi");
+                const data = await res.json();
+
+                fullBlock.innerText = data.full_text_block;
+
+                let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+                data.fields.forEach(f => {
+                    html += `
+                        <div class="bg-slate-950 border border-slate-800 rounded-lg p-2.5 flex items-center justify-between hover:border-slate-700 transition">
+                            <div class="overflow-hidden pr-2">
+                                <div class="text-[11px] font-medium text-slate-400">${f.label}</div>
+                                <div class="text-xs font-mono font-semibold text-white truncate select-all mt-0.5">${f.value}</div>
+                            </div>
+                            <button onclick="copyText('${f.value.replace(/'/g, "\\'")}', '${f.label.replace(/'/g, "\\'")}')"
+                                    class="copy-pill px-2.5 py-1 rounded bg-slate-800 hover:bg-emerald-600 hover:text-white text-[11px] font-mono text-emerald-400 transition flex-shrink-0">
+                                Kopyala
+                            </button>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } catch (err) {
+                container.innerHTML = `<div class="text-xs text-rose-400">Ünvan yüklənərkən xəta baş verdi: ${err.message}</div>`;
+            }
+        }
+
+        function selectCarrierForAddress(name, custId, branch) {
+            document.getElementById('addr-carrier').value = name;
+            if (branch) document.getElementById('addr-branch').value = branch;
+            document.getElementById('address-engine-section').scrollIntoView({ behavior: 'smooth' });
+            loadFormattedAddress();
+        }
+
+        // --- Dynamic Tariff Engine ---
+        function setTariffCountry(cntry) {
+            currentTariffCountry = cntry;
+            ['tr', 'cn', 'us', 'de'].forEach(c => {
+                const b = document.getElementById(`tbtn-${c}`);
+                if (b) {
+                    if (c.toUpperCase() === cntry) {
+                        b.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white border border-emerald-500";
+                    } else {
+                        b.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:text-white border border-slate-700";
+                    }
+                }
+            });
+            loadTariffComparison();
+        }
+
+        function syncWeightFromSlider(val) {
+            document.getElementById('tariff-weight-num').value = val;
+            loadTariffComparison();
+        }
+
+        function syncWeightFromNum(val) {
+            document.getElementById('tariff-weight-slider').value = val;
+            loadTariffComparison();
+        }
+
+        async function loadTariffComparison() {
+            const weight = document.getElementById('tariff-weight-num').value || 0.5;
+            const isLiquid = document.getElementById('tariff-liquid').checked;
+            const tbody = document.getElementById('tariff-quotes-tbody');
+
+            try {
+                const res = await fetch(`/carriers/api/tariffs?country=${currentTariffCountry}&weight=${weight}&is_liquid=${isLiquid}`);
+                if (!res.ok) throw new Error("Tarif tapılmadı");
+                const data = await res.json();
+                const quotes = data.quotes || [];
+
+                if (quotes.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500">Bu istiqamət üzrə aktiv daşıyıcı tarifi yoxdur.</td></tr>`;
+                    return;
+                }
+
+                let rows = '';
+                quotes.forEach(q => {
+                    const badge = q.is_cheapest
+                        ? `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">★ ƏN SƏRFƏLİ</span>`
+                        : `<span class="text-xs text-slate-400 font-mono">+${q.savings_vs_max_azn.toFixed(2)} ₼</span>`;
+
+                    const rowBg = q.is_cheapest ? "bg-emerald-950/20 hover:bg-emerald-950/30 font-semibold" : "hover:bg-slate-950/40";
+
+                    rows += `
+                        <tr class="${rowBg} transition">
+                            <td class="py-3 px-4 font-bold text-white flex items-center space-x-2">
+                                <span>${q.carrier}</span>
+                            </td>
+                            <td class="py-3 px-4 font-mono text-emerald-400">$${q.delivery_fee_usd.toFixed(2)} USD</td>
+                            <td class="py-3 px-4 font-mono font-bold text-white">${q.delivery_fee_azn.toFixed(2)} ₼</td>
+                            <td class="py-3 px-4 text-xs text-slate-300">${q.estimated_days}</td>
+                            <td class="py-3 px-4 text-xs text-slate-400 font-mono">${q.pickup_branches_count} filial</td>
+                            <td class="py-3 px-4 text-right">${badge}</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = rows;
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-rose-400">${err.message}</td></tr>`;
+            }
+        }
+
+        // --- Token Modal ---
+        function openTokenModal(carrier, custId, branch) {
+            document.getElementById('modal-carrier').value = carrier;
+            document.getElementById('modal-cust-id').value = custId;
+            document.getElementById('modal-branch').value = branch;
+            document.getElementById('token-modal').classList.remove('hidden');
+        }
+
+        function closeTokenModal() {
+            document.getElementById('token-modal').classList.add('hidden');
+        }
+
+        async function submitTokenUpdate() {
+            const carrier = document.getElementById('modal-carrier').value;
+            const custId = document.getElementById('modal-cust-id').value;
+            const branch = document.getElementById('modal-branch').value;
+            const token = document.getElementById('modal-token').value;
+
+            try {
+                const res = await fetch('/carriers/accounts', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        carrier_name: carrier,
+                        customer_id: custId,
+                        default_branch: branch,
+                        auth_token: token,
+                    })
+                });
+                if (res.ok) {
+                    showToast(`${carrier} hesabı yeniləndi!`);
+                    closeTokenModal();
+                    setTimeout(() => location.reload(), 800);
+                } else {
+                    showToast("Xəta baş verdi");
+                }
+            } catch (e) {
+                showToast("Şəbəkə xətası");
+            }
+        }
+
+        async function triggerCarrierSync() {
+            showToast("Sinxronlaşdırma başladı...");
+            try {
+                const res = await fetch('/carriers/sync', {method: 'POST'});
+                const data = await res.json();
+                showToast(`Tamamlandı: ${data.updated_shipments} bağlama yeniləndi`);
+                setTimeout(() => location.reload(), 1200);
+            } catch (e) {
+                showToast("Sinxronlaşdırma xətası");
+            }
+        }
+
+        // Initial Load on Page Startup
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFormattedAddress();
+            loadTariffComparison();
+        });
+    </script>
+</body>
+</html>

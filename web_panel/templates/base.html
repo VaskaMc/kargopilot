@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="az" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }} - PCS Central Management</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans antialiased bg-slate-950 text-slate-100">
+
+    <!-- TOP BAR -->
+    <header class="h-14 border-b border-slate-800 bg-slate-900/90 backdrop-blur px-6 flex items-center justify-between z-30 shrink-0">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/30">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <span class="font-black text-sm tracking-wide text-white">PCS</span>
+                    <span class="text-xs font-medium text-slate-400 ml-1">Central Web Management</span>
+                </div>
+            </div>
+
+            <!-- Security Badge: Localhost / SSH Tunnel Only -->
+            <div class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 text-xs font-mono">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>127.0.0.1:48481</span>
+                <span class="text-emerald-600">|</span>
+                <span class="text-emerald-300 text-[11px]">SSH Tunnel Secured (-p 1999)</span>
+            </div>
+        </div>
+
+        <!-- Right Side: Currency Rates & Status -->
+        <div class="flex items-center gap-4 text-xs">
+            <div class="hidden lg:flex items-center gap-3 px-3 py-1 bg-slate-800/70 rounded-lg border border-slate-700/60 text-slate-300 font-mono">
+                <span>CBAR Məzənnə:</span>
+                <span class="text-indigo-400 font-semibold">$1 = 1.70 ₼</span>
+                <span class="text-slate-600">•</span>
+                <span class="text-amber-400 font-semibold">1₺ = 0.0485 ₼</span>
+                <span class="text-slate-600">•</span>
+                <span class="text-rose-400 font-semibold">1¥ = 0.238 ₼</span>
+            </div>
+
+            <form action="/customs/sync" method="post" class="inline">
+                <button type="submit" class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    <span>Sinxronlaşdır</span>
+                </button>
+            </form>
+
+            <div class="flex items-center gap-2 pl-2 border-l border-slate-800">
+                <div class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 font-bold text-xs border border-slate-700">
+                    VM
+                </div>
+                <span class="hidden sm:inline font-medium text-slate-300 text-xs">Vasif Məcidli</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN WRAPPER: SIDEBAR + CONTENT -->
+    <div class="flex-1 flex overflow-hidden">
+        <!-- SIDEBAR -->
+        <aside class="w-64 border-r border-slate-800 bg-slate-900/60 shrink-0 flex flex-col justify-between p-4">
+            <nav class="space-y-1.5">
+                <a href="/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'dashboard' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    <span>Executive Overview</span>
+                </a>
+                <a href="/orders" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'orders' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
+                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                    <span>Orders Explorer</span>
+                </a>
+                <a href="/customs" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'customs' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
+                    <i data-lucide="file-check-2" class="w-4 h-4"></i>
+                    <span>SmartCustoms DGK</span>
+                </a>
+                <a href="/connectors" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'connectors' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
+                    <i data-lucide="network" class="w-4 h-4"></i>
+                    <span>Multi-Platform Connectors</span>
+                </a>
+                <a href="/system" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'system' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
+                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                    <span>System Status & Logs</span>
+                </a>
+                <a href="/carriers" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'carriers' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
+                    <i data-lucide="truck" class="w-4 h-4"></i>
+                    <span>Kargo Daşıyıcıları</span>
+                </a>
+            </nav>
+
+            <!-- Bottom System Info Pill -->
+            <div class="p-3 bg-slate-950/70 rounded-xl border border-slate-800 text-xs space-y-1.5">
+                <div class="flex items-center justify-between text-slate-400">
+                    <span>Daemon Status:</span>
+                    <span class="text-emerald-400 font-semibold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Active
+                    </span>
+                </div>
+                <div class="flex items-center justify-between text-slate-400">
+                    <span>Customs Quota:</span>
+                    <span class="text-indigo-400 font-mono font-bold">$300 / Ay</span>
+                </div>
+                <div class="pt-1 border-t border-slate-800/80 text-[11px] text-slate-500 font-mono truncate">
+                    root@127.0.0.1
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 overflow-y-auto p-6 lg:p-8 bg-slate-950">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- Notification / Toast Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        lucide.createIcons();
+
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-emerald-900/90 border-emerald-700 text-emerald-200' : 'bg-rose-900/90 border-rose-700 text-rose-200';
+            toast.className = `px-4 py-3 rounded-lg border shadow-xl text-xs font-medium flex items-center gap-2 backdrop-blur transition-all duration-300 ${bgClass}`;
+            toast.innerHTML = `<span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Clipboard helper
+        function copyToClipboard(text, label = 'Mətn') {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`${label} kopyalandı: ${text}`, 'success');
+            }).catch(() => {
+                showToast('Kopyalama xətası!', 'error');
+            });
+        }
+    </script>
+</body>
+</html>

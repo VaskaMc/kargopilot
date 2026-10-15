@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "PCS Live Overlay — Omni-Commerce Brain",
+  "version": "4.0.0",
+  "description": "Taobao, 1688, Trendyol və Temu üçün canlı Bakı Maya Dəyəri, Arbitraj və 1-Kliklə Ünvan Avtodoldurma",
+  "action": {
+    "default_title": "PCS Omni-Commerce Cockpit",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": [
+    "*://*.taobao.com/*",
+    "*://*.1688.com/*",
+    "*://*.trendyol.com/*",
+    "*://*.temu.com/*",
+    "http://127.0.0.1:48481/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.taobao.com/*",
+        "*://*.1688.com/*",
+        "*://*.trendyol.com/*",
+        "*://*.temu.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
