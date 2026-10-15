@@ -1,19 +1,36 @@
-# ⚡ KargoPilot
+<div align="center">
+  <img src="assets/logo.jpg" alt="KargoPilot Official Brand Emblem" width="460" style="border-radius: 20px; box-shadow: 0 12px 36px rgba(0,0,0,0.7);" />
+  <br/><br/>
+  <h1>⚡ KargoPilot</h1>
+  <p><b>Autonomous AI Copilot for Cross-Border Logistics & State Customs Declarations in Azerbaijan</b></p>
+  <p><i>Streamlining Silk Road e-commerce: Taobao (CN), 1688 (CN), Trendyol (TR), Temu, and Amazon ➔ Baku Freight Forwarders & SmartCustoms.</i></p>
 
-> **Autonomous AI Copilot for Cross-Border Logistics & State Customs Declarations in Azerbaijan**  
-> Streamlining Silk Road e-commerce: Taobao (CN), 1688 (CN), Trendyol (TR), Temu, and Amazon ➔ Baku Freight Forwarders & SmartCustoms.
-
-[![Live Web Platform](https://img.shields.io/badge/Live_Site-vaskamc.github.io%2Fkargopilot-indigo?style=for-the-badge&logo=github)](https://vaskamc.github.io/kargopilot)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg?style=for-the-badge&logo=python)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg?style=for-the-badge)](LICENSE)
-[![Tests Passing](https://img.shields.io/badge/Tests-147%20Passed-brightgreen.svg?style=for-the-badge)](tests/)
+  <p>
+    <a href="https://vaskamc.github.io/kargopilot"><img src="https://img.shields.io/badge/Live_Portal-vaskamc.github.io%2Fkargopilot-indigo?style=for-the-badge&logo=github" alt="Live Web Platform"></a>
+    <img src="https://img.shields.io/badge/python-3.11+-blue.svg?style=for-the-badge&logo=python" alt="Python 3.11+">
+    <img src="https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=for-the-badge&logo=fastapi" alt="FastAPI">
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-emerald.svg?style=for-the-badge" alt="License: MIT"></a>
+    <img src="https://img.shields.io/badge/Tests-147%20Passed-brightgreen.svg?style=for-the-badge" alt="Tests Passing">
+  </p>
+</div>
 
 ---
 
 ## 🌐 Live Showcase & Demo
 The live platform documentation and visual portal is deployed at:  
 👉 **[https://vaskamc.github.io/kargopilot](https://vaskamc.github.io/kargopilot)**
+
+---
+
+## 🎨 Brand Identity & Visual System
+
+KargoPilot utilizes a dual-tier identity system engineered for high-precision autonomous cross-border logistics:
+
+| Corporate Primary Brand (Logo 6) | AI Engine & Loyd Copilot (Logo 5) |
+| :---: | :---: |
+| <img src="assets/logo-icon.png" width="220" alt="Primary Corporate Brand" /> | <img src="assets/ai-engine-icon.png" width="220" alt="AI & Loyd Copilot" /> |
+| **Infinity Parcel & Jet Loop** | **Silk Road Quantum 'K' Node** |
+| Official identity across Web, Documentation, and Corporate Presence | Dedicated avatar for WhatsApp Loyd AI, Chrome Extension, and Core Engine |
 
 ---
 
