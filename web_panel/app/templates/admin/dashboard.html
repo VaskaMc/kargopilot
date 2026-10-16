@@ -18,11 +18,11 @@
   </div>
 
   <!-- Card 2: Active In-Flight Parcels -->
-  <div class="glass-card p-5 rounded-2xl relative overflow-hidden group hover:border-indigo-500/40 transition">
-    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl group-hover:bg-indigo-500/20 transition"></div>
+  <div class="glass-card p-5 rounded-2xl relative overflow-hidden group hover:border-cyan-500/40 transition">
+    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl group-hover:bg-cyan-500/20 transition"></div>
     <div class="flex items-center justify-between">
       <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Aktiv Yoldakı Bağlamalar</span>
-      <span class="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 text-sm">✈️</span>
+      <span class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 text-sm">✈️</span>
     </div>
     <div class="mt-4 flex items-baseline gap-2">
       <span class="text-3xl font-extrabold text-white tracking-tight tabular-nums">{{ stats.in_flight_parcels | default(1428) }}</span>
@@ -78,13 +78,13 @@
       <div class="space-y-1.5">
         <div class="flex justify-between items-center text-xs">
           <span class="font-bold text-slate-200 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full {% if c.carrier == 'STAREX' %}bg-cyan-400{% elif c.carrier == 'CAMEX' %}bg-indigo-400{% elif c.carrier == 'LIMAK' %}bg-amber-400{% else %}bg-emerald-400{% endif %}"></span>
+            <span class="w-2 h-2 rounded-full {% if c.carrier == 'STAREX' %}bg-cyan-400{% elif c.carrier == 'CAMEX' %}bg-sky-400{% elif c.carrier == 'LIMAK' %}bg-amber-400{% else %}bg-emerald-400{% endif %}"></span>
             {{ c.carrier }} <span class="text-[11px] font-mono text-slate-400 font-normal">({{ c.country }})</span>
           </span>
-          <span class="font-mono text-slate-300">{{ c.parcels }} bağlama <b class="text-white">({{ c.pct }}%)</b></span>
+          <span class="font-mono tabular-nums text-slate-300">{{ c.parcels }} bağlama <b class="text-white">({{ c.pct }}%)</b></span>
         </div>
-        <div class="w-full bg-white/5 rounded-full h-2.5 overflow-hidden">
-          <div class="h-2.5 rounded-full {% if c.carrier == 'STAREX' %}bg-cyan-500{% elif c.carrier == 'CAMEX' %}bg-indigo-500{% elif c.carrier == 'LIMAK' %}bg-amber-500{% else %}bg-emerald-500{% endif %} transition-all duration-500" style="width: {{ c.pct }}%"></div>
+        <div class="w-full bg-white/5 rounded-full h-2.5 overflow-hidden" role="progressbar" aria-valuenow="{{ c.pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ c.carrier }} daşıyıcı payı: {{ c.pct }}%">
+          <div class="h-2.5 rounded-full {% if c.carrier == 'STAREX' %}bg-cyan-500{% elif c.carrier == 'CAMEX' %}bg-sky-500{% elif c.carrier == 'LIMAK' %}bg-amber-500{% else %}bg-emerald-500{% endif %} transition-all duration-500" style="width: {{ c.pct }}%"></div>
         </div>
       </div>
       {% endfor %}
@@ -92,8 +92,8 @@
 
     <!-- Live CBAR Exchange Rate Footnote -->
     <div class="pt-2 border-t border-white/5 flex flex-wrap items-center justify-between text-xs text-slate-400">
-      <div class="flex items-center gap-3 font-mono">
-        <span>Məzənnə Təminatı:</span>
+      <div class="flex items-center gap-3 font-mono tabular-nums">
+        <span class="font-sans">Məzənnə Təminatı:</span>
         <span class="text-slate-300">1 USD = <b class="text-white">{{ stats.cbar_usd_rate }} ₼</b></span>
         <span class="text-slate-300">1 TRY = <b class="text-white">{{ stats.cbar_try_rate }} ₼</b></span>
         <span class="text-slate-300">1 CNY = <b class="text-white">{{ stats.cbar_cny_rate }} ₼</b></span>
@@ -123,7 +123,7 @@
         </div>
 
         <div class="p-3.5 rounded-xl bg-black/30 border border-cyan-500/20 flex items-start gap-3">
-          <img src="/static/img/logo_concept_5_quantum_node.jpg" alt="Loyd AI Mühərriki" class="w-7 h-7 rounded-lg object-cover border border-cyan-500/30 shrink-0 mt-0.5">
+          <img src="/static/img/logo_concept_5_quantum_node.jpg" alt="Loyd AI Quantum Node Mühərriki" width="28" height="28" loading="lazy" decoding="async" class="w-7 h-7 rounded-lg object-cover border border-cyan-500/30 shrink-0 mt-0.5">
           <div class="text-xs space-y-0.5">
             <div class="font-bold text-cyan-200">Loyd AI HS-Code Təsnifatı</div>
             <p class="text-slate-400">Son 24 saatda 142 bəyannamə %99.2 dəqiqliklə avtomatik kodlaşdırılıb.</p>
@@ -140,7 +140,7 @@
       </div>
     </div>
 
-    <a href="/admin/customs" class="block text-center py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/20 transition">
+    <a href="/admin/customs" class="block text-center py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-[#0b0f19] font-extrabold text-xs shadow-lg shadow-cyan-500/25 transition">
       Bəyannamə Növbəsinə Keçid ({{ stats.pending_customs_count }}) →
     </a>
   </div>

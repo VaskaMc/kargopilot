@@ -116,12 +116,12 @@ def _render_carrier_cards(accounts: list[CarrierAccountDTO]) -> str:
                 </div>
                 <div class="pt-2 flex items-center justify-between gap-2">
                     <button type="button" onclick="openTokenModal('{escape(name)}', '{escape(cust_id)}', '{escape(branch)}')"
-                            class="flex-1 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 flex items-center justify-center gap-1.5">
+                            class="flex-1 min-h-[44px] py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 flex items-center justify-center gap-1.5 transition">
                         <i data-lucide="key" class="w-3.5 h-3.5 text-sky-400"></i>
                         <span>Kuki / Token</span>
                     </button>
                     <button type="button" onclick="selectCarrierForAddress('{escape(name)}', '{escape(cust_id)}', '{escape(branch)}')"
-                            class="flex-1 py-2 px-3 rounded-lg bg-indigo-600 text-xs font-bold flex items-center justify-center gap-1.5">
+                            class="flex-1 min-h-[44px] py-2.5 px-3 rounded-xl bg-indigo-600 text-xs font-bold flex items-center justify-center gap-1.5 transition">
                         <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
                         <span>Ünvanı Al</span>
                     </button>
@@ -133,7 +133,25 @@ def _render_carrier_cards(accounts: list[CarrierAccountDTO]) -> str:
 
 def _render_shipment_rows(shipments: list[Dict[str, Any]]) -> str:
     if not shipments:
-        return """<tr><td colspan="7" class="py-10 text-center text-slate-400 text-xs">Hələ aktiv kargo bağlaması yoxdur. Yuxarıdakı <strong>"1-Kliklə Ön Bəyan"</strong> düyməsi ilə bağlama əlavə edə bilərsiniz.</td></tr>"""
+        return """<tr>
+            <td colspan="7" class="py-12 px-6 text-center">
+                <div class="max-w-md mx-auto space-y-3">
+                    <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-400 shadow-inner">
+                        <i data-lucide="package-check" class="w-6 h-6 text-sky-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-white">Hələ Aktiv Kargo Bağlaması Yoxdur</h3>
+                        <p class="text-xs text-slate-400 mt-1">Sifarişlərinizi ön bəyan edərək AWB izləmə nömrələri və avtomatik PDF invoys tərtib edə bilərsiniz.</p>
+                    </div>
+                    <div class="pt-1">
+                        <button type="button" onclick="openPredeclareModal()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-indigo-600 text-xs font-bold inline-flex items-center justify-center gap-2 transition">
+                            <i data-lucide="file-plus-2" class="w-4 h-4"></i>
+                            <span>1-Kliklə Ön Bəyan Yarat</span>
+                        </button>
+                    </div>
+                </div>
+            </td>
+        </tr>"""
     rows: list[str] = []
     for sh in shipments:
         extra = sh.get("extra") or {}
@@ -151,7 +169,7 @@ def _render_shipment_rows(shipments: list[Dict[str, Any]]) -> str:
             else ""
         )
         rows.append(
-            f"""<tr class="hover:bg-slate-800/50">
+            f"""<tr class="hover:bg-slate-800/50 transition">
                 <td class="py-3.5 px-4">
                     <div class="font-bold text-white flex items-center gap-1.5">
                         <span class="px-1.5 py-0.5 rounded bg-slate-800 text-indigo-400 font-mono text-[10px] font-bold">{escape(origin_code)}</span>
@@ -177,7 +195,7 @@ def _render_shipment_rows(shipments: list[Dict[str, Any]]) -> str:
                 </td>
                 <td class="py-3.5 px-4 text-center">
                     <a href="/carriers/invoices/{escape(str(sh['order_ref']))}" target="_blank"
-                       class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-indigo-400 font-bold font-mono">
+                       class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-indigo-400 font-bold font-mono transition border border-slate-700">
                         <i data-lucide="file-text" class="w-3.5 h-3.5 text-sky-400"></i>
                         <span>PDF</span>
                     </a>

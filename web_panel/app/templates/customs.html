@@ -4,7 +4,7 @@
 <div class="space-y-6 max-w-7xl mx-auto">
 
     <!-- HEADER TITLE & ACTIONS -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
             <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
                 <span>SmartCustoms DGK İdarəetmə Mərkəzi</span>
@@ -15,16 +15,16 @@
             <p class="text-xs text-slate-400 mt-1">Azərbaycan Respublikası Dövlət Gömrük Komitəsi (e.customs.gov.az) inteqrasiyası</p>
         </div>
 
-        <div class="flex items-center gap-3">
-            <button onclick="openManualModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold shadow-md shadow-indigo-600/20 flex items-center gap-2 transition">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+            <button type="button" onclick="openManualModal()" class="min-h-[44px] px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition">
                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
                 <span>Qaralama Bəyannamə Tərtib Et</span>
             </button>
 
-            <form action="/customs/sync" method="post" class="inline">
-                <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold border border-slate-700 flex items-center gap-2 transition">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 text-emerald-400"></i>
-                    <span>Portal İlə Sinxronlaşdır</span>
+            <form action="/customs/sync" method="post" onsubmit="handleCustomsSyncSubmit(event)" class="inline-flex">
+                <button type="submit" id="customs-sync-btn" class="min-h-[44px] w-full sm:w-auto px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold border border-slate-700 flex items-center justify-center gap-2 transition">
+                    <i data-lucide="refresh-cw" id="sync-icon" class="w-4 h-4 text-emerald-400"></i>
+                    <span id="sync-btn-text">Portal İlə Sinxronlaşdır</span>
                 </button>
             </form>
         </div>
@@ -32,32 +32,48 @@
 
     <!-- STATS SUMMARY CARDS -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-            <span class="text-xs text-slate-400">Ümumi Bəyannamələr</span>
+        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
+            <span class="text-xs text-slate-400 font-medium">Ümumi Bəyannamələr</span>
             <div class="text-2xl font-black text-white font-mono mt-1">{{ total_declarations }}</div>
-            <span class="text-[11px] text-emerald-400 mt-0.5 block">Hamısı qeydiyyatdan keçib</span>
+            <span class="text-[11px] text-emerald-400 mt-1 block font-semibold flex items-center gap-1">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                <span>Hamısı qeydiyyatdan keçib</span>
+            </span>
         </div>
-        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-            <span class="text-xs text-slate-400">Hesablanan Gömrük Rüsumu</span>
+        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
+            <span class="text-xs text-slate-400 font-medium">Hesablanan Gömrük Rüsumu</span>
             <div class="text-2xl font-black text-emerald-400 font-mono mt-1">{{ total_duty_azn }} ₼</div>
-            <span class="text-[11px] text-slate-400 mt-0.5 block">300 USD limiti daxilində (0% rüsum)</span>
+            <span class="text-[11px] text-emerald-400 mt-1 block">✓ 300 USD limiti daxilindədir (0% rüsum)</span>
+            <span class="text-[10px] text-slate-400 mt-0.5 block">Narahat olmayın: Limit aşılsa belə, yalnız aşan fərqə 36% rüsum tətbiq olunur.</span>
         </div>
-        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-            <span class="text-xs text-slate-400">Bəyan Gözləyən Bağlamalar</span>
+        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
+            <span class="text-xs text-slate-400 font-medium">Bəyan Gözləyən Bağlamalar</span>
             <div class="text-2xl font-black text-white font-mono mt-1">{{ undeclared_orders|length }}</div>
-            <span class="text-[11px] text-slate-400 mt-0.5 block">Avtomatik qruplaşdırmaya hazır</span>
+            <span class="text-[11px] text-indigo-400 mt-1 block font-semibold">Avtomatik qruplaşdırmaya hazır</span>
         </div>
     </div>
 
-    <!-- DECLARATIONS LIST TABLE -->
-    <div class="bg-slate-900/90 rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
-        <div class="p-4 border-b border-slate-800 flex justify-between items-center">
-            <h2 class="text-sm font-bold text-white">SmartCustoms Bəyannamələri Siyahısı</h2>
-            <span class="text-xs text-slate-500 font-mono">Dövlət Gömrük Komitəsi Rəsmi Statusları</span>
+    <!-- DECLARATIONS LIST TABLE CONTAINER -->
+    <div class="bg-slate-900/90 rounded-2xl border border-slate-800 shadow-xl overflow-hidden relative">
+        <div class="p-4 sm:p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                <span>SmartCustoms Bəyannamələri Siyahısı</span>
+            </h2>
+            <span class="text-xs text-slate-400 font-mono">Dövlət Gömrük Komitəsi Rəsmi Statusları</span>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+        <!-- Mobile Horizontal Scroll Indicator Banner -->
+        <div class="lg:hidden px-4 py-2 bg-slate-950/90 border-b border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+            <span class="flex items-center gap-1.5 font-medium">
+                <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>Cədvəli üfüqi sürüşdürün</span>
+            </span>
+            <span class="text-[11px] text-slate-400 font-mono">← sağa/sola →</span>
+        </div>
+
+        <div class="overflow-x-auto relative">
+            <table class="w-full text-left text-xs min-w-[720px]">
                 <thead>
                     <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
                         <th class="py-3 px-4">Gömrük Bəyannamə Ref</th>
@@ -74,10 +90,10 @@
                     <tr class="hover:bg-slate-800/40 transition">
                         <td class="py-3.5 px-4">
                             <div class="font-bold text-slate-100 font-mono text-[13px] flex items-center gap-2">
-                                <i data-lucide="file-check" class="w-4 h-4 text-emerald-400"></i>
+                                <i data-lucide="file-check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
                                 <span>{{ d.customs_ref or 'SC-DRAFT' }}</span>
                             </div>
-                            <div class="text-[11px] text-slate-500 font-mono mt-0.5">Tarix: {{ d.created_at }}</div>
+                            <div class="text-[11px] text-slate-400 font-mono mt-0.5">Tarix: {{ d.created_at }}</div>
                         </td>
                         <td class="py-3.5 px-4">
                             <div class="font-medium text-slate-300 font-mono">{{ d.temu_order_ref or '-' }}</div>
@@ -101,19 +117,42 @@
                         </td>
                         <td class="py-3.5 px-4 text-right whitespace-nowrap">
                             {% if d.order_id %}
-                            <div class="inline-flex items-center gap-1.5">
-                                <a href="/invoices/{{ d.order_id }}" target="_blank" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-medium inline-flex items-center gap-1">
-                                    <i data-lucide="external-link" class="w-3 h-3 text-blue-400"></i>
+                            <div class="inline-flex items-center gap-2">
+                                <a href="/invoices/{{ d.order_id }}" target="_blank" class="min-h-[44px] px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition border border-slate-700">
+                                    <i data-lucide="external-link" class="w-3.5 h-3.5 text-blue-400"></i>
                                     <span>İnvoys</span>
                                 </a>
-                                <button onclick="submitOfficial('{{ d.order_id }}')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-semibold inline-flex items-center gap-1 shadow-sm">
-                                    <i data-lucide="send" class="w-3 h-3"></i>
+                                <button type="button" onclick="submitOfficial('{{ d.order_id }}', this)" class="min-h-[44px] px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold inline-flex items-center justify-center gap-1.5 transition shadow-sm">
+                                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
                                     <span>Göndər</span>
                                 </button>
                             </div>
                             {% else %}
                             <span class="text-slate-500 text-xs">-</span>
                             {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <!-- ZERO-DATA STATE -->
+                    <tr>
+                        <td colspan="7" class="py-14 px-6 text-center">
+                            <div class="max-w-md mx-auto space-y-4">
+                                <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-400 shadow-inner">
+                                    <i data-lucide="shield-alert" class="w-7 h-7 text-emerald-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold text-white">Hələ SmartCustoms Bəyannaməsi Qeydə Alınmayıb</h3>
+                                    <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                                        Xarici anbara daxil olan bağlamalarınız üçün DGK 37 qrup təsnifatı ilə avtomatik qaralama tərtib edə və ya rəsmi portal ilə sinxronlaşdıra bilərsiniz.
+                                    </p>
+                                </div>
+                                <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
+                                    <button type="button" onclick="openManualModal()" class="min-h-[44px] px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2 transition">
+                                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                                        <span>İlk Qaralama Bəyannaməni Tərtib Et</span>
+                                    </button>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -124,44 +163,58 @@
 </div>
 
 <!-- MANUAL / BATCH DECLARATION MODAL -->
-<div id="manual-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+<div id="manual-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="manual-modal-title">
     <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-2xl max-w-2xl w-full p-6">
         <div class="flex items-center justify-between pb-4 border-b border-slate-800">
             <div>
-                <h3 class="text-base font-bold text-white">Qaralama Bəyannamə Tərtib Et</h3>
-                <p class="text-xs text-slate-400 mt-0.5">Avtomatlaşdırılmış 37 DGK qruplaşdırması və satır birləşdirmə</p>
+                <h3 id="manual-modal-title" class="text-base font-bold text-white">Qaralama Bəyannamə Tərtib Et</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Avtomatlaşdırılmış 37 DGK qruplaşdırması və sətir birləşdirmə</p>
             </div>
-            <button onclick="closeManualModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800">
+            <button type="button" onclick="closeManualModal()" aria-label="Pəncərəni bağla" class="text-slate-400 hover:text-white p-2.5 rounded-xl hover:bg-slate-800 min-w-[44px] min-h-[44px] flex items-center justify-center transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
 
         <div class="my-6 space-y-4 text-xs">
             <div>
-                <label class="block text-slate-400 font-medium mb-1.5">Bəyan Ediləcək Sifarişi Seçin:</label>
-                <select id="modal-order-select" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-indigo-500">
+                <label for="modal-order-select" class="block text-slate-300 font-semibold mb-2">Bəyan Ediləcək Sifarişi Seçin:</label>
+                <select id="modal-order-select" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 min-h-[44px] text-base sm:text-xs text-white focus:outline-none focus:border-indigo-500">
                     {% for uo in undeclared_orders %}
                     <option value="{{ uo.id }}">{{ uo.temu_order_ref }} ({{ uo.platform }}) - Tracking: {{ uo.tracking_number or 'Yoxdur' }} - {{ uo.invoice_amount_azn or uo.temu_invoice_amount }} AZN</option>
                     {% else %}
                     <option value="">Bütün mövcud sifarişlər artıq bəyan edilib!</option>
                     {% endfor %}
                 </select>
+                {% if undeclared_orders|length == 0 %}
+                <p class="text-[11px] text-emerald-400 mt-1.5 flex items-center gap-1">
+                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                    <span>Bütün sifarişləriniz artıq bəyan edilib. Yeni sifariş daxil olduqda burada görünəcək.</span>
+                </p>
+                {% endif %}
             </div>
 
-            <div class="p-3.5 bg-indigo-950/40 rounded-xl border border-indigo-800/60 text-indigo-300 space-y-1">
-                <div class="font-bold flex items-center gap-1.5">
+            <div class="p-4 bg-indigo-950/40 rounded-xl border border-indigo-800/60 text-indigo-300 space-y-2">
+                <div class="font-bold flex items-center gap-2 text-white">
                     <i data-lucide="sparkles" class="w-4 h-4 text-indigo-400"></i>
                     <span>Ağıllı Gömrük Mühərriki Xüsusiyyətləri:</span>
                 </div>
-                <p class="text-[11px] text-slate-300">• <strong>Satır Birləşdirmə:</strong> Eyni qrupdakı mallar tək sətirdə birləşdirilir və 400 'Eyni mal təkrar daxil edilə bilməz' xətası aradan qaldırılır.</p>
-                <p class="text-[11px] text-slate-300">• <strong>Qiymət Uyğunlaşdırması:</strong> Promosiya qiymətləri bəyannamə invoysu ilə qəpik-qəpik bərabərləşdirilir.</p>
-                <p class="text-[11px] text-slate-300">• <strong>İnvoys PDF Əlavəsi:</strong> Avtomatik PDF generassiya olunaraq SmartCustoms portalına yüklənir.</p>
+                <p class="text-[11px] text-slate-300 leading-relaxed">• <strong>Sətir Birləşdirmə:</strong> Eyni qrupdakı mallar tək sətirdə birləşdirilir və 400 'Eyni mal təkrar daxil edilə bilməz' xətası aradan qaldırılır.</p>
+                <p class="text-[11px] text-slate-300 leading-relaxed">• <strong>Qiymət Uyğunlaşdırması:</strong> Promosiya qiymətləri bəyannamə invoysu ilə qəpik-qəpik bərabərləşdirilir.</p>
+                <p class="text-[11px] text-slate-300 leading-relaxed">• <strong>İnvoys PDF Əlavəsi:</strong> Avtomatik PDF generasiya olunaraq SmartCustoms portalına yüklənir.</p>
             </div>
         </div>
 
-        <div class="pt-4 border-t border-slate-800 flex justify-end gap-3 text-xs">
-            <button onclick="closeManualModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium">Ləğv Et</button>
-            <button onclick="submitManualDraft()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold">Bəyannamə Qaralamasını Tərtib Et</button>
+        <div class="pt-4 border-t border-slate-800 flex flex-wrap justify-end gap-3 text-xs">
+            <button type="button" onclick="closeManualModal()" class="min-h-[44px] px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-medium transition">Ləğv Et</button>
+            <button type="button" id="manual-draft-submit-btn" onclick="submitManualDraft()" {% if undeclared_orders|length == 0 %}disabled class="min-h-[44px] px-5 py-2.5 bg-slate-700 text-slate-400 rounded-xl font-bold opacity-60 cursor-not-allowed flex items-center gap-2"{% else %}class="min-h-[44px] px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold flex items-center gap-2 transition"{% endif %}>
+                <span id="manual-draft-spinner" class="hidden">
+                    <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </span>
+                <span id="manual-draft-text">Bəyannamə Qaralamasını Tərtib Et</span>
+            </button>
         </div>
     </div>
 </div>
@@ -169,46 +222,111 @@
 <script>
     function openManualModal() {
         document.getElementById('manual-modal').classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
     }
     function closeManualModal() {
         document.getElementById('manual-modal').classList.add('hidden');
     }
+
+    function handleCustomsSyncSubmit(e) {
+        const btn = document.getElementById('customs-sync-btn');
+        const icon = document.getElementById('sync-icon');
+        const text = document.getElementById('sync-btn-text');
+        if (btn) btn.disabled = true;
+        if (icon) icon.classList.add('animate-spin');
+        if (text) text.innerText = 'Sinxronlaşdırılır...';
+    }
+
     function submitManualDraft() {
         const orderId = document.getElementById('modal-order-select').value;
+        const btn = document.getElementById('manual-draft-submit-btn');
+        const spinner = document.getElementById('manual-draft-spinner');
+        const text = document.getElementById('manual-draft-text');
+
         if (!orderId) {
-            showToast('Zəhmət olmasa sifariş seçin!', 'error');
+            if (typeof showToast === 'function') {
+                showToast('Zəhmət olmasa sifariş seçin!', 'error');
+            }
             return;
         }
+
+        if (btn) btn.disabled = true;
+        if (spinner) spinner.classList.remove('hidden');
+        if (text) text.innerText = 'Qaralama Tərtib Edilir...';
+
         fetch(`/customs/draft/${orderId}`, { method: 'POST' })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    showToast('Bəyannamə qaralaması uğurla tərtib edildi!', 'success');
-                    setTimeout(() => window.location.reload(), 1500);
+                    if (typeof showToast === 'function') {
+                        showToast('Bəyannamə qaralaması uğurla tərtib edildi!', 'success');
+                    }
+                    setTimeout(() => window.location.reload(), 1200);
                 } else {
-                    showToast('Xəta: ' + data.error, 'error');
+                    if (typeof showToast === 'function') {
+                        showToast('Xəta: ' + data.error, 'error');
+                    }
+                    if (btn) btn.disabled = false;
+                    if (spinner) spinner.classList.add('hidden');
+                    if (text) text.innerText = 'Bəyannamə Qaralamasını Tərtib Et';
                 }
             })
             .catch(err => {
-                showToast('Şəbəkə xətası: ' + err, 'error');
+                if (typeof showToast === 'function') {
+                    showToast('Serverlə əlaqə qurulmadı. Zəhmət olmasa internet bağlantınızı və ya server statusunu yoxlayın.', 'error');
+                }
+                if (btn) btn.disabled = false;
+                if (spinner) spinner.classList.add('hidden');
+                if (text) text.innerText = 'Bəyannamə Qaralamasını Tərtib Et';
             });
     }
 
-    function submitOfficial(orderId) {
+    function submitOfficial(orderId, btnElement) {
         if (!confirm('Bəyannamə kommersiya invoysu ilə birlikdə rəsmi olaraq SmartCustoms-a göndərilsin?')) return;
-        showToast('Bəyannamə və PDF invoys göndərilir...', 'info');
+        
+        let origContent = '';
+        if (btnElement) {
+            origContent = btnElement.innerHTML;
+            btnElement.disabled = true;
+            btnElement.innerHTML = `
+                <svg class="animate-spin w-3.5 h-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Göndərilir...</span>
+            `;
+        }
+
+        if (typeof showToast === 'function') {
+            showToast('Bəyannamə və PDF invoys göndərilir...', 'info');
+        }
+
         fetch(`/customs/submit/${orderId}`, { method: 'POST' })
             .then(res => res.json())
             .then(data => {
                 if (data.ok) {
-                    showToast(data.message || 'Bəyannamə uğurla göndərildi!', 'success');
-                    setTimeout(() => window.location.reload(), 1500);
+                    if (typeof showToast === 'function') {
+                        showToast(data.message || 'Bəyannamə uğurla göndərildi!', 'success');
+                    }
+                    setTimeout(() => window.location.reload(), 1200);
                 } else {
-                    showToast('Xəta: ' + (data.error || 'Uğursuz oldu'), 'error');
+                    if (typeof showToast === 'function') {
+                        showToast('Xəta: ' + (data.error || 'Uğursuz oldu'), 'error');
+                    }
+                    if (btnElement) {
+                        btnElement.disabled = false;
+                        btnElement.innerHTML = origContent;
+                    }
                 }
             })
             .catch(err => {
-                showToast('Şəbəkə xətası: ' + err, 'error');
+                if (typeof showToast === 'function') {
+                    showToast('SmartCustoms portalı ilə əlaqə qurulmadı. Zəhmət olmasa internet və ya token statusunu yoxlayın.', 'error');
+                }
+                if (btnElement) {
+                    btnElement.disabled = false;
+                    btnElement.innerHTML = origContent;
+                }
             });
     }
 </script>

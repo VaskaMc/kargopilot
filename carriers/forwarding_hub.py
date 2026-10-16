@@ -116,10 +116,20 @@ def generate_minimal_invoice_pdf(
 
     ]
 
+    def _sanitize_pdf_text(t: str) -> str:
+        rep = {
+            'ə': 'e', 'Ə': 'E', 'ç': 'c', 'Ç': 'C', 'ş': 's', 'Ş': 'S',
+            'ğ': 'g', 'Ğ': 'G', 'ı': 'i', 'İ': 'I', 'ö': 'o', 'Ö': 'O',
+            'ü': 'u', 'Ü': 'U', '—': '-', '–': '-', '‘': "'", '’': "'",
+            '“': '"', '”': '"', '₼': 'AZN', '…': '...'
+        }
+        for k, v in rep.items():
+            t = t.replace(k, v)
+        t = t.replace('\\', '\\\\').replace('(', '\\(').replace(')', '\\)')
+        return ''.join(c if 32 <= ord(c) <= 126 else '?' for c in t)
+
     body_stream = "BT /F1 11 Tf 40 760 Td 16 TL " + " ".join(
-
-        f"({line.replace('(', '[').replace(')', ']')}) Tj T*" for line in text_lines
-
+        f"({_sanitize_pdf_text(line)}) Tj T*" for line in text_lines
     ) + " ET"
 
     pdf_bytes = (

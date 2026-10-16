@@ -101,13 +101,23 @@
             message: 'Server tapıldı və bağlantı uğurludur! (Cavab müddəti: ' + latencyMs + ' ms)'
           };
         } else {
+          var errDetail = '';
+          if (res.status === 404) {
+            errDetail = 'Server tapıldı, lakin tələb olunan "/health" endpoint-i aşkar edilmədi. Zəhmət olmasa KargoPilot API ünvanını dəqiqləşdirin.';
+          } else if (res.status === 401 || res.status === 403) {
+            errDetail = 'Giriş məhdudlaşdırılıb (HTTP ' + res.status + '). API token və ya CORS icazələrini yoxlayın.';
+          } else if (res.status >= 500) {
+            errDetail = 'Server daxili xəta bildirdi (HTTP ' + res.status + '). Server loqlarını ("docker logs") nəzərdən keçirin.';
+          } else {
+            errDetail = 'Server ' + res.status + ' cavabı qaytardı. Zəhmət olmasa endpoint ünvanını və şəbəkə konfiqurasiyasını yoxlayın.';
+          }
           return {
             ok: false,
             status: 'error',
             httpCode: res.status,
             latencyMs: latencyMs,
             url: rawUrl,
-            message: 'Server ' + res.status + ' cavabı qaytardı. Zəhmət olmasa endpoint ünvanını yoxlayın.'
+            message: errDetail
           };
         }
       } catch (err) {
@@ -117,8 +127,8 @@
           status: 'offline',
           url: rawUrl,
           message: isAbort
-            ? 'Serverlə əlaqə zamanı gözləmə vaxtı aşımı (timeout). Serverin açıq olduğundan və portun əlçatanlığından əmin olun.'
-            : 'Serverə qoşulmaq mümkün olmadı. Serverin işlək olduğundan (məs: docker ps), ünvanın düzgünlüyündən və CORS icazələrindən əmin olun.'
+            ? 'Serverlə əlaqə zamanı gözləmə vaxtı aşımı (4.5s timeout). Serverin aktiv iş rejimində olduğunu və 48481 portunun əlçatanlığını yoxlayın.'
+            : 'Serverə qoşulmaq mümkün olmadı. Narahat olmayın, məlumatlarınız qorunur. Ehtimal olunan səbəblər: 1) Yerli Docker xidməti işləmir ("docker ps" ilə yoxlayın); 2) Veb səhifə HTTPS üzərindədirsə, brauzer yerli HTTP bağlantısını (Mixed Content) bloklayır; 3) Firewall 48481 portunu bağlayır.'
         };
       }
     },
@@ -165,19 +175,23 @@
       var badges = document.querySelectorAll('[data-kp-connection-badge]');
 
       badges.forEach(function (el) {
+        el.setAttribute('role', 'status');
+        el.setAttribute('aria-live', 'polite');
         if (mode === 'cloud') {
+          el.setAttribute('aria-label', 'Server bağlantı statusu: Bulud Serveri aktivdir');
           el.innerHTML =
-            '<span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>' +
+            '<span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" aria-hidden="true"></span>' +
             '<span class="font-bold text-cyan-300">☁️ Bulud Serveri</span>' +
-            '<span class="text-slate-400">·</span>' +
+            '<span class="text-slate-400" aria-hidden="true">·</span>' +
             '<span class="text-slate-200">Rəsmi (7/24)</span>';
           el.className = el.className.replace(/border-[a-z0-9\/-]+/g, '') + ' border-cyan-500/30 bg-cyan-950/40';
         } else {
           var cleanHost = baseUrl.replace(/^https?:\/\//, '');
+          el.setAttribute('aria-label', 'Server bağlantı statusu: Öz Serverim (' + cleanHost + ') aktivdir');
           el.innerHTML =
-            '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' +
+            '<span class="w-2 h-2 rounded-full bg-emerald-400" aria-hidden="true"></span>' +
             '<span class="font-bold text-emerald-300">🖥️ Öz Serverim</span>' +
-            '<span class="text-slate-400">·</span>' +
+            '<span class="text-slate-400" aria-hidden="true">·</span>' +
             '<span class="text-slate-200 truncate max-w-[120px]">' + cleanHost + '</span>';
           el.className = el.className.replace(/border-[a-z0-9\/-]+/g, '') + ' border-emerald-500/30 bg-emerald-950/40';
         }

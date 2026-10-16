@@ -69,7 +69,7 @@
 
             <!-- Value USD / AZN -->
             <td class="py-4 px-4 font-mono">
-              <div class="font-bold {% if it.declared_usd >= 250 %}text-amber-400 text-sm{% else %}text-white{% endif %} tabular-nums">
+              <div class="font-bold {% if it.declared_usd > 290 %}text-rose-400 text-sm font-extrabold{% elif it.declared_usd >= 250 %}text-amber-400 text-sm{% else %}text-white{% endif %} tabular-nums">
                 ${{ "%.2f"|format(it.declared_usd) }}
               </div>
               <div class="text-[11px] text-slate-400 tabular-nums">
@@ -114,10 +114,10 @@
             <!-- Actions -->
             <td class="py-4 px-4 text-right">
               <div class="flex items-center justify-end gap-1.5">
-                <button onclick="openHsModal('{{ it.tracking }}', '{{ it.hs_code }}', '{{ it.product_title | replace('\'', '\\\'') }}')" class="px-2.5 py-1 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-[11px] font-mono transition">
+                <button onclick="openHsModal('{{ it.tracking }}', '{{ it.hs_code }}', '{{ it.product_title | replace('\'', '\\\'') }}')" class="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-mono font-medium min-h-[32px] transition">
                   Kodu Dəyiş
                 </button>
-                <button onclick="approveCustomsItem('{{ it.tracking }}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-mono transition">
+                <button onclick="approveCustomsItem('{{ it.tracking }}')" class="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-medium min-h-[32px] transition">
                   Təsdiq
                 </button>
               </div>
@@ -131,20 +131,20 @@
 </div>
 
 <!-- Manual HS Code & Category Override Modal -->
-<div id="hsModal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+<div id="hsModal" onclick="if(event.target === this) closeHsModal()" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="hsModalTitle">
   <div class="bg-[#111827] border border-white/10 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl animate-fade-in">
     <div class="flex items-center justify-between border-b border-white/10 pb-4">
       <div>
-        <h3 class="text-base font-bold text-white">HS Kodu & Təsnifat Dəyişikliyi</h3>
+        <h3 id="hsModalTitle" class="text-base font-bold text-white">HS Kodu & Təsnifat Dəyişikliyi</h3>
         <p id="modalTracking" class="text-xs text-cyan-400 font-mono"></p>
       </div>
-      <button onclick="closeHsModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+      <button type="button" onclick="closeHsModal()" aria-label="Pəncərəni bağla" class="text-slate-400 hover:text-white text-sm">✕</button>
     </div>
 
     <div class="space-y-4 text-xs">
       <div>
         <label class="block text-slate-400 font-mono mb-1">Məhsulun Əsl Adı:</label>
-        <div id="modalProduct" class="p-2.5 bg-black/40 rounded-xl border border-white/10 text-slate-200"></div>
+        <div id="customsProductDetails" class="p-2.5 bg-black/40 rounded-xl border border-white/10 text-slate-200"></div>
       </div>
 
       <div>
@@ -175,7 +175,7 @@ let currentTracking = '';
 function openHsModal(tracking, hsCode, product) {
   currentTracking = tracking;
   document.getElementById('modalTracking').textContent = 'Bağlama: ' + tracking;
-  document.getElementById('modalProduct').textContent = product;
+  document.getElementById('customsProductDetails').textContent = product;
   document.getElementById('modalHsCode').value = hsCode;
   document.getElementById('modalJustification').value = '';
   document.getElementById('hsModal').classList.remove('hidden');
@@ -184,6 +184,12 @@ function openHsModal(tracking, hsCode, product) {
 function closeHsModal() {
   document.getElementById('hsModal').classList.add('hidden');
 }
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeHsModal();
+  }
+});
 
 async function submitHsOverride() {
   const hs = document.getElementById('modalHsCode').value.trim();

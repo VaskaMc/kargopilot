@@ -146,10 +146,30 @@ def render_invoice_html(data: Dict[str, Any]) -> str:
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print {{
-            body {{ -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff !important; }}
+            body {{
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background: #fff !important;
+                color: #000 !important;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }}
             .no-print {{ display: none !important; }}
+            .invoice-sheet {{
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+            }}
             .page-break {{ page-break-after: always; }}
-            @page {{ size: A4; margin: 15mm; }}
+            .avoid-break {{ break-inside: avoid; page-break-inside: avoid; }}
+            tr {{ break-inside: avoid; page-break-inside: avoid; }}
+            thead {{ display: table-header-group; }}
+            @page {{ size: A4 portrait; margin: 12mm 15mm; }}
         }}
     </style>
 </head>
@@ -171,9 +191,9 @@ def render_invoice_html(data: Dict[str, Any]) -> str:
     </div>
 
     <!-- INVOICE SHEET (A4) -->
-    <div class="max-w-4xl mx-auto bg-white p-10 rounded-xl shadow-lg border border-gray-200">
+    <div class="invoice-sheet max-w-4xl mx-auto bg-white p-10 rounded-xl shadow-lg border border-gray-200">
         <!-- HEADER -->
-        <div class="flex justify-between items-start border-b-2 border-gray-900 pb-6">
+        <div class="flex justify-between items-start border-b-2 border-gray-900 pb-6 avoid-break">
             <div>
                 <div class="flex items-center gap-2">
                     <span class="px-2.5 py-0.5 rounded text-xs font-bold tracking-wider uppercase bg-blue-100 text-blue-800">AR Dövlət Gömrük Komitəsi Standartı</span>
@@ -190,7 +210,7 @@ def render_invoice_html(data: Dict[str, Any]) -> str:
         </div>
 
         <!-- PARTIES SECTION -->
-        <div class="grid grid-cols-2 gap-8 my-6 text-sm">
+        <div class="grid grid-cols-2 gap-8 my-6 text-sm avoid-break">
             <!-- SELLER -->
             <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Göndərən / Shipper / Exporter:</div>
@@ -211,7 +231,7 @@ def render_invoice_html(data: Dict[str, Any]) -> str:
         </div>
 
         <!-- SHIPMENT LOGISTICS INFO -->
-        <div class="grid grid-cols-4 gap-3 mb-6 bg-gray-50 p-3.5 rounded-lg border border-gray-200 text-xs">
+        <div class="grid grid-cols-4 gap-3 mb-6 bg-gray-50 p-3.5 rounded-lg border border-gray-200 text-xs avoid-break">
             <div>
                 <span class="text-gray-500 block">Sifariş Nömrəsi:</span>
                 <span class="font-bold text-gray-900 font-mono text-xs">{data['order_ref']}</span>
@@ -250,7 +270,7 @@ def render_invoice_html(data: Dict[str, Any]) -> str:
         </div>
 
         <!-- SUMMARY & TOTALS -->
-        <div class="flex justify-between items-start pt-2 border-t border-gray-200">
+        <div class="flex justify-between items-start pt-2 border-t border-gray-200 avoid-break">
             <div class="max-w-md text-xs text-gray-500 space-y-1.5">
                 <p class="font-semibold text-gray-700">Rəsmi Bəyannamə Qeydi:</p>
                 <p>Yuxarıda qeyd olunan mallar sırf fərdi (şəxsi) istifadə üçün nəzərdə tutulmuşdur və kommersiya məqsədi daşımır. AR Nazirlər Kabinetinin 305 saylı Qərarına uyğun olaraq fiziki şəxsin 300 ABŞ dolları rüsumsuz limiti çərçivəsində bəyan edilir.</p>
@@ -277,11 +297,18 @@ def render_invoice_html(data: Dict[str, Any]) -> str:
         </div>
 
         <!-- STAMP & SIGNATURE FOOTER -->
-        <div class="mt-12 pt-6 border-t border-gray-200 flex justify-between items-end text-xs text-gray-500">
-            <div>
-                <p class="font-semibold text-gray-800">Elektron Təsdiq:</p>
-                <p class="mt-0.5">Sənəd Personal Customs System (PCS) tərəfindən avtomatlaşdırılmış qaydada tərtib olunmuşdur.</p>
-                <p class="font-mono text-[10px] text-gray-400 mt-1">Hash: SHA256:{data['invoice_number']}-VERIFIED-DGK</p>
+        <div class="mt-12 pt-6 border-t border-gray-200 flex justify-between items-end text-xs text-gray-500 avoid-break">
+            <div class="space-y-2">
+                <div class="inline-flex items-center gap-2 border-2 border-emerald-600/60 bg-emerald-50 px-3 py-1.5 rounded-lg text-emerald-900 font-mono text-[11px] font-bold">
+                    <span>🛡️</span>
+                    <span>AR DGK SMARTCUSTOMS TƏSDİQLİ</span>
+                    <span class="text-emerald-700 text-[10px]">VERIFIED</span>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-800">Elektron Təsdiq:</p>
+                    <p class="mt-0.5">Sənəd Personal Customs System (PCS) tərəfindən avtomatlaşdırılmış qaydada tərtib olunmuşdur.</p>
+                    <p class="font-mono text-[10px] text-gray-400 mt-0.5">Hash: SHA256:{data['invoice_number']}-VERIFIED-DGK</p>
+                </div>
             </div>
             <div class="text-right">
                 <div class="border-b border-gray-400 w-48 mb-1"></div>

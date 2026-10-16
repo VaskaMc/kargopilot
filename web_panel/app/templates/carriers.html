@@ -15,11 +15,11 @@
             </p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-            <button type="button" onclick="triggerCarrierSync()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-100 flex items-center gap-2 border border-slate-700">
-                <i data-lucide="refresh-cw" class="w-4 h-4 text-sky-400"></i>
-                <span>Kargoları Sinxronlaşdır</span>
+            <button type="button" id="carrier-sync-btn" onclick="triggerCarrierSync()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-100 flex items-center justify-center gap-2 border border-slate-700 transition">
+                <i data-lucide="refresh-cw" id="carrier-sync-icon" class="w-4 h-4 text-sky-400"></i>
+                <span id="carrier-sync-text">Kargoları Sinxronlaşdır</span>
             </button>
-            <button type="button" onclick="openPredeclareModal()" class="px-4 py-2.5 rounded-xl bg-indigo-600 text-xs font-bold flex items-center gap-2">
+            <button type="button" onclick="openPredeclareModal()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-indigo-600 text-xs font-bold flex items-center justify-center gap-2 transition">
                 <i data-lucide="file-plus-2" class="w-4 h-4"></i>
                 <span>1-Kliklə Ön Bəyan</span>
             </button>
@@ -61,7 +61,7 @@
                 <!-- Carrier Select -->
                 <div>
                     <label for="addr-carrier" class="block text-[11px] font-bold uppercase text-slate-400 mb-1">Daşıyıcı</label>
-                    <select id="addr-carrier" onchange="loadFormattedAddress()" class="bg-slate-950 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-400">
+                    <select id="addr-carrier" onchange="loadFormattedAddress()" class="min-h-[44px] bg-slate-950 border border-slate-700 text-slate-100 text-base sm:text-xs font-semibold rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-indigo-400">
                         <option value="STAREX" selected>STAREX (ST026090)</option>
                         <option value="CAMEX">CAMEX (CAM-44810)</option>
                         <option value="DYNAMEX">DYNAMEX (DYN-77120)</option>
@@ -71,7 +71,7 @@
                 <!-- Branch Select -->
                 <div>
                     <label for="addr-branch" class="block text-[11px] font-bold uppercase text-slate-400 mb-1">Bakı Təhvil Filialı</label>
-                    <select id="addr-branch" onchange="loadFormattedAddress()" class="bg-slate-950 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-400">
+                    <select id="addr-branch" onchange="loadFormattedAddress()" class="min-h-[44px] bg-slate-950 border border-slate-700 text-slate-100 text-base sm:text-xs font-semibold rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-indigo-400">
                         <option value="28 May" selected>28 May Filialı</option>
                         <option value="Gənclik">Gənclik Filialı</option>
                         <option value="Əhmədli">Əhmədli Filialı</option>
@@ -83,11 +83,11 @@
                 <!-- Target Platform -->
                 <div>
                     <span class="block text-[11px] font-bold uppercase text-slate-400 mb-1">Hədəf Platforma</span>
-                    <div class="inline-flex rounded-lg bg-slate-950 p-1 border border-slate-800 gap-1">
-                        <button type="button" onclick="setPlatform('trendyol', 'TR')" id="btn-plat-trendyol" class="px-3 py-1.5 text-xs font-bold rounded-md bg-indigo-600">TR · Trendyol</button>
-                        <button type="button" onclick="setPlatform('taobao', 'CN')" id="btn-plat-taobao" class="px-3 py-1.5 text-xs font-bold rounded-md text-slate-300 hover:text-white">CN · Taobao</button>
-                        <button type="button" onclick="setPlatform('temu', 'CN')" id="btn-plat-temu" class="px-3 py-1.5 text-xs font-bold rounded-md text-slate-300 hover:text-white">Temu</button>
-                        <button type="button" onclick="setPlatform('amazon', 'US')" id="btn-plat-amazon" class="px-3 py-1.5 text-xs font-bold rounded-md text-slate-300 hover:text-white">US · Amazon</button>
+                    <div class="inline-flex flex-wrap rounded-xl bg-slate-950 p-1 border border-slate-800 gap-1" role="tablist" aria-label="Hədəf Platforma">
+                        <button type="button" role="tab" aria-selected="true" onclick="setPlatform('trendyol', 'TR')" id="btn-plat-trendyol" class="min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg bg-indigo-600 inline-flex items-center justify-center transition">TR · Trendyol</button>
+                        <button type="button" role="tab" aria-selected="false" onclick="setPlatform('taobao', 'CN')" id="btn-plat-taobao" class="min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg text-slate-300 hover:text-white inline-flex items-center justify-center transition">CN · Taobao</button>
+                        <button type="button" role="tab" aria-selected="false" onclick="setPlatform('temu', 'CN')" id="btn-plat-temu" class="min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg text-slate-300 hover:text-white inline-flex items-center justify-center transition">Temu</button>
+                        <button type="button" role="tab" aria-selected="false" onclick="setPlatform('amazon', 'US')" id="btn-plat-amazon" class="min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg text-slate-300 hover:text-white inline-flex items-center justify-center transition">US · Amazon</button>
                     </div>
                 </div>
             </div>
@@ -95,7 +95,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left: Individual Field Breakdown -->
-            <div class="lg:col-span-2 space-y-3" id="address-fields-container">
+            <div class="lg:col-span-2 space-y-3" id="address-fields-container" aria-live="polite">
                 <div class="text-xs text-slate-400">Ünvan sahələri yüklənir...</div>
             </div>
 
@@ -109,7 +109,7 @@
                     <pre id="addr-full-block" class="text-xs font-mono text-slate-200 bg-slate-900 border border-slate-800 rounded-lg p-3.5 whitespace-pre-wrap select-all leading-relaxed"></pre>
                 </div>
                 <div class="mt-4 pt-3 border-t border-slate-800">
-                    <button type="button" onclick="copyFullBlock()" id="btn-copy-all" class="w-full py-2.5 px-4 rounded-lg bg-indigo-600 font-bold text-xs flex items-center justify-center gap-2">
+                    <button type="button" onclick="copyFullBlock()" id="btn-copy-all" class="min-h-[44px] w-full py-2.5 px-4 rounded-xl bg-indigo-600 font-bold text-xs flex items-center justify-center gap-2 transition">
                         <i data-lucide="clipboard-check" class="w-4 h-4"></i>
                         <span>Bütün Ünvanı Kopyala</span>
                     </button>
@@ -139,11 +139,11 @@
                 <a id="kp-bookmarklet-link"
                    href="javascript:(function(){fetch('http://127.0.0.1:48481/carriers/api/address?carrier=STAREX&country=TR&platform=trendyol').then(r=>r.json()).then(d=>{navigator.clipboard.writeText(d.full_text_block);alert('KargoPilot Autofill: '+d.carrier+' ('+d.customer_code+') ünvanı buferə kopyalandı və form xanalarına uyğunlaşdırıldı!');});})();"
                    onclick="event.preventDefault(); copyBookmarkletSnippet();"
-                   class="px-4 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-700 text-xs font-extrabold text-indigo-400 flex items-center gap-2 cursor-grab">
+                   class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-700 text-xs font-extrabold text-indigo-400 flex items-center justify-center gap-2 cursor-grab transition">
                     <i data-lucide="bookmark-plus" class="w-4 h-4 text-indigo-400"></i>
                     <span>⚡ KargoPilot Autofill (Əlfəcinə Sürüşdür)</span>
                 </a>
-                <button type="button" onclick="copyBookmarkletSnippet()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-100 flex items-center gap-2">
+                <button type="button" onclick="copyBookmarkletSnippet()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-100 flex items-center justify-center gap-2 border border-slate-700 transition">
                     <i data-lucide="code-2" class="w-4 h-4 text-sky-400"></i>
                     <span>Autofill Skriptini Kopyala</span>
                 </button>
@@ -170,15 +170,15 @@
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <!-- Country Filter -->
-                <div class="inline-flex rounded-lg bg-slate-950 p-1 border border-slate-800 gap-1">
-                    <button type="button" onclick="setTariffCountry('TR')" id="tbtn-tr" class="px-3 py-1.5 text-xs font-bold rounded-md bg-indigo-600">TR · Türkiyə</button>
-                    <button type="button" onclick="setTariffCountry('CN')" id="tbtn-cn" class="px-3 py-1.5 text-xs font-bold rounded-md text-slate-300 hover:text-white">CN · Çin</button>
-                    <button type="button" onclick="setTariffCountry('US')" id="tbtn-us" class="px-3 py-1.5 text-xs font-bold rounded-md text-slate-300 hover:text-white">US · ABŞ</button>
-                    <button type="button" onclick="setTariffCountry('DE')" id="tbtn-de" class="px-3 py-1.5 text-xs font-bold rounded-md text-slate-300 hover:text-white">DE · Almaniya</button>
+                <div class="inline-flex flex-wrap rounded-xl bg-slate-950 p-1 border border-slate-800 gap-1" role="tablist" aria-label="Tarif ölkəsi">
+                    <button type="button" role="tab" aria-selected="true" onclick="setTariffCountry('TR')" id="tbtn-tr" class="min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg bg-indigo-600 inline-flex items-center justify-center transition">TR · Türkiyə</button>
+                    <button type="button" role="tab" aria-selected="false" onclick="setTariffCountry('CN')" id="tbtn-cn" class="min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg text-slate-300 hover:text-white inline-flex items-center justify-center transition">CN · Çin</button>
+                    <button type="button" role="tab" aria-selected="false" onclick="setTariffCountry('US')" id="tbtn-us" class="min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg text-slate-300 hover:text-white inline-flex items-center justify-center transition">US · ABŞ</button>
+                    <button type="button" role="tab" aria-selected="false" onclick="setTariffCountry('DE')" id="tbtn-de" class="min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg text-slate-300 hover:text-white inline-flex items-center justify-center transition">DE · Almaniya</button>
                 </div>
                 <!-- Liquid Checkbox -->
-                <label class="flex items-center gap-2 text-xs font-semibold text-slate-200 cursor-pointer bg-slate-950 px-3.5 py-2 rounded-lg border border-slate-800">
-                    <input type="checkbox" id="tariff-liquid" onchange="loadTariffComparison()" class="rounded bg-slate-900 border-slate-700 accent-[#dafa9c]">
+                <label for="tariff-liquid" class="min-h-[44px] flex items-center gap-2.5 text-xs font-semibold text-slate-200 cursor-pointer bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+                    <input type="checkbox" id="tariff-liquid" onchange="loadTariffComparison()" class="w-4 h-4 rounded bg-slate-900 border-slate-700 accent-[#dafa9c]">
                     <span>Maye / Kosmetika Tarifi</span>
                 </label>
             </div>
@@ -190,13 +190,13 @@
                 <label for="tariff-weight-num" class="text-xs font-bold uppercase text-slate-300">Bağlamanın Çəkisi (kq):</label>
                 <div class="flex items-center gap-2">
                     <input type="number" id="tariff-weight-num" min="0.05" max="30" step="0.05" value="0.50" oninput="syncWeightFromNum(this.value)"
-                           class="w-24 bg-slate-900 border border-slate-700 text-white font-mono font-bold text-sm rounded-lg px-2.5 py-1 text-right focus:outline-none focus:border-indigo-400">
+                           class="w-28 min-h-[44px] bg-slate-900 border border-slate-700 text-white font-mono font-bold text-base sm:text-sm rounded-xl px-3 py-2 text-right focus:outline-none focus:border-indigo-400">
                     <span class="text-sm font-extrabold text-indigo-400 font-mono">kq</span>
                 </div>
             </div>
             <input type="range" id="tariff-weight-slider" min="0.05" max="10" step="0.05" value="0.50" oninput="syncWeightFromSlider(this.value)"
                    aria-label="Bağlamanın çəkisi slayderi"
-                   class="w-full accent-[#dafa9c] h-2 bg-slate-800 rounded-lg cursor-pointer">
+                   class="w-full accent-[#dafa9c] h-3 bg-slate-800 rounded-lg cursor-pointer">
             <div class="flex justify-between text-[11px] font-mono text-slate-400 mt-2">
                 <span>0.05 kq (Zərf)</span>
                 <span>1.00 kq</span>
@@ -206,9 +206,18 @@
             </div>
         </div>
 
+        <!-- Mobile Horizontal Scroll Indicator Banner -->
+        <div class="lg:hidden px-4 py-2 bg-slate-950/90 border border-slate-800/80 rounded-t-xl flex items-center justify-between text-xs text-slate-400 mb-[-1px]">
+            <span class="flex items-center gap-1.5 font-medium">
+                <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>Tarif cədvəlini üfüqi sürüşdürün</span>
+            </span>
+            <span class="text-[11px] text-slate-400 font-mono">← sağa/sola →</span>
+        </div>
+
         <!-- Comparison Table -->
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
+        <div class="overflow-x-auto relative">
+            <table class="w-full text-left border-collapse text-xs min-w-[680px]">
                 <thead>
                     <tr class="bg-slate-950 text-slate-400 font-bold uppercase border-b border-slate-800">
                         <th scope="col" class="py-3.5 px-4">Daşıyıcı</th>
@@ -219,7 +228,7 @@
                         <th scope="col" class="py-3.5 px-4 text-right">Səmərəlilik Durumu</th>
                     </tr>
                 </thead>
-                <tbody id="tariff-quotes-tbody" class="divide-y divide-slate-800/60">
+                <tbody id="tariff-quotes-tbody" class="divide-y divide-slate-800/60" aria-live="polite">
                     <tr><td colspan="6" class="py-6 text-center text-slate-400">Tariflər hesablanır...</td></tr>
                 </tbody>
             </table>
@@ -238,12 +247,22 @@
                     Daxili Mağaza Tracking ➔ Beynəlxalq AWB (STRAZ / LMX / CAM / DYN) ➔ SmartCustoms №
                 </span>
             </div>
-            <span class="text-xs font-mono font-bold text-emerald-400 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg">
+            <span class="text-xs font-mono font-bold text-emerald-400 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg self-start sm:self-auto">
                 Canlı Bazada: {{ shipments_count }} bağlama
             </span>
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
+
+        <!-- Mobile Horizontal Scroll Indicator Banner -->
+        <div class="lg:hidden px-4 py-2 bg-slate-950/90 border-b border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+            <span class="flex items-center gap-1.5 font-medium">
+                <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>İzləmə cədvəlini üfüqi sürüşdürün</span>
+            </span>
+            <span class="text-[11px] text-slate-400 font-mono">← sağa/sola →</span>
+        </div>
+
+        <div class="overflow-x-auto relative">
+            <table class="w-full text-left border-collapse text-xs min-w-[760px]">
                 <thead>
                     <tr class="bg-slate-950 text-slate-400 font-bold uppercase border-b border-slate-800">
                         <th scope="col" class="py-3.5 px-4">Sifariş &amp; Platforma</th>
@@ -255,7 +274,7 @@
                         <th scope="col" class="py-3.5 px-4 text-center">İnvoys PDF</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800/70">
+                <tbody class="divide-y divide-slate-800/70 font-sans">
                     {{ shipment_rows_html | safe }}
                 </tbody>
             </table>
@@ -266,56 +285,64 @@
 
 <!-- MODAL 1: CARRIER ACCOUNT / COOKIE TOKEN MODAL -->
 <div id="token-modal" class="fixed inset-0 z-50 bg-slate-950/85 flex items-center justify-center p-4 hidden" role="dialog" aria-modal="true" aria-labelledby="token-modal-title">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 max-h-[92vh] overflow-y-auto">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
             <h3 id="token-modal-title" class="text-base font-extrabold text-white flex items-center gap-2">
                 <i data-lucide="key" class="w-4 h-4 text-indigo-400"></i>
                 <span>Daşıyıcı Hesabı və Kuki/Token Konfiqurasiyası</span>
             </h3>
-            <button type="button" onclick="closeTokenModal()" aria-label="Pəncərəni bağla" class="p-2 text-slate-400 hover:text-white text-sm font-bold min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-slate-800">✕</button>
+            <button type="button" onclick="closeTokenModal()" aria-label="Pəncərəni bağla" class="p-2.5 text-slate-400 hover:text-white text-base font-bold min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-800 transition">✕</button>
         </div>
-        <div class="space-y-3 text-xs">
+        <div class="space-y-3.5 text-xs">
             <div>
-                <label for="modal-carrier" class="block font-bold text-slate-300 mb-1">Daşıyıcı Adı</label>
-                <input id="modal-carrier" type="text" readonly class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono font-bold">
+                <label for="modal-carrier" class="block font-bold text-slate-300 mb-1.5">Daşıyıcı Adı</label>
+                <input id="modal-carrier" type="text" readonly class="w-full min-h-[44px] bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white font-mono font-bold text-base sm:text-xs">
             </div>
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                    <label for="modal-cust-id" class="block font-bold text-slate-300 mb-1">Müştəri Kodu / Suite ID</label>
-                    <input id="modal-cust-id" type="text" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono font-bold">
+                    <label for="modal-cust-id" class="block font-bold text-slate-300 mb-1.5">Müştəri Kodu / Suite ID</label>
+                    <input id="modal-cust-id" type="text" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-mono font-bold text-base sm:text-xs focus:outline-none focus:border-indigo-400">
                 </div>
                 <div>
-                    <label for="modal-branch" class="block font-bold text-slate-300 mb-1">Bakı Təhvil Filialı</label>
-                    <input id="modal-branch" type="text" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-semibold">
+                    <label for="modal-branch" class="block font-bold text-slate-300 mb-1.5">Bakı Təhvil Filialı</label>
+                    <input id="modal-branch" type="text" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-semibold text-base sm:text-xs focus:outline-none focus:border-indigo-400">
                 </div>
             </div>
             <div>
-                <label for="modal-token" class="block font-bold text-slate-300 mb-1">Auth Token / JWT / PHPSESSID / _identity</label>
-                <textarea id="modal-token" rows="4" placeholder="Kuki mətni və ya Bearer JWT yapışdırın..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono text-xs"></textarea>
+                <label for="modal-token" class="block font-bold text-slate-300 mb-1.5">Auth Token / JWT / PHPSESSID / _identity</label>
+                <textarea id="modal-token" rows="4" placeholder="Kuki mətni və ya Bearer JWT yapışdırın..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-mono text-base sm:text-xs placeholder-slate-400 focus:outline-none focus:border-indigo-400"></textarea>
                 <p class="text-[11px] text-slate-400 mt-1">Starex üçün Bearer token, Camex üçün PHPSESSID, Dynamex üçün _identity-frontend.</p>
             </div>
         </div>
-        <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-800">
-            <button type="button" onclick="closeTokenModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200">İmtina</button>
-            <button type="button" onclick="submitTokenUpdate()" class="px-4 py-2 rounded-lg bg-indigo-600 text-xs font-bold">Yadda Saxla</button>
+        <div class="flex flex-wrap justify-end gap-3 pt-3 border-t border-slate-800">
+            <button type="button" onclick="closeTokenModal()" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition">İmtina</button>
+            <button type="button" id="modal-token-submit-btn" onclick="submitTokenUpdate()" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white flex items-center justify-center gap-2 transition">
+                <span id="modal-token-spinner" class="hidden">
+                    <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </span>
+                <span id="modal-token-btn-text">Yadda Saxla</span>
+            </button>
         </div>
     </div>
 </div>
 
 <!-- MODAL 2: 1-CLICK PRE-DECLARATION MODAL (WIRES TO POST /carriers/pre-declare) -->
 <div id="predeclare-modal" class="fixed inset-0 z-50 bg-slate-950/85 flex items-center justify-center p-4 hidden" role="dialog" aria-modal="true" aria-labelledby="predeclare-modal-title">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-4 max-h-[92vh] overflow-y-auto">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
             <h3 id="predeclare-modal-title" class="text-base font-extrabold text-white flex items-center gap-2">
                 <i data-lucide="file-plus-2" class="w-4 h-4 text-indigo-400"></i>
                 <span>1-Kliklə Kargo Ön Bəyan və Avtomatik PDF İnvoys</span>
             </h3>
-            <button type="button" onclick="closePredeclareModal()" aria-label="Pəncərəni bağla" class="p-2 text-slate-400 hover:text-white text-sm font-bold min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-slate-800">✕</button>
+            <button type="button" onclick="closePredeclareModal()" aria-label="Pəncərəni bağla" class="p-2.5 text-slate-400 hover:text-white text-base font-bold min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-800 transition">✕</button>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
             <div>
-                <label for="pd-carrier" class="block font-bold text-slate-300 mb-1">Kargo Daşıyıcısı</label>
-                <select id="pd-carrier" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-bold">
+                <label for="pd-carrier" class="block font-bold text-slate-300 mb-1.5">Kargo Daşıyıcısı</label>
+                <select id="pd-carrier" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-bold text-base sm:text-xs focus:outline-none focus:border-indigo-400">
                     <option value="STAREX">STAREX</option>
                     <option value="LIMAK">LIMAK</option>
                     <option value="CAMEX">CAMEX</option>
@@ -323,8 +350,8 @@
                 </select>
             </div>
             <div>
-                <label for="pd-platform" class="block font-bold text-slate-300 mb-1">Ticarət Platforması</label>
-                <select id="pd-platform" onchange="syncPredeclareCountry(this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-bold">
+                <label for="pd-platform" class="block font-bold text-slate-300 mb-1.5">Ticarət Platforması</label>
+                <select id="pd-platform" onchange="syncPredeclareCountry(this.value)" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-bold text-base sm:text-xs focus:outline-none focus:border-indigo-400">
                     <option value="Trendyol" selected>Trendyol (Türkiyə)</option>
                     <option value="Taobao">Taobao / 1688 (Çin)</option>
                     <option value="Temu">Temu</option>
@@ -332,20 +359,20 @@
                 </select>
             </div>
             <div>
-                <label for="pd-order-ref" class="block font-bold text-slate-300 mb-1">Sifariş Kodu (Order Ref)</label>
-                <input id="pd-order-ref" type="text" placeholder="Məs: TY-94820144" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono font-bold">
+                <label for="pd-order-ref" class="block font-bold text-slate-300 mb-1.5">Sifariş Kodu (Order Ref)</label>
+                <input id="pd-order-ref" type="text" placeholder="Məs: TY-94820144" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-mono font-bold text-base sm:text-xs placeholder-slate-400 focus:outline-none focus:border-indigo-400">
             </div>
             <div>
-                <label for="pd-tracking" class="block font-bold text-slate-300 mb-1">Daxili Tracking Kodu</label>
-                <input id="pd-tracking" type="text" placeholder="Məs: 73491028491" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono font-bold">
+                <label for="pd-tracking" class="block font-bold text-slate-300 mb-1.5">Daxili Tracking Kodu</label>
+                <input id="pd-tracking" type="text" placeholder="Məs: 73491028491" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-mono font-bold text-base sm:text-xs placeholder-slate-400 focus:outline-none focus:border-indigo-400">
             </div>
             <div>
-                <label for="pd-seller" class="block font-bold text-slate-300 mb-1">Mağaza / Satıcı Adı</label>
-                <input id="pd-seller" type="text" value="Trendyol Resmi Mağaza" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-semibold">
+                <label for="pd-seller" class="block font-bold text-slate-300 mb-1.5">Mağaza / Satıcı Adı</label>
+                <input id="pd-seller" type="text" value="Trendyol Rəsmi Mağaza" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-semibold text-base sm:text-xs focus:outline-none focus:border-indigo-400">
             </div>
             <div>
-                <label for="pd-branch" class="block font-bold text-slate-300 mb-1">Təhvil Filialı</label>
-                <select id="pd-branch" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-semibold">
+                <label for="pd-branch" class="block font-bold text-slate-300 mb-1.5">Təhvil Filialı</label>
+                <select id="pd-branch" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-semibold text-base sm:text-xs focus:outline-none focus:border-indigo-400">
                     <option value="28 May" selected>28 May</option>
                     <option value="Gənclik">Gənclik</option>
                     <option value="Əhmədli">Əhmədli</option>
@@ -353,27 +380,33 @@
                 </select>
             </div>
             <div class="sm:col-span-2">
-                <label for="pd-title" class="block font-bold text-slate-300 mb-1">Məhsul Təsviri (DGK Gömrük Bəyannaməsi üçün)</label>
-                <input id="pd-title" type="text" placeholder="Məs: Kişi idman ayaqqabısı və tekstil dəsti" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-semibold">
+                <label for="pd-title" class="block font-bold text-slate-300 mb-1.5">Məhsul Təsviri (DGK Gömrük Bəyannaməsi üçün)</label>
+                <input id="pd-title" type="text" placeholder="Məs: Kişi idman ayaqqabısı və tekstil dəsti" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-semibold text-base sm:text-xs placeholder-slate-400 focus:outline-none focus:border-indigo-400">
             </div>
             <div>
-                <label for="pd-amount" class="block font-bold text-slate-300 mb-1">İnvoys Məbləği</label>
-                <input id="pd-amount" type="number" step="0.01" min="1" value="1450.00" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono font-bold">
+                <label for="pd-amount" class="block font-bold text-slate-300 mb-1.5">İnvoys Məbləği</label>
+                <input id="pd-amount" type="number" step="0.01" min="1" value="1450.00" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-mono font-bold text-base sm:text-xs focus:outline-none focus:border-indigo-400">
             </div>
             <div>
-                <label for="pd-currency" class="block font-bold text-slate-300 mb-1">Valyuta</label>
-                <select id="pd-currency" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono font-bold">
+                <label for="pd-currency" class="block font-bold text-slate-300 mb-1.5">Valyuta</label>
+                <select id="pd-currency" class="w-full min-h-[44px] bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-mono font-bold text-base sm:text-xs focus:outline-none focus:border-indigo-400">
                     <option value="TRY" selected>TRY (Türk Lirəsi)</option>
                     <option value="CNY">CNY (Çin Yuanı)</option>
                     <option value="USD">USD (ABŞ Dolları)</option>
                 </select>
             </div>
         </div>
-        <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-800">
-            <button type="button" onclick="closePredeclareModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200">Bağla</button>
-            <button type="button" onclick="submitPredeclare()" class="px-4 py-2 rounded-lg bg-indigo-600 text-xs font-bold flex items-center gap-1.5">
-                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-                <span>Ön Bəyan Et &amp; PDF Yarat</span>
+        <div class="flex flex-wrap justify-end gap-3 pt-3 border-t border-slate-800">
+            <button type="button" onclick="closePredeclareModal()" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition">Bağla</button>
+            <button type="button" id="pd-submit-btn" onclick="submitPredeclare()" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white flex items-center justify-center gap-2 transition">
+                <span id="pd-submit-spinner" class="hidden">
+                    <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </span>
+                <i data-lucide="check-circle-2" id="pd-submit-icon" class="w-4 h-4"></i>
+                <span id="pd-submit-text">Ön Bəyan Et &amp; PDF Yarat</span>
             </button>
         </div>
     </div>
@@ -402,18 +435,13 @@
     function setPlatform(plat, country) {
         currentPlatform = plat;
         currentOriginCountry = country;
-        const mapLabels = {
-            trendyol: 'TR · Trendyol',
-            taobao: 'CN · Taobao',
-            temu: 'Temu',
-            amazon: 'US · Amazon'
-        };
         ['trendyol', 'taobao', 'temu', 'amazon'].forEach(p => {
             const b = document.getElementById(`btn-plat-${p}`);
             if (b) {
+                b.setAttribute('aria-selected', p === plat ? 'true' : 'false');
                 b.className = (p === plat)
-                    ? "px-3 py-1.5 text-xs font-bold rounded-md bg-indigo-600"
-                    : "px-3 py-1.5 text-xs font-bold rounded-md text-slate-300 hover:text-white";
+                    ? "min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg bg-indigo-600 inline-flex items-center justify-center transition"
+                    : "min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg text-slate-300 hover:text-white inline-flex items-center justify-center transition";
             }
         });
         loadFormattedAddress();
@@ -428,6 +456,28 @@
 
         summaryTag.innerText = `${carrier} · ${currentOriginCountry} ➔ ${branch}`;
 
+        // Loading skeleton for address fields
+        container.innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 animate-pulse" role="status" aria-label="Ünvan sahələri yüklənir">
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                    <div class="h-3 bg-slate-800 rounded w-1/3"></div>
+                    <div class="h-4 bg-slate-800/80 rounded w-2/3"></div>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                    <div class="h-3 bg-slate-800 rounded w-1/4"></div>
+                    <div class="h-4 bg-slate-800/80 rounded w-3/4"></div>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                    <div class="h-3 bg-slate-800 rounded w-1/3"></div>
+                    <div class="h-4 bg-slate-800/80 rounded w-1/2"></div>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                    <div class="h-3 bg-slate-800 rounded w-1/4"></div>
+                    <div class="h-4 bg-slate-800/80 rounded w-2/3"></div>
+                </div>
+            </div>
+        `;
+
         try {
             const res = await fetch(`/carriers/api/address?carrier=${carrier}&country=${currentOriginCountry}&platform=${currentPlatform}&branch=${encodeURIComponent(branch)}`);
             if (!res.ok) throw new Error("Ünvan əldə edilmədi");
@@ -440,13 +490,13 @@
                 const safeVal = String(f.value).replace(/'/g, "\\'");
                 const safeLbl = String(f.label).replace(/'/g, "\\'");
                 html += `
-                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between hover:border-slate-700">
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between hover:border-slate-700 transition">
                         <div class="overflow-hidden pr-2">
                             <div class="text-[11px] font-semibold text-slate-400">${f.label}</div>
                             <div class="text-xs font-mono font-bold text-white truncate select-all mt-0.5">${f.value}</div>
                         </div>
-                        <button type="button" onclick="copyText('${safeVal}', '${safeLbl}')"
-                                class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-mono font-bold text-indigo-400 shrink-0">
+                        <button type="button" onclick="copyText('${safeVal}', '${safeLbl}')" aria-label="${safeLbl} kopyala"
+                                class="min-h-[44px] min-w-[44px] px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-mono font-bold text-indigo-400 shrink-0 inline-flex items-center justify-center transition border border-slate-700">
                             Kopyala
                         </button>
                     </div>
@@ -455,7 +505,7 @@
             html += '</div>';
             container.innerHTML = html;
         } catch (err) {
-            container.innerHTML = `<div class="text-xs text-rose-400">Ünvan yüklənərkən xəta baş verdi: ${err.message}</div>`;
+            container.innerHTML = `<div class="p-4 bg-rose-950/30 border border-rose-800/50 rounded-xl text-xs text-rose-400 font-semibold">Ünvan yüklənərkən xəta baş verdi: ${err.message}</div>`;
         }
     }
 
@@ -472,9 +522,10 @@
         ['tr', 'cn', 'us', 'de'].forEach(c => {
             const b = document.getElementById(`tbtn-${c}`);
             if (b) {
+                b.setAttribute('aria-selected', c.toUpperCase() === cntry ? 'true' : 'false');
                 b.className = (c.toUpperCase() === cntry)
-                    ? "px-3 py-1.5 text-xs font-bold rounded-md bg-indigo-600"
-                    : "px-3 py-1.5 text-xs font-bold rounded-md text-slate-300 hover:text-white";
+                    ? "min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg bg-indigo-600 inline-flex items-center justify-center transition"
+                    : "min-h-[44px] px-3.5 py-2 text-xs font-bold rounded-lg text-slate-300 hover:text-white inline-flex items-center justify-center transition";
             }
         });
         loadTariffComparison();
@@ -495,27 +546,57 @@
         const isLiquid = document.getElementById('tariff-liquid').checked;
         const tbody = document.getElementById('tariff-quotes-tbody');
 
+        // Shimmer skeleton rows during calculation
+        tbody.innerHTML = `
+            <tr class="animate-pulse">
+                <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-20"></div></td>
+                <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-16"></div></td>
+                <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-16"></div></td>
+                <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-24"></div></td>
+                <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-14"></div></td>
+                <td class="py-4 px-4 text-right"><div class="h-6 bg-slate-800 rounded w-24 ml-auto"></div></td>
+            </tr>
+            <tr class="animate-pulse">
+                <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-20"></div></td>
+                <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-16"></div></td>
+                <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-16"></div></td>
+                <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-24"></div></td>
+                <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-14"></div></td>
+                <td class="py-4 px-4 text-right"><div class="h-6 bg-slate-800 rounded w-24 ml-auto"></div></td>
+            </tr>
+        `;
+
         try {
             const res = await fetch(`/carriers/api/tariffs?country=${currentTariffCountry}&weight=${weight}&is_liquid=${isLiquid}`);
-            if (!res.ok) throw new Error("Tarif tapılmadı");
+            if (!res.ok) throw new Error("Tarif məlumatları əldə edilə bilmədi");
             const data = await res.json();
             const quotes = data.quotes || [];
 
             if (quotes.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400">Bu istiqamət üzrə aktiv daşıyıcı tarifi yoxdur.</td></tr>`;
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-10 text-center">
+                            <div class="max-w-xs mx-auto space-y-2">
+                                <i data-lucide="package-x" class="w-7 h-7 text-slate-400 mx-auto"></i>
+                                <div class="text-xs text-slate-400 font-medium">Bu istiqamət və çəki üzrə aktiv daşıyıcı tarifi tapılmadı.</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                if (window.lucide) lucide.createIcons();
                 return;
             }
 
             let rows = '';
             quotes.forEach(q => {
                 const badge = q.is_cheapest
-                    ? `<span class="px-2.5 py-1 rounded-md text-[11px] font-extrabold bg-indigo-600">★ ƏN SƏRFƏLİ SEÇİM</span>`
+                    ? `<span class="px-3 py-1.5 rounded-lg text-[11px] font-extrabold bg-indigo-600 inline-block shadow-sm">★ ƏN SƏRFƏLİ SEÇİM</span>`
                     : `<span class="text-xs text-slate-300 font-mono font-bold">+${q.savings_vs_max_azn.toFixed(2)} ₼ fərq</span>`;
 
                 const rowBg = q.is_cheapest ? "bg-slate-950/90 font-bold" : "hover:bg-slate-800/40";
 
                 rows += `
-                    <tr class="${rowBg}">
+                    <tr class="${rowBg} transition">
                         <td class="py-3.5 px-4 font-extrabold text-white">${q.carrier}</td>
                         <td class="py-3.5 px-4 font-mono font-bold text-indigo-400">$${q.delivery_fee_usd.toFixed(2)} USD</td>
                         <td class="py-3.5 px-4 font-mono font-extrabold text-white">${q.delivery_fee_azn.toFixed(2)} ₼</td>
@@ -526,8 +607,9 @@
                 `;
             });
             tbody.innerHTML = rows;
+            if (window.lucide) lucide.createIcons();
         } catch (err) {
-            tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-rose-400">${err.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-rose-400 font-medium text-xs">${err.message}</td></tr>`;
         }
     }
 
@@ -537,6 +619,7 @@
         document.getElementById('modal-cust-id').value = custId;
         document.getElementById('modal-branch').value = branch;
         document.getElementById('token-modal').classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
     }
 
     function closeTokenModal() {
@@ -548,6 +631,13 @@
         const custId = document.getElementById('modal-cust-id').value;
         const branch = document.getElementById('modal-branch').value;
         const token = document.getElementById('modal-token').value;
+        const btn = document.getElementById('modal-token-submit-btn');
+        const spinner = document.getElementById('modal-token-spinner');
+        const btnText = document.getElementById('modal-token-btn-text');
+
+        if (btn) btn.disabled = true;
+        if (spinner) spinner.classList.remove('hidden');
+        if (btnText) btnText.innerText = 'Saxlanılır...';
 
         try {
             const res = await fetch('/carriers/accounts', {
@@ -561,14 +651,26 @@
                 })
             });
             if (res.ok) {
-                showToast(`${carrier} hesabı yeniləndi!`);
+                if (typeof showToast === 'function') {
+                    showToast(`${carrier} hesabı yeniləndi!`);
+                }
                 closeTokenModal();
-                setTimeout(() => location.reload(), 800);
+                setTimeout(() => location.reload(), 700);
             } else {
-                showToast("Xəta baş verdi", "error");
+                if (typeof showToast === 'function') {
+                    showToast("Hesab məlumatlarını yeniləmək mümkün olmadı. Zəhmət olmasa internet bağlantısını və daxil edilən tokeni yoxlayın.", "error");
+                }
+                if (btn) btn.disabled = false;
+                if (spinner) spinner.classList.add('hidden');
+                if (btnText) btnText.innerText = 'Yadda Saxla';
             }
         } catch (e) {
-            showToast("Şəbəkə xətası", "error");
+            if (typeof showToast === 'function') {
+                showToast("Şəbəkə bağlantısı kəsildi. Zəhmət olmasa bağlantını yoxlayıb yenidən cəhd edin.", "error");
+            }
+            if (btn) btn.disabled = false;
+            if (spinner) spinner.classList.add('hidden');
+            if (btnText) btnText.innerText = 'Yadda Saxla';
         }
     }
 
@@ -583,6 +685,7 @@
             trkInput.value = '734' + Math.floor(10000000 + Math.random() * 90000000);
         }
         document.getElementById('predeclare-modal').classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
     }
 
     function closePredeclareModal() {
@@ -594,7 +697,7 @@
         const sellerEl = document.getElementById('pd-seller');
         if (plat === 'Trendyol') {
             curEl.value = 'TRY';
-            sellerEl.value = 'Trendyol Resmi Mağaza';
+            sellerEl.value = 'Trendyol Rəsmi Mağaza';
         } else if (plat === 'Taobao') {
             curEl.value = 'CNY';
             sellerEl.value = 'Taobao Flagship Store';
@@ -621,6 +724,16 @@
             branch_id: document.getElementById('pd-branch').value,
         };
 
+        const btn = document.getElementById('pd-submit-btn');
+        const spinner = document.getElementById('pd-submit-spinner');
+        const icon = document.getElementById('pd-submit-icon');
+        const text = document.getElementById('pd-submit-text');
+
+        if (btn) btn.disabled = true;
+        if (spinner) spinner.classList.remove('hidden');
+        if (icon) icon.classList.add('hidden');
+        if (text) text.innerText = 'Ön Bəyan Edilir...';
+
         try {
             const res = await fetch('/carriers/pre-declare', {
                 method: 'POST',
@@ -628,27 +741,58 @@
                 body: JSON.stringify(payload)
             });
             if (res.ok) {
-                showToast('Ön bəyannamə və PDF invoys yaradıldı!');
+                if (typeof showToast === 'function') {
+                    showToast('Ön bəyannamə və PDF invoys yaradıldı!');
+                }
                 closePredeclareModal();
-                setTimeout(() => location.reload(), 900);
+                setTimeout(() => location.reload(), 800);
             } else {
                 const err = await res.json().catch(() => ({}));
-                showToast('Xəta: ' + (err.detail || 'Ön bəyan edilə bilmədi'), 'error');
+                if (typeof showToast === 'function') {
+                    showToast('Ön bəyan zamanı xəta: ' + (err.detail || 'Məlumatları yoxlayıb yenidən cəhd edin.'), 'error');
+                }
+                if (btn) btn.disabled = false;
+                if (spinner) spinner.classList.add('hidden');
+                if (icon) icon.classList.remove('hidden');
+                if (text) text.innerText = 'Ön Bəyan Et & PDF Yarat';
             }
         } catch (e) {
-            showToast('Şəbəkə xətası', 'error');
+            if (typeof showToast === 'function') {
+                showToast('Şəbəkə xətası: Serverlə əlaqə qurula bilmədi. Zəhmət olmasa internet bağlantınızı yoxlayın.', 'error');
+            }
+            if (btn) btn.disabled = false;
+            if (spinner) spinner.classList.add('hidden');
+            if (icon) icon.classList.remove('hidden');
+            if (text) text.innerText = 'Ön Bəyan Et & PDF Yarat';
         }
     }
 
     async function triggerCarrierSync() {
-        showToast("4-Kargo sinxronlaşdırılması başladı...");
+        const btn = document.getElementById('carrier-sync-btn');
+        const icon = document.getElementById('carrier-sync-icon');
+        const text = document.getElementById('carrier-sync-text');
+
+        if (btn) btn.disabled = true;
+        if (icon) icon.classList.add('animate-spin');
+        if (text) text.innerText = 'Sinxronlaşdırılır...';
+        if (typeof showToast === 'function') {
+            showToast("4-Kargo sinxronlaşdırılması başladı...");
+        }
+
         try {
             const res = await fetch('/carriers/sync', {method: 'POST'});
             const data = await res.json();
-            showToast(`Tamamlandı: ${data.updated_shipments || 0} bağlama yeniləndi`);
-            setTimeout(() => location.reload(), 1000);
+            if (typeof showToast === 'function') {
+                showToast(`Tamamlandı: ${data.updated_shipments || 0} bağlama yeniləndi`);
+            }
+            setTimeout(() => location.reload(), 900);
         } catch (e) {
-            showToast("Sinxronlaşdırma xətası", "error");
+            if (typeof showToast === 'function') {
+                showToast("Sinxronlaşdırma xətası: Daşıyıcı serverləri ilə əlaqə yaradılarkən xəta baş verdi. Zəhmət olmasa bir az sonra yenidən cəhd edin.", "error");
+            }
+            if (btn) btn.disabled = false;
+            if (icon) icon.classList.remove('animate-spin');
+            if (text) text.innerText = 'Kargoları Sinxronlaşdır';
         }
     }
 

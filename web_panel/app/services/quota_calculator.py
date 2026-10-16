@@ -60,20 +60,20 @@ def calculate_monthly_quota(target_year: int = None, target_month: int = None, t
     remaining_azn = round(remaining_usd * USD_AZN_RATE, 2)
     percentage = min(100.0, round((used_usd / limit_usd) * 100, 1))
 
-    # Risk level determination
-    if used_usd >= limit_usd:
+    # Risk level determination compliant with audit spec: green < $250, yellow $250-$290, red > $290
+    if used_usd > 290.0:
         risk_level = "danger"
-        risk_label = "Limiti Aşıb (Gömrük Rüsümu Tətbiq Olunur)"
+        risk_label = "Kritik Hədd (> $290 USD - Gömrük Rüsümu Riski)"
         color_class = "text-rose-500"
         bg_bar_class = "bg-rose-500"
-    elif used_usd >= 225.0:  # 75%
+    elif used_usd >= 250.0:
         risk_level = "warning"
-        risk_label = "Xəbərdarlıq (Limitə Yaxınlaşır)"
+        risk_label = "Xəbərdarlıq ($250 - $290 USD - Limitə Yaxınlaşır)"
         color_class = "text-amber-500"
         bg_bar_class = "bg-amber-500"
     else:
         risk_level = "safe"
-        risk_label = "Təhlükəsiz (Rüsumsuz Zolaq)"
+        risk_label = "Təhlükəsiz (< $250 USD - Rüsumsuz Zolaq)"
         color_class = "text-emerald-500"
         bg_bar_class = "bg-emerald-500"
 
