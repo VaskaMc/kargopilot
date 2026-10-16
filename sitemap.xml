@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://vaskamc.github.io/kargopilot/</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://vaskamc.github.io/kargopilot/assets/og-image.jpg</image:loc>
+      <image:title>KargoPilot v4.0 — Sərhədsiz E-Ticarət, Gömrük və Kargo Kopilotu</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://vaskamc.github.io/kargopilot/assets/logo.jpg</image:loc>
+      <image:title>KargoPilot Korporativ Loqo (Infinity Parcel &amp; Jet)</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://vaskamc.github.io/kargopilot/assets/ai-engine.jpg</image:loc>
+      <image:title>Loyd AI Quantum 'K' Node Mühərriki</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://vaskamc.github.io/kargopilot/llms.txt</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

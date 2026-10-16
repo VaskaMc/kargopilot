@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# AI & LLM Documentation Discovery
+# Standard: https://llmstxt.org/
+Allow: /llms.txt
+
+Sitemap: https://vaskamc.github.io/kargopilot/sitemap.xml

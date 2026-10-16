@@ -1,0 +1,33 @@
+# KargoPilot (PCS v4.0)
+
+> KargoPilot — Azərbaycan üzrə sərhədsiz e-ticarət (Temu, Trendyol, Taobao, Amazon), SmartCustoms $300 aylıq gömrük kvota mühafizəsi və 4 daşıyıcı (Starex, Limak, Camex, Dynamex) tarif optimizasiyası üçün açıq mənbəli, özəl serverdə (self-hosted) çalışan avtonom logistika və gömrük kopilotu.
+
+## Sistem Haqqında Xülasə
+
+KargoPilot şəxsi bağlamaların xarici anbarlardan (Türkiyə, Çin, ABŞ) Bakı filiallarınadək hərəkətini izləyir, Mərkəzi Bank (CBAR) məzənnələri ilə aylıq $300 gömrük kvotasını hesablayır və Loyd WhatsApp AI vasitəsilə ani bildirişlər göndərir. Sistem tamamilə istifadəçinin öz serverində (`127.0.0.1:48481`) SSH tunel arxasında çalışır və üçüncü tərəf bulud xidmətlərinə FİN kod və ya şəxsi məlumat ötürmür.
+
+## Əsas Modullar və İmkanlar
+
+- **Canlı 4-Kargo & Gömrük Kalkulyatoru**: Çəki (kq), həcmi ölçülər (`E × U × H / 6000`), göndəriş ölkəsi (`TR`, `CN`, `US`) və invoys dəyərinə əsasən Starex, Limak, Camex və Dynamex tariflərini müqayisə edir.
+- **DGK $300 Gömrük Kvota Mühafizəsi (QuotaGuard)**: Azərbaycan Respublikası Nazirlər Kabinetinin 305 nömrəli Qərarına əsasən təqvim ayı ərzində $300 USD güzəştli limiti izləyir. Limit aşımı zamanı 15% gömrük rüsumu + 18% ƏDV + 15 AZN elektron rəsmiləşdirmə haqqını dəqiq hesablayır.
+- **Loyd WhatsApp AI Kopilotu (Quantum 'K' Node)**: Baileys multi-device sessiyası üzərindən çalışan lokal köməkçi.
+  - `!hesabla [çəki] [tr|cn|us]`: 4 kargo şirkəti üzrə ən sərfəli tarifi qaytarır.
+  - `!kvota`: Cari ay üzrə SmartCustoms bəyannamələrini və qalıq $300 limitini göstərir.
+  - `!unvan [starex|limak|camex|dynamex] [tr|cn|us]`: Xarici anbar ünvanını və suite kodunu kopyalanmağa hazır formatda göndərir.
+  - `!kargo [izləmə_kodu]`: Bağlamanın xarici anbar, reys, gömrük və Bakı filial statusunu yoxlayır.
+  - **Azercell / Bakcell / Nar IMEI Rüsum Hesablayıcısı**: Xaricdən gətirilən mobil cihazların bazar dəyərinə görə dövlət qeydiyyat rüsumunu hesablayır.
+- **1-Klik Xarici Anbar Autofill Mühərriki**: Trendyol (İl, İlçe, Mahalle, Vergi No) və Taobao/1688 (广东省, 广州市, 邮政编码) ödəniş formalarını tək kliklə doldurur.
+- **Sıfır Açıq Port Təhlükəsizlik Arxitekturası**: İdarəetmə paneli yalnız `127.0.0.1:48481` interfeysində dinləyir və SSH tunel (`ssh -L 48481:127.0.0.1:48481`) ilə açılır. SQLite (`WAL` rejimi) verilənlər bazası saatlıq və günlük avtomatik ehtiyat nüsxələmə (`pcs-backup.timer`) ilə qorunur.
+
+## Rəsmi Keçidlər
+
+- [KargoPilot Vebsayt və Canlı Kalkulyator](https://vaskamc.github.io/kargopilot/): İnteraktiv 4-kargo tarif müqayisəsi, gömrük rüsumu simulyatoru və Loyd AI terminalı.
+- [GitHub Repozitoriyası](https://github.com/VaskaMc/kargopilot): Açıq mənbəli kod bazası, quraşdırma təlimatı və memarlıq sənədləri.
+- [Sistem Xəritəsi (Sitemap)](https://vaskamc.github.io/kargopilot/sitemap.xml): XML sayt xəritəsi.
+
+## Texniki Yığın (Tech Stack)
+
+- **Backend**: Python 3.12, FastAPI, SQLAlchemy 2.0, SQLite (`PRAGMA journal_mode=WAL`), APScheduler, Playwright.
+- **WhatsApp Sidecar**: Node.js, `@whiskeysockets/baileys`, локал HTTP körpüsü (`127.0.0.1:3100`).
+- **Frontend**: Semantik HTML5, CSS Grid (`Schibsted Grotesk` tipoqrafiya), Vanilla ES2024 JavaScript, Google Tag Manager (Consent Mode v2 + SHA-256 Enhanced Conversions).
+- **Lisenziya**: MIT License (Açıq Mənbə).

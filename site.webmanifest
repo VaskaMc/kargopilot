@@ -1,0 +1,34 @@
+{
+  "name": "KargoPilot v4.0 — Gömrük və Kargo Kopilotu",
+  "short_name": "KargoPilot",
+  "description": "Azərbaycan üzrə sərhədsiz e-ticarət, SmartCustoms $300 kvota mühafizəsi və 4 daşıyıcı tarif optimizasiyası.",
+  "start_url": "/kargopilot/",
+  "scope": "/kargopilot/",
+  "display": "standalone",
+  "background_color": "#0b0f14",
+  "theme_color": "#0b0f14",
+  "lang": "az",
+  "icons": [
+    {
+      "src": "assets/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/favicon-64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo-icon.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

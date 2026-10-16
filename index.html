@@ -3,14 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KargoPilot · Sərhədsiz Kargo və Gömrük Otopilotu</title>
-  <meta name="description" content="Azərbaycan üçün açıq mənbəli transsərhəd e-ticarət, 4 kargo tarifi müqayisəsi, SmartCustoms bəyannamə hazırlığı və Loyd WhatsApp mühərriki.">
+  <title>KargoPilot · Sərhədsiz Kargo və Gömrük Otopilotu (PCS v4.0)</title>
+  <meta name="description" content="Azərbaycan üçün açıq mənbəli transsərhəd e-ticarət, 4 kargo tarifi müqayisəsi (Starex, Limak, Camex, Dynamex), SmartCustoms 300 USD kvota mühafizəsi və Loyd WhatsApp AI mühərriki.">
+  <meta name="author" content="KargoPilot Architecture Team">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <meta name="theme-color" content="#0b0f14">
+
+  <!-- Canonical & AI/LLM Discovery -->
+  <link rel="canonical" href="https://vaskamc.github.io/kargopilot/">
+  <link rel="alternate" hreflang="az" href="https://vaskamc.github.io/kargopilot/">
+  <link rel="alternate" hreflang="x-default" href="https://vaskamc.github.io/kargopilot/">
+  <link rel="alternate" type="text/plain" title="LLM Documentation (llms.txt)" href="llms.txt">
+  <link rel="manifest" href="site.webmanifest">
+
+  <!-- Favicons & Apple Touch Icon -->
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="shortcut icon" href="assets/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="preload" as="image" href="assets/logo-icon.png" fetchpriority="high">
+
+  <!-- Open Graph (Facebook, WhatsApp, Telegram, LinkedIn) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="KargoPilot">
+  <meta property="og:locale" content="az_AZ">
+  <meta property="og:url" content="https://vaskamc.github.io/kargopilot/">
+  <meta property="og:title" content="KargoPilot v4.0 · Sərhədsiz Kargo və Gömrük Otopilotu">
+  <meta property="og:description" content="Temu, Trendyol, Taobao və Amazon sifarişləri üçün 4-kargo tarif müqayisəsi, DGK 300 USD aylıq kvota mühafizəsi və Loyd WhatsApp AI mühərriki.">
+  <meta property="og:image" content="https://vaskamc.github.io/kargopilot/assets/og-image.jpg">
+  <meta property="og:image:secure_url" content="https://vaskamc.github.io/kargopilot/assets/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="KargoPilot v4.0 · 4-Kargo Tarif Müqayisəsi, SmartCustoms $300 Kvota Mühafizəsi və Loyd WhatsApp AI">
+
+  <!-- Twitter / X Large Summary Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://vaskamc.github.io/kargopilot/">
+  <meta name="twitter:title" content="KargoPilot v4.0 · Sərhədsiz Kargo və Gömrük Otopilotu">
+  <meta name="twitter:description" content="Azərbaycan üçün açıq mənbəli 4-kargo tarif müqayisəsi, SmartCustoms $300 kvota mühafizəsi və Loyd WhatsApp AI mühərriki.">
+  <meta name="twitter:image" content="https://vaskamc.github.io/kargopilot/assets/og-image.jpg">
+  <meta name="twitter:image:alt" content="KargoPilot v4.0 · Sərhədsiz Kargo və Gömrük Otopilotu">
+
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Google Consent Mode v2 + Attribution Persistence + GTM Container -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+
+    (function initConsentAndAttribution() {
+      var savedConsent = null;
+      try { savedConsent = JSON.parse(localStorage.getItem('kp_consent_v2')); } catch (e) {}
+      var granted = savedConsent && savedConsent.mode === 'granted';
+      gtag('consent', 'default', {
+        'ad_storage': granted ? 'granted' : 'denied',
+        'analytics_storage': granted ? 'granted' : 'denied',
+        'ad_user_data': granted ? 'granted' : 'denied',
+        'ad_personalization': granted ? 'granted' : 'denied',
+        'functionality_storage': 'granted',
+        'security_storage': 'granted',
+        'wait_for_update': 500
+      });
+      gtag('set', 'ads_data_redaction', !granted);
+      gtag('set', 'url_passthrough', true);
+
+      // Capture & persist UTM / Click IDs (gclid, fbclid, ttclid, utm_*) across cached/extension URLs
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'ttclid', 'msclkid'];
+        var captured = {};
+        var hasAny = false;
+        for (var i = 0; i < keys.length; i++) {
+          var k = keys[i];
+          if (params.get(k)) {
+            captured[k] = params.get(k);
+            hasAny = true;
+          }
+        }
+        if (hasAny) {
+          captured.timestamp = new Date().toISOString();
+          captured.landing_page = window.location.pathname + window.location.search;
+          if (!localStorage.getItem('kp_utm_first')) {
+            localStorage.setItem('kp_utm_first', JSON.stringify(captured));
+          }
+          localStorage.setItem('kp_utm_last', JSON.stringify(captured));
+        }
+      } catch (e) {}
+
+      var gtmId = (new URLSearchParams(window.location.search)).get('gtm_id') || window.KP_GTM_ID || 'GTM-KARGOPILOT';
+      window.KP_ACTIVE_GTM_ID = gtmId;
+      window.dataLayer.push({
+        'gtm.start': new Date().getTime(),
+        'event': 'gtm.js',
+        'kp_version': '4.0.0',
+        'kp_surface': 'public_web',
+        'kp_gtm_container': gtmId
+      });
+    })();
+  </script>
+  <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-KARGOPILOT"></script>
+
+  <!-- Schema.org Structured Data (@graph: Organization, WebSite, SoftwareApplication, FAQPage) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://vaskamc.github.io/kargopilot/#organization",
+        "name": "KargoPilot",
+        "url": "https://vaskamc.github.io/kargopilot/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://vaskamc.github.io/kargopilot/assets/logo.jpg",
+          "width": 1024,
+          "height": 1024
+        },
+        "sameAs": [
+          "https://github.com/VaskaMc/kargopilot"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://vaskamc.github.io/kargopilot/#website",
+        "url": "https://vaskamc.github.io/kargopilot/",
+        "name": "KargoPilot v4.0 · Sərhədsiz Kargo və Gömrük Otopilotu",
+        "inLanguage": "az-AZ",
+        "publisher": {
+          "@id": "https://vaskamc.github.io/kargopilot/#organization"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://vaskamc.github.io/kargopilot/#software",
+        "name": "KargoPilot (PCS v4.0)",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Linux, Windows, macOS",
+        "softwareVersion": "4.0.0",
+        "license": "https://opensource.org/licenses/MIT",
+        "url": "https://vaskamc.github.io/kargopilot/",
+        "image": "https://vaskamc.github.io/kargopilot/assets/og-image.jpg",
+        "description": "Azərbaycan üzrə sərhədsiz e-ticarət (Temu, Trendyol, Taobao, Amazon), 4-kargo tarif müqayisəsi (Starex, Limak, Camex, Dynamex), SmartCustoms 300 USD aylıq kvota mühafizəsi və Loyd WhatsApp AI mühərriki.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "featureList": [
+          "Starex, Limak, Camex və Dynamex canlı tarif kalkulyatoru",
+          "DGK SmartCustoms 300 USD aylıq kvota və gömrük rüsumu hesablayıcısı",
+          "Loyd WhatsApp AI Copilot (Baileys v6 + OCR qiymət arbitrajı)",
+          "Trendyol və Taobao 1-klik xarici anbar ünvanı autofill",
+          "127.0.0.1:48481 SSH tunel üzərindən tam məxfi lokal idarəetmə"
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://vaskamc.github.io/kargopilot/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "SmartCustoms 300 USD aylıq gömrük limiti necə hesablanır?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Azərbaycan Respublikası Nazirlər Kabinetinin 305 nömrəli Qərarına əsasən, təqvim ayı ərzində fiziki şəxslərin idxal etdiyi bağlamaların məhsul invoys dəyəri və kargo daşıma haqqının cəmi 300 ABŞ dollarını keçmədikdə gömrük rüsumundan azaddır. 300 USD-ni aşan hissəyə 36% vahid rüsum (15% rüsum + 18% ƏDV ekvivalenti) və 15 AZN rəsmiləşdirmə haqqı tətbiq edilir."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "KargoPilot şəxsi FİN kodumu və ya mağaza parollarımı xarici serverə göndərirmi?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Xeyr. KargoPilot tamamilə öz serverinizdə (self-hosted) çalışır. Bütün məlumatlar yalnız lokal SQLite (WAL) bazasında saxlanılır və Veb İdarəetmə Paneli yalnız 127.0.0.1:48481 ünvanında SSH tunel vasitəsilə açılır."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Starex, Limak, Camex və Dynamex arasında ən sərfəli daşıyıcı necə seçilir?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "KargoPilot bağlamanın fiziki çəkisini, həcm ölçülərini (E×U×H/6000), mənşə ölkəsini (Türkiyə, Çin, ABŞ) və məhsul kateqoriyasını (standart və ya maye/batareyalı) təhlil edərək hər 4 daşıyıcının rəsmi tarif şkalasını saniyəlik müqayisə edir."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Loyd WhatsApp AI mühərriki hansı əmrləri dəstəkləyir?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Loyd mühərriki WhatsApp üzərindən !arbitraj (ekran görüntüsü ilə 4 bazar qiymət müqayisəsi), !unvan (1-klik xarici anbar rekvizitləri), !kargo (canlı bağlama və SmartCustoms bəyannamə statusu) və !tehvil (Bakı filial QR təhvil kartı) əmrlərini icra edir."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
   <style>
     :root {
       --bg-soot: #0b0f14;
@@ -750,10 +942,161 @@
       gap: 20px;
     }
 
+    /* Skip to Content Link (Accessibility) */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 24px;
+      background-color: var(--accent-lime);
+      color: var(--ink-dark);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      z-index: 200;
+    }
+
+    .skip-link:focus-visible {
+      top: 16px;
+    }
+
+    /* Section 5.5: FAQ Accordion */
+    .faq-section {
+      background-color: var(--bg-soot);
+      padding: 88px 0 24px;
+    }
+
+    .faq-layout {
+      display: grid;
+      grid-template-columns: 4fr 8fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    details.faq-item {
+      background-color: var(--bg-slate);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+
+    details.faq-item summary {
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--ink-light);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    details.faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-indicator {
+      color: var(--accent-lime);
+      font-weight: 800;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    details.faq-item[open] .faq-indicator {
+      color: var(--accent-cyan);
+    }
+
+    .faq-answer {
+      margin-top: 14px;
+      color: var(--ink-soft);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      max-width: 64ch;
+    }
+
+    /* Lead / Config Generator Form inside CTA Banner */
+    .lead-form-card {
+      background-color: var(--bg-soot);
+      padding: 28px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .lead-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .lead-output {
+      background-color: var(--bg-slate);
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      color: var(--accent-lime);
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      word-break: break-all;
+    }
+
+    .lead-output.visible {
+      display: flex;
+    }
+
+    /* Social Share & Cookie Consent Strip */
+    .share-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .share-btn {
+      background-color: var(--bg-panel);
+      color: var(--ink-light);
+      border: 0;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .share-btn:hover {
+      background-color: var(--accent-lime);
+      color: var(--ink-dark);
+    }
+
+    .consent-banner {
+      background-color: var(--bg-slate);
+      padding: 22px 28px;
+      border-radius: 12px;
+      margin-top: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .consent-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     /* Section 6: Footer & Legal Compliance */
     .footer-section {
       background-color: var(--bg-soot);
-      padding: 88px 0 64px;
+      padding: 72px 0 64px;
     }
 
     .cta-banner {
@@ -761,9 +1104,9 @@
       padding: 48px;
       border-radius: 16px;
       display: grid;
-      grid-template-columns: 7fr 5fr;
-      gap: 32px;
-      align-items: center;
+      grid-template-columns: 6fr 6fr;
+      gap: 36px;
+      align-items: start;
       margin-bottom: 72px;
     }
 
@@ -851,6 +1194,7 @@
       .identity-showcase,
       .simulator-grid,
       .letter-grid,
+      .faq-layout,
       .cta-banner,
       .footer-grid,
       .stage-pair-top,
@@ -877,7 +1221,8 @@
       }
 
       .hero-facts,
-      .duty-summary-grid {
+      .duty-summary-grid,
+      .lead-form-row {
         grid-template-columns: 1fr;
       }
 
@@ -910,12 +1255,16 @@
   </style>
 </head>
 <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KARGOPILOT" height="0" width="0" style="display:none;visibility:hidden" title="GTM"></iframe></noscript>
+
+  <a href="#top" class="skip-link">Əsas məzmuna keç</a>
 
   <!-- Top Navigation Bar -->
   <header class="topbar">
     <div class="container topbar-inner">
       <a href="#top" class="brand-lockup">
-        <img src="assets/logo-icon.png" alt="KargoPilot Korporativ Loqo" width="42" height="42">
+        <img src="assets/logo-icon.png" alt="KargoPilot Korporativ Loqo" width="42" height="42" fetchpriority="high">
         <span>KargoPilot</span>
       </a>
       <nav aria-label="Əsas naviqasiya">
@@ -924,9 +1273,10 @@
           <li><a href="#proses">Bəyannamə Axını</a></li>
           <li><a href="#loyd-engine">Loyd Mühərriki</a></li>
           <li><a href="#hesabat">Oktyabr Hesabatı</a></li>
+          <li><a href="#sss">Suallar (SSS)</a></li>
         </ul>
       </nav>
-      <a href="https://github.com/VaskaMc/kargopilot" target="_blank" rel="noopener" class="btn-primary">GitHub Kodu</a>
+      <a href="#qurasdirma" class="btn-primary">Sürətli Quraşdır</a>
     </div>
   </header>
 
@@ -1162,7 +1512,7 @@
       <div class="container">
         <div class="identity-showcase">
           <div class="identity-panel" data-reveal>
-            <img src="assets/logo.jpg" alt="KargoPilot Əsas Korporativ Brend Simvolu" width="168" height="168">
+            <img src="assets/logo.jpg" alt="KargoPilot Əsas Korporativ Brend Simvolu" width="168" height="168" loading="lazy" decoding="async">
             <div>
               <div class="block-title">KargoPilot Korporativ Brendi</div>
               <p class="body-copy" style="margin-top:8px;">
@@ -1172,7 +1522,7 @@
           </div>
 
           <div class="identity-panel" data-reveal>
-            <img src="assets/ai-engine.jpg" alt="Loyd Kvant K Sistem Mühərriki İkonu" width="168" height="168">
+            <img src="assets/ai-engine.jpg" alt="Loyd Kvant K Sistem Mühərriki İkonu" width="168" height="168" loading="lazy" decoding="async">
             <div>
               <div class="block-title">Loyd Sistem Mühərriki (Quantum K Node)</div>
               <p class="body-copy" style="margin-top:8px;">
@@ -1211,7 +1561,7 @@
 
           <div class="wa-terminal" data-ui data-reveal>
             <div class="wa-header">
-              <img src="assets/loyd-avatar-128.png" alt="Loyd AI Copilot Avatar" width="48" height="48">
+              <img src="assets/loyd-avatar-128.png" alt="Loyd AI Copilot Avatar" width="48" height="48" loading="lazy" decoding="async">
               <div>
                 <div class="block-title">Loyd · KargoPilot Mühərriki</div>
                 <div class="meta-copy">Baileys v6 Sessiyası Aktivdir · Cavab müddəti: 180 ms</div>
@@ -1298,7 +1648,7 @@
 
         <div class="letter-grid">
           <div class="letter-visual" data-reveal>
-            <img src="assets/brand-showcase.jpg" alt="KargoPilot Arxitektura və Brend Stendi" width="340" height="340">
+            <img src="assets/brand-showcase.jpg" alt="KargoPilot Arxitektura və Brend Stendi" width="340" height="340" loading="lazy" decoding="async">
           </div>
           <div class="letter-column" data-reveal>
             <h2 class="section-title">Açıq mənbə arxitekturası.</h2>
@@ -1315,42 +1665,143 @@
         </div>
       </div>
     </section>
+
+    <!-- Section 5.5: Frequently Asked Questions (FAQ) -->
+    <section id="sss" class="faq-section">
+      <div class="container faq-layout">
+        <div data-reveal>
+          <h2 class="section-title">Tez-tez verilən suallar.</h2>
+          <p class="body-copy" style="margin-top:16px;">
+            DGK 300 USD gömrük kvotası, 4 daşıyıcı tarif hesablaması, Loyd WhatsApp mühərriki və lokal server təhlükəsizliyi barədə əsas suallar.
+          </p>
+        </div>
+
+        <div class="faq-list" data-ui data-reveal>
+          <details class="faq-item" open>
+            <summary>
+              <span>SmartCustoms 300 USD aylıq gömrük limiti necə hesablanır?</span>
+              <span class="faq-indicator" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq-answer">
+              Nazirlər Kabinetinin 305 nömrəli Qərarına əsasən, təqvim ayı ərzində fiziki şəxslərin gətirdiyi bağlamaların məhsul invoys dəyəri və daşıma haqqının cəmi 300 USD-ni keçmədikdə gömrük rüsumundan azaddır. 300 USD-dən artıq olan hissəyə 36% vahid gömrük rüsumu və 15.00 AZN elektron rəsmiləşdirmə haqqı tətbiq edilir.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>KargoPilot şəxsi FİN kodumu və ya parollarımı xarici buluda göndərirmi?</span>
+              <span class="faq-indicator" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq-answer">
+              Xeyr. Sistem tamamilə öz serverinizdə (self-hosted) çalışır. Bütün məlumatlar <code>chmod 0600</code> icazəli lokal SQLite (WAL) bazasında qorunur, İdarəetmə Paneli isə yalnız <code>127.0.0.1:48481</code> ünvanında SSH tunel üzərindən açılır.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>Starex, Limak, Camex və Dynamex arasında ən sərfəli daşıyıcı necə seçilir?</span>
+              <span class="faq-indicator" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq-answer">
+              Mühərrik bağlamanın fiziki çəkisini, həcm ölçülərini (<code>E × U × H / 6000</code>), mənşə anbarını (Türkiyə, Çin, ABŞ) və məhsul kateqoriyasını (standart və ya maye/batareyalı) müqayisə edərək ən aşağı yekun təhvil xərcini hesablayır.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>Loyd WhatsApp AI mühərriki hansı əmrləri dəstəkləyir?</span>
+              <span class="faq-indicator" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq-answer">
+              WhatsApp üzərindən <code>!arbitraj</code> (ekran görüntüsü ilə 4 bazar qiymət müqayisəsi), <code>!unvan</code> (1-klik xarici anbar rekvizitləri), <code>!kargo</code> (canlı trekinq və bəyannamə statusu) və <code>!tehvil</code> (Bakı filial QR təhvil kartı) əmrlərini icra edir.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>Xaricdən sifariş edilən mobil telefonlar üçün IMEI rüsumu nəzərə alınırmı?</span>
+              <span class="faq-indicator" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq-answer">
+              Bəli. Kalkulyatorda "Mobil telefon" kateqoriyası seçildikdə gömrük rüsumu ilə yanaşı dövlət IMEI qeydiyyat rüsumu da yekun Bakı təhvil xərcinə əlavə olunur.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- Section 6: Footer & Legal Compliance Modals -->
-  <footer class="footer-section">
+  <!-- Section 6: Footer, Lead/Config Generator Form, Social Share & Consent v2 -->
+  <footer id="qurasdirma" class="footer-section">
     <div class="container">
       <div class="cta-banner" data-reveal>
         <div>
           <h2 class="section-title">Öz serverinizdə 3 dəqiqəyə quraşdırın.</h2>
           <p class="body-copy" style="margin-top:12px;">
-            Repozitoriyanı klonlayın, <code>.env.example</code> faylını doldurun və həm Veb Paneli, həm də Loyd WhatsApp mühərrikini işə salın.
+            E-poçt və WhatsApp bildiriş nömrənizi daxil edərək fərdi <code>.env</code> konfiqurasiya faylınızı yaradın və ya birbaşa GitHub repozitoriyasını klonlayın.
           </p>
+          <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:24px;">
+            <a href="https://github.com/VaskaMc/kargopilot" target="_blank" rel="noopener" class="btn-primary" data-gtm-outbound="github_repo">GitHub Repozitoriyası</a>
+            <button type="button" class="btn-secondary" data-open-modal="dgk">DGK 300 USD Qaydaları</button>
+          </div>
         </div>
-        <div style="display:flex; flex-wrap:wrap; gap:14px; justify-content:flex-start;">
-          <a href="https://github.com/VaskaMc/kargopilot" target="_blank" rel="noopener" class="btn-primary">GitHub Repozitoriyası</a>
-          <button type="button" class="btn-secondary" data-open-modal="dgk">DGK 300 USD Qaydaları</button>
-        </div>
+
+        <!-- Working Interactive Form with GTM Enhanced Conversions (SHA-256) -->
+        <form id="kp-lead-form" class="lead-form-card" data-ui aria-label="Fərdi .env konfiqurasiya və bildiriş generatoru">
+          <div class="block-title">Sürətli .env Konfiqurasiya və Bildiriş Qoşulması</div>
+          <div class="lead-form-row">
+            <div>
+              <label class="field-label" for="lead-email"><span>E-poçt ünvanı</span></label>
+              <input id="lead-email" name="email" type="email" class="input-control" placeholder="ad@nümunə.az" required autocomplete="email" style="margin-top:6px;">
+            </div>
+            <div>
+              <label class="field-label" for="lead-phone"><span>WhatsApp nömrəsi</span></label>
+              <input id="lead-phone" name="phone" type="tel" class="input-control num" placeholder="+994501234567" required autocomplete="tel" style="margin-top:6px;">
+            </div>
+          </div>
+          <div class="lead-form-row" style="align-items:end;">
+            <div>
+              <label class="field-label" for="lead-carrier"><span>Əsas Daşıyıcı</span></label>
+              <select id="lead-carrier" name="carrier" class="select-control" style="margin-top:6px;">
+                <option value="starex">Starex (TR / CN / US)</option>
+                <option value="limak">Limak (TR / CN / US)</option>
+                <option value="camex">Camex (CN / TR / US)</option>
+                <option value="dynamex">Dynamex (US / TR / CN)</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-primary" style="width:100%;">Konfiqurasiya Yarat</button>
+          </div>
+          <div id="lead-form-output" class="lead-output" role="status" aria-live="polite"></div>
+        </form>
       </div>
 
       <div class="footer-grid">
         <div>
           <a href="#top" class="brand-lockup">
-            <img src="assets/logo-icon.png" alt="KargoPilot Loqo" width="42" height="42">
+            <img src="assets/logo-icon.png" alt="KargoPilot Loqo" width="42" height="42" loading="lazy" decoding="async">
             <span>KargoPilot v4.0</span>
           </a>
           <p class="body-copy" style="margin-top:14px;">
             Azərbaycan üçün avtonom transsərhəd kargo, tarif müqayisəsi və gömrük bəyannamə köməkçisi. MIT Lisenziyası ilə açıq mənbəli layihə.
           </p>
+          <div class="share-row" aria-label="Sosial şəbəkələrdə paylaş">
+            <button type="button" class="share-btn" data-share="whatsapp">WhatsApp</button>
+            <button type="button" class="share-btn" data-share="telegram">Telegram</button>
+            <button type="button" class="share-btn" data-share="twitter">X / Twitter</button>
+            <button type="button" class="share-btn" data-share="linkedin">LinkedIn</button>
+            <button type="button" class="share-btn" data-share="copy" id="copy-link-btn">Linki Kopyala</button>
+          </div>
         </div>
 
         <div>
-          <div class="block-title" style="margin-bottom:14px;">Platforma Modulları</div>
+          <div class="block-title" style="margin-bottom:14px;">Platforma və Sənədlər</div>
           <ul class="footer-links">
             <li><a href="#kalkulyator">4-Daşıyıcı Tarif Mühərriki</a></li>
             <li><a href="#proses">SmartCustoms PDF Generator</a></li>
             <li><a href="#loyd-engine">Loyd WhatsApp &amp; OCR</a></li>
-            <li><a href="https://github.com/VaskaMc/kargopilot" target="_blank" rel="noopener">Mənbə Kodu (GitHub)</a></li>
+            <li><a href="#sss">Tez-tez Verilən Suallar</a></li>
+            <li><a href="llms.txt">AI Sənədləşməsi (llms.txt)</a></li>
+            <li><a href="sitemap.xml">Sayt Xəritəsi (sitemap.xml)</a></li>
           </ul>
         </div>
 
@@ -1360,10 +1811,25 @@
             <li><button type="button" data-open-modal="terms">İstifadə Şərtləri (Terms of Service)</button></li>
             <li><button type="button" data-open-modal="privacy">Məxfilik Siyasəti (Privacy Policy)</button></li>
             <li><button type="button" data-open-modal="dgk">DGK 300 USD Gömrük Uyğunluğu</button></li>
+            <li><a href="https://github.com/VaskaMc/kargopilot" target="_blank" rel="noopener">Mənbə Kodu (GitHub)</a></li>
           </ul>
           <p class="meta-copy" style="margin-top:18px;">
             © 2026 KargoPilot · Bütün hüquqlar qorunur.
           </p>
+        </div>
+      </div>
+
+      <!-- Cookie Consent Banner (Google Consent Mode v2) -->
+      <div id="cookie-consent-bar" class="consent-banner" data-ui role="region" aria-label="Çerez və Məxfilik Seçimləri">
+        <div>
+          <div style="font-weight:700; color:var(--ink-light);">Çerez və Analitika Seçimləri (Google Consent Mode v2)</div>
+          <div id="consent-status-text" class="meta-copy" style="margin-top:4px;">
+            KargoPilot yalnız UTM kampaniya atribusiyası və SHA-256 ilə şifrələnmiş Gelişmiş Dönüşüm (Enhanced Conversions) telemetriyası üçün çerezlərdən istifadə edir.
+          </div>
+        </div>
+        <div class="consent-actions">
+          <button type="button" class="btn-primary" id="btn-consent-grant">Hamısını Qəbul Et</button>
+          <button type="button" class="btn-secondary" id="btn-consent-deny">Yalnız Zəruri</button>
         </div>
       </div>
     </div>
@@ -1402,7 +1868,7 @@
         2. <strong>Şəbəkə İzolyasiyası:</strong> İdarəetmə paneli xarici internetə açıq deyil (<code>0.0.0.0</code> qadağandır) və yalnız <code>127.0.0.1:48481</code> lokal interfeysində SSH tuneli vasitəsilə işləyir.
       </p>
       <p class="body-copy">
-        3. <strong>GitHub Təhlükəsizliyi:</strong> Açıq repozitoriyada heç bir şəxsi identifikator, API açarı və ya sessiya faylı saxlanılmır; bütün həssas parametrlər yalnız lokal <code>.env</code> faylında yerləşir.
+        3. <strong>GitHub Təhlükəsizliyi və GTM Enhanced Conversions:</strong> Açıq repozitoriyada heç bir şəxsi identifikator saxlanılmır. Vebsaytdakı konfiqurasiya formasında daxil edilən əlaqə məlumatları brauzerdə Web Crypto API vasitəsilə <strong>SHA-256</strong> alqoritmi ilə birtərəfli şifrələnir.
       </p>
     </div>
   </div>
@@ -1428,6 +1894,57 @@
 
   <script>
     (function () {
+      // 0. GTM Enhanced Conversions (Web Crypto SHA-256) & Attribution Helper
+      window.dataLayer = window.dataLayer || [];
+
+      function getSavedAttribution() {
+        try {
+          return {
+            first_touch: JSON.parse(localStorage.getItem('kp_utm_first') || 'null'),
+            last_touch: JSON.parse(localStorage.getItem('kp_utm_last') || 'null')
+          };
+        } catch (e) {
+          return { first_touch: null, last_touch: null };
+        }
+      }
+
+      function normalizeEmail(email) {
+        var clean = String(email || '').trim().toLowerCase();
+        var parts = clean.split('@');
+        if (parts.length === 2 && (parts[1] === 'gmail.com' || parts[1] === 'googlemail.com')) {
+          parts[0] = parts[0].split('+')[0].replace(/\./g, '');
+          clean = parts[0] + '@' + parts[1];
+        }
+        return clean;
+      }
+
+      function normalizePhoneE164(phone) {
+        var digits = String(phone || '').replace(/[^\d+]/g, '');
+        if (!digits.startsWith('+')) {
+          if (digits.startsWith('994')) digits = '+' + digits;
+          else if (digits.startsWith('0')) digits = '+994' + digits.slice(1);
+          else digits = '+994' + digits;
+        }
+        return digits;
+      }
+
+      async function sha256Hex(input) {
+        if (!window.crypto || !window.crypto.subtle) return '';
+        var enc = new TextEncoder().encode(input);
+        var buf = await window.crypto.subtle.digest('SHA-256', enc);
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          var h = b.toString(16);
+          return h.length === 1 ? '0' + h : h;
+        }).join('');
+      }
+
+      window.KargoPilotGTM = {
+        normalizeEmail: normalizeEmail,
+        normalizePhoneE164: normalizePhoneE164,
+        sha256Hex: sha256Hex,
+        getSavedAttribution: getSavedAttribution
+      };
+
       // 1. Live Landed-Cost, 4-Carrier & DGK $300 Customs Duty Calculator
       const USD_TO_AZN = 1.70;
       const CURRENT_MONTHLY_SPENT = 142.50;
@@ -1466,7 +1983,7 @@
       const dutyBreakdownNote = document.getElementById('duty-breakdown-note');
       const originCurrencyLabel = document.getElementById('origin-currency-label');
 
-      function renderCalculator() {
+      function renderCalculator(pushEvent) {
         const weight = Math.max(0.1, parseFloat(weightInput.value) || 0.75);
         const itemUsd = Math.max(0, parseFloat(priceInput.value) || 0);
         const category = categorySelect.value;
@@ -1524,6 +2041,19 @@
         } else {
           dutyBreakdownNote.textContent = 'Gömrük rüsumu: 0.00 AZN · Kargo: ' + best.azn.toFixed(2) + ' AZN';
         }
+
+        if (pushEvent === true) {
+          window.dataLayer.push({
+            event: 'kp_calculator_interaction',
+            kp_origin: activeOrigin,
+            kp_weight_kg: Number(weight.toFixed(2)),
+            kp_invoice_usd: Number(itemUsd.toFixed(2)),
+            kp_category: category,
+            kp_best_carrier: best.name,
+            kp_best_rate_usd: Number(best.usd.toFixed(2)),
+            kp_landed_cost_azn: Number(totalLandedAzn.toFixed(2))
+          });
+        }
       }
 
       document.querySelectorAll('[data-origin]').forEach(function (btn) {
@@ -1531,14 +2061,16 @@
           document.querySelectorAll('[data-origin]').forEach(function (b) { b.classList.remove('active'); });
           btn.classList.add('active');
           activeOrigin = btn.getAttribute('data-origin');
-          renderCalculator();
+          renderCalculator(true);
         });
       });
 
-      weightInput.addEventListener('input', renderCalculator);
-      priceInput.addEventListener('input', renderCalculator);
-      categorySelect.addEventListener('change', renderCalculator);
-      renderCalculator();
+      weightInput.addEventListener('change', function () { renderCalculator(true); });
+      weightInput.addEventListener('input', function () { renderCalculator(false); });
+      priceInput.addEventListener('change', function () { renderCalculator(true); });
+      priceInput.addEventListener('input', function () { renderCalculator(false); });
+      categorySelect.addEventListener('change', function () { renderCalculator(true); });
+      renderCalculator(false);
 
       // 2. Interactive Loyd WhatsApp Engine Simulator
       const SIM_RESPONSES = {
@@ -1599,10 +2131,112 @@
             '<div style="font-weight:700; color:var(--accent-lime);">' + data.title + '</div>' +
             data.lines.map(function (l) { return '<div>' + l + '</div>'; }).join('') +
             '<div class="meta-copy" style="color:var(--accent-cyan);">' + data.foot + '</div>';
+
+          window.dataLayer.push({
+            event: 'kp_loyd_command_run',
+            kp_command: key
+          });
         });
       });
 
-      // 3. Accessible Modals (Terms, Privacy, DGK $300)
+      // 3. Working Lead & .env Generator Form with GTM Enhanced Conversions (SHA-256)
+      const leadForm = document.getElementById('kp-lead-form');
+      const leadOut = document.getElementById('lead-form-output');
+      if (leadForm && leadOut) {
+        leadForm.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const rawEmail = document.getElementById('lead-email').value;
+          const rawPhone = document.getElementById('lead-phone').value;
+          const carrier = document.getElementById('lead-carrier').value;
+
+          const normEmail = normalizeEmail(rawEmail);
+          const normPhone = normalizePhoneE164(rawPhone);
+          const emailHash = await sha256Hex(normEmail);
+          const phoneHash = await sha256Hex(normPhone);
+          const attribution = getSavedAttribution();
+
+          // Push Google Ads / GA4 Enhanced Conversion Payload to dataLayer
+          window.dataLayer.push({
+            event: 'kp_lead_conversion',
+            value: 15.00,
+            currency: 'USD',
+            kp_preferred_carrier: carrier,
+            user_data: {
+              sha256_email_address: emailHash,
+              sha256_phone_number: phoneHash,
+              address: { country: 'AZ' }
+            },
+            attribution: attribution
+          });
+
+          leadOut.classList.add('visible');
+          leadOut.innerHTML =
+            '<div style="font-weight:700; color:var(--ink-light);">Hazır .env Konfiqurasiyası və GTM Enhanced Conversion:</div>' +
+            '<div><code>PCS_PANEL_BIND=127.0.0.1:48481</code> · <code>DEFAULT_CARRIER=' + carrier.toUpperCase() + '</code></div>' +
+            '<div><code>WA_NOTIFY_JID=' + normPhone.replace('+', '') + '@s.whatsapp.net</code></div>' +
+            '<div class="meta-copy" style="color:var(--accent-cyan);">SHA-256 E-poçt Hash: ' + emailHash.slice(0, 24) + '... · dataLayer event: kp_lead_conversion</div>';
+        });
+      }
+
+      // 4. Social Share Controls
+      const shareUrl = 'https://vaskamc.github.io/kargopilot/';
+      const shareText = 'KargoPilot v4.0 · Sərhədsiz Kargo, 4-Daşıyıcı Tarif Müqayisəsi və SmartCustoms $300 Gömrük Kopilotu';
+      document.querySelectorAll('[data-share]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const network = btn.getAttribute('data-share');
+          window.dataLayer.push({ event: 'kp_social_share', kp_network: network });
+          if (network === 'whatsapp') {
+            window.open('https://wa.me/?text=' + encodeURIComponent(shareText + ' ' + shareUrl), '_blank', 'noopener');
+          } else if (network === 'telegram') {
+            window.open('https://t.me/share/url?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(shareText), '_blank', 'noopener');
+          } else if (network === 'twitter') {
+            window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(shareText), '_blank', 'noopener');
+          } else if (network === 'linkedin') {
+            window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareUrl), '_blank', 'noopener');
+          } else if (network === 'copy') {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(shareUrl);
+            }
+            btn.textContent = 'Kopyalandı!';
+            setTimeout(function () { btn.textContent = 'Linki Kopyala'; }, 2000);
+          }
+        });
+      });
+
+      // 5. Cookie Consent Mode v2 Controls
+      const consentStatusText = document.getElementById('consent-status-text');
+      const btnGrant = document.getElementById('btn-consent-grant');
+      const btnDeny = document.getElementById('btn-consent-deny');
+
+      function updateConsentState(mode) {
+        const isGranted = mode === 'granted';
+        if (typeof window.gtag === 'function') {
+          window.gtag('consent', 'update', {
+            'ad_storage': isGranted ? 'granted' : 'denied',
+            'analytics_storage': isGranted ? 'granted' : 'denied',
+            'ad_user_data': isGranted ? 'granted' : 'denied',
+            'ad_personalization': isGranted ? 'granted' : 'denied'
+          });
+        }
+        try {
+          localStorage.setItem('kp_consent_v2', JSON.stringify({ mode: mode, updated_at: new Date().toISOString() }));
+        } catch (e) {}
+        window.dataLayer.push({
+          event: 'kp_consent_update',
+          kp_consent_mode: mode
+        });
+        if (consentStatusText) {
+          consentStatusText.textContent = isGranted
+            ? 'Aktiv rejim: Analitika və SHA-256 Gelişmiş Dönüşüm (Enhanced Conversions) aktivdir.'
+            : 'Aktiv rejim: Yalnız zəruri texniki çerezlər aktivdir (analitika deaktiv edildi).';
+          consentStatusText.style.color = isGranted ? 'var(--accent-lime)' : 'var(--accent-cyan)';
+        }
+      }
+
+      if (btnGrant) btnGrant.addEventListener('click', function () { updateConsentState('granted'); });
+      if (btnDeny) btnDeny.addEventListener('click', function () { updateConsentState('denied'); });
+
+      // 6. Accessible Modals (Terms, Privacy, DGK $300)
       document.querySelectorAll('[data-open-modal]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           const id = 'modal-' + btn.getAttribute('data-open-modal');
@@ -1632,7 +2266,7 @@
         }
       });
 
-      // 4. Purposeful Scroll & Load Choreography (Emil Kowalski / Jakub Krehel easing)
+      // 7. Purposeful Scroll & Load Choreography (Emil Kowalski / Jakub Krehel easing)
       const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const revealEls = document.querySelectorAll('[data-reveal]');
       if (!reduceMotion && revealEls.length) {
