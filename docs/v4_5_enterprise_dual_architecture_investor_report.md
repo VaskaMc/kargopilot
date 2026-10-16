@@ -59,24 +59,23 @@ Azərbaycanın transsərhəd e-ticarət ekosistemi (xüsusilə Türkiyə — *Tr
 
 ---
 
-## 2. Biznes Modeli & Monetizasiya Strategiyası
+## 2. Biznes Modeli & Monetizasiya Strategiyası (Yeni Dəqiqləşdirilmiş Model)
 
-KargoPilot yüksək marjalı, təkrarlanan gəlir (ARR) və arbitraj komissiyasına əsaslanan hibrid monetizasiya modelindən istifadə edir:
+KargoPilot, Azərbaycan bazarının yüksək qiymət həssaslığını və kütləvi istifadəçi cəlbi (Product-Led Growth) qanunauyğunluqlarını nəzərə alaraq, yüksək dönüşümlü və sürtünməsiz (frictionless) monetizasiya modelinə keçmişdir:
 
 | Seqment | Tarif Planı | Qiymət | Əsas Funksionallıq |
 | :--- | :--- | :--- | :--- |
-| **B2C Free** | Başlanğıc | **0 ₼** | 1 Daşıyıcı hesabı, tək FİN izləmə, veb panel, əl ilə SmartCustoms generasiyası |
-| **B2C Pro** | Şəxsi Autopilot | **9.99 ₼ / ay** | Bütün daşıyıcılar (Starex, Camex, Limak, Dynamex), WhatsApp Loyd AI bildirişləri, Ailə FİN Şəbəkəsi (3 FİN), Avtomatik SmartCustoms |
-| **B2C Family Mesh** | Ailə Paketi | **19.99 ₼ / ay** | 6 FİN kodu balansı ($1800/ay kvota idarəsi), Eyni reys toqquşma xəbərdarlığı, prioritet WhatsApp növbəsi |
-| **B2B Dropshipper** | Biznes | **79.00 ₼ / ay** | 20+ FİN profili, toplu faktura və ReportLab PDF generasiyası, xüsusi Webhook inteqrasiyaları, HS kod avtomatlaşdırması |
-| **B2B Sovereign License** | On-Premise Enterprise | **990 ₼ / birdəfəlik** + 190 ₼/il dəstək | Müştərinin öz serverində işləyən tək istifadəçili və ya lokal korporativ instansiya. Sıfır xarici asılılıq |
+| **B2C Standart** | Tam Pulsuz (Free) | **0 ₼** | Bütün daşıyıcılar (Starex, Camex, Limak, Dynamex), $300 fərdi kvota qoruyucusu, əsas AI gömrük kateqoriyası təsnifatı, veb idarəetmə masası |
+| **B2C Gəlişdirilmiş AI** | Power AI Copilot | **5.49 ₼ / ay** | WhatsApp səsli bəyannamə köməkçisi (səsli mesajla və ya qəbzin fotosu ilə avtomatik bəyan), süni intellektlə Ailə FİN Şəbəkəsi kvota balanslaşdırması, eyni reys toqquşma analitikası, 7/24 şəxsi logistika agenti |
+| **B2B Dropshipper** | Sahibkar Autopilot | **49.00 ₼ / ay** | 20+ FİN profili idarəsi, toplu ReportLab PDF faturaları, Trendyol/Temu/Taobao üçün toplu HS Kodu avtomatlaşdırması, Webhook inteqrasiyaları |
+| **B2B Sovereign Edition** | On-Premise Lisenziya | **590 ₼ birdəfəlik** + 199 ₼/il yeniləmə | Müştərinin öz serverində çalışan 100% lokal, sıfır telemetriyalı Docker paketi. İllik 199 ₼ ilə DGK qaydaları və daşıyıcı API yenilənmələri zəmanəti |
 
-### 📈 Vahid İqtisadiyyatı (Unit Economics)
+### 📈 Yenilənmiş Vahid İqtisadiyyatı (Unit Economics)
 
-- **Müştəri Qazanma Dəyəri (CAC):** **~1.40 ₼** (WhatsApp üzərindən viral istinad: "Dostunu dəvət et, 1 aylıq Pro qazan").
-- **Müştərinin Ömürlük Dəyəri (LTV):** **119.88 ₼** (Orta müştəri ömrü 12 ay götürüldükdə).
-- **LTV / CAC Nisbəti:** **85:1** (Fövqəladə səmərəlilik və minimal marketinq xərci).
-- **Daşıma Arbitraj Marjası:** Hər tövsiyə olunan bağlama üzrə daşıyıcı tərəfdaşlıqlarından **%3 – %6 arası marja**.
+- **Müştəri Qazanma Dəyəri (CAC):** **~0.60 ₼** (B2C-nin tam pulsuz olması hesabına "ağızdan-ağıza" və WhatsApp viral tövsiyələri ilə CAC kəskin azalır).
+- **5.49 ₼ AI Dönüşüm Oranı (Conversion):** Aktiv kütlənin %12 – %18-i səsli WhatsApp və ailə FİN optimizasiyası üçün 5.49 ₼ mikro-abunəliyi tərəddüdsüz aktivləşdirir.
+- **Daşıma Arbitraj Marjası (Əsas Gəlir Mənbəyi):** B2C kütləvi və pulsuz olduğu üçün bağlama axını böyüyür. 50,000 bağlamada daşıyıcı tərəfdaşlıqlarından əldə edilən **%3 – %5 komissiya ayda 12,000 – 20,000 ₼** xalis marja yaradır.
+- **LTV / CAC Nisbəti:** **> 90:1** (Klassik SaaS-lardan qat-qat güclü şəbəkə effekti).
 
 ---
 
