@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6 max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-900 border border-slate-800 rounded-2xl p-5">
+        <div class="flex items-center gap-3">
+            <a href="/connectors" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </a>
+            <div>
+                <h1 class="text-xl font-extrabold text-white flex items-center gap-2 tracking-tight">
+                    <i data-lucide="monitor-play" class="w-5 h-5 text-indigo-400"></i>
+                    <span>{{ platform_name }} — Canlı Re-Auth &amp; Captcha Həlli</span>
+                </h1>
+                <p class="text-xs text-slate-300 mt-0.5">
+                    Sıfır açıq port: Brauzer sessiyası birbaşa 127.0.0.1:48481 SSH tuneli daxilində WebSocket ilə idarə olunur.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+            <!-- Quick Platform Switcher -->
+            <div class="inline-flex rounded-xl bg-slate-950 p-1 border border-slate-800 gap-1 text-xs font-bold">
+                <a href="/connectors/temu/screencast" class="px-2.5 py-1.5 rounded-lg {% if platform == 'temu' %}bg-indigo-600{% else %}text-slate-300 hover:text-white{% endif %}">Temu</a>
+                <a href="/connectors/trendyol/screencast" class="px-2.5 py-1.5 rounded-lg {% if platform == 'trendyol' %}bg-indigo-600{% else %}text-slate-300 hover:text-white{% endif %}">Trendyol</a>
+                <a href="/connectors/taobao/screencast" class="px-2.5 py-1.5 rounded-lg {% if platform == 'taobao' %}bg-indigo-600{% else %}text-slate-300 hover:text-white{% endif %}">Taobao</a>
+                <a href="/connectors/e_customs/screencast" class="px-2.5 py-1.5 rounded-lg {% if platform == 'e_customs' %}bg-indigo-600{% else %}text-slate-300 hover:text-white{% endif %}">SmartCustoms</a>
+            </div>
+
+            <span id="connStatusBadge" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-amber-950 border border-amber-800/60 text-amber-400 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                <span id="connStatusText">Qoşulur...</span>
+            </span>
+
+            <button type="button" onclick="saveSessionCookies()" class="px-4 py-2 rounded-xl bg-indigo-600 font-bold text-xs flex items-center gap-1.5">
+                <i data-lucide="save" class="w-4 h-4"></i>
+                <span>Kukiləri Saxla &amp; Aktiv Et</span>
+            </button>
+
+            <button type="button" onclick="stopSession()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-rose-950 text-slate-200 hover:text-rose-300 font-bold text-xs border border-slate-700" title="Sessiyanı Dayandır">
+                <i data-lucide="power" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Screencast Interactive Canvas Container -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col items-center">
+        <!-- Interactive Control Bar -->
+        <div class="w-full flex flex-wrap items-center justify-between gap-3 mb-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs">
+            <div class="flex items-center gap-2 flex-1 min-w-[280px]">
+                <span class="text-slate-400 font-mono font-bold">URL:</span>
+                <input id="navUrlInput" type="text" value="{{ target_url }}" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-xs focus:outline-none focus:border-indigo-400 font-mono">
+                <button type="button" onclick="navigateUrl()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold rounded-lg text-xs">Keçid</button>
+            </div>
+
+            <div class="flex items-center gap-2 flex-1 min-w-[320px]">
+                <input id="keyboardInput" type="text" placeholder="Mətn daxil edin (Login / OTP / Şifrə)..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-xs focus:outline-none focus:border-indigo-400">
+                <button type="button" onclick="sendTypedText()" class="px-3 py-1.5 bg-indigo-600 font-bold rounded-lg text-xs flex items-center gap-1">
+                    <i data-lucide="corner-down-left" class="w-3.5 h-3.5"></i>
+                    <span>Göndər</span>
+                </button>
+                <button type="button" onclick="sendKey('Enter')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg text-xs">Enter</button>
+                <button type="button" onclick="sendKey('Backspace')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg text-xs">Sil</button>
+            </div>
+        </div>
+
+        <!-- Slider / Drag Assistance Toolbar -->
+        <div class="w-full flex flex-wrap items-center justify-between gap-2 mb-4 bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-700 text-indigo-400 font-bold text-xs">
+                    <i data-lucide="move-right" class="w-3.5 h-3.5"></i>
+                    <span>Sürüşdürmə Köməkçisi (Drag / Slider)</span>
+                </span>
+                <span class="text-slate-300 text-xs hidden md:inline">Tapmacanı birbaşa ekranda sol kliklə tutub sağa dartın və ya sürətli addım seçin:</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 flex-wrap">
+                <button type="button" onclick="quickDrag(80)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-xs border border-slate-700 font-bold">+80px</button>
+                <button type="button" onclick="quickDrag(120)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-xs border border-slate-700 font-bold">+120px</button>
+                <button type="button" onclick="quickDrag(160)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-xs border border-slate-700 font-bold">+160px</button>
+                <button type="button" onclick="quickDrag(200)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-xs border border-slate-700 font-bold">+200px</button>
+                <button type="button" onclick="quickDrag(240)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-xs border border-slate-700 font-bold">+240px</button>
+                <button type="button" onclick="quickDrag(280)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-xs border border-slate-700 font-bold">+280px</button>
+                <button type="button" onclick="customDragPrompt()" class="px-3 py-1 rounded-lg bg-indigo-600 font-bold text-xs flex items-center gap-1">
+                    <span>Xüsusi px...</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Canvas Display -->
+        <div class="relative w-full max-w-[1280px] bg-black rounded-lg overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center min-h-[480px]">
+            <canvas id="screencastCanvas" width="1280" height="800" class="w-full h-auto cursor-crosshair block select-none"></canvas>
+            <div id="loaderOverlay" class="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center gap-3">
+                <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                <p class="text-xs text-slate-300 font-mono">Headless Playwright Brauzer sessiyası yaradılır...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const platform = "{{ platform }}";
+    const canvas = document.getElementById("screencastCanvas");
+    const ctx = canvas.getContext("2d");
+    const loaderOverlay = document.getElementById("loaderOverlay");
+    const connBadge = document.getElementById("connStatusBadge");
+    const connText = document.getElementById("connStatusText");
+    const navInput = document.getElementById("navUrlInput");
+    const keyInput = document.getElementById("keyboardInput");
+
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const wsUrl = `${protocol}//${window.location.host}/ws/screencast/${platform}`;
+    let ws = null;
+    let currentFrameImage = null;
+
+    let isMouseDown = false;
+    let dragStartX = 480;
+    let dragStartY = 620;
+    let currentDragX = 480;
+    let currentDragY = 620;
+    let lastMoveTime = 0;
+
+    function renderDragVisual(x1, y1, x2, y2) {
+        const dx = x2 - x1;
+        ctx.save();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#f59e0b"; // amber glowing arrow
+        ctx.fillStyle = "#f59e0b";
+        ctx.shadowColor = "#f59e0b";
+        ctx.shadowBlur = 10;
+
+        // Start point circle
+        ctx.beginPath();
+        ctx.arc(x1, y1, 8, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Drag path line
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        // End point circle
+        ctx.beginPath();
+        ctx.arc(x2, y2, 8, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Distance HUD tag
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2 - 20;
+        ctx.font = "bold 14px monospace";
+        ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
+        ctx.fillRect(midX - 42, midY - 14, 84, 26);
+        ctx.strokeStyle = "#f59e0b";
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(midX - 42, midY - 14, 84, 26);
+        ctx.fillStyle = "#fbbf24";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText((dx > 0 ? "+" : "") + dx + " px", midX, midY - 1);
+
+        ctx.restore();
+    }
+
+    function getCanvasCoords(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return {
+            x: Math.round((clientX - rect.left) * scaleX),
+            y: Math.round((clientY - rect.top) * scaleY)
+        };
+    }
+
+    function connectWs() {
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+            connBadge.className = "px-3 py-1 rounded-full text-xs font-mono bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 flex items-center gap-1.5";
+            connText.innerText = "Canlı Bağlantı";
+        };
+
+        ws.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg.type === "frame" && msg.image) {
+                    loaderOverlay.classList.add("hidden");
+                    const img = new Image();
+                    img.onload = () => {
+                        currentFrameImage = img;
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        if (isMouseDown) {
+                            renderDragVisual(dragStartX, dragStartY, currentDragX, currentDragY);
+                        }
+                    };
+                    img.src = msg.image;
+                    if (msg.url && msg.url !== navInput.value) {
+                        navInput.value = msg.url;
+                    }
+                } else if (msg.type === "status") {
+                    connText.innerText = msg.text;
+                    const loadingP = loaderOverlay.querySelector("p");
+                    if (loadingP) loadingP.innerText = msg.text;
+                } else if (msg.type === "notification") {
+                    alert(msg.message);
+                    if (msg.success) {
+                        window.location.href = "/connectors";
+                    }
+                }
+            } catch (e) {
+                console.error("Frame render error:", e);
+            }
+        };
+
+        ws.onclose = () => {
+            connBadge.className = "px-3 py-1 rounded-full text-xs font-mono bg-rose-950/60 border border-rose-800 text-rose-400 flex items-center gap-1.5";
+            connText.innerText = "Bağlantı Kəsildi";
+            const loadingP = loaderOverlay.querySelector("p");
+            if (loadingP) loadingP.innerText = "Bağlantı kəsildi. Səhifəni yeniləyin.";
+        };
+    }
+
+    // Canvas Mouse Down
+    canvas.addEventListener("mousedown", (e) => {
+        if (e.button !== 0) return; // Only left mouse button
+        if (!ws || ws.readyState !== WebSocket.OPEN) return;
+        const pos = getCanvasCoords(e.clientX, e.clientY);
+        isMouseDown = true;
+        dragStartX = pos.x;
+        dragStartY = pos.y;
+        currentDragX = pos.x;
+        currentDragY = pos.y;
+        canvas.style.cursor = "grabbing";
+        ws.send(JSON.stringify({ type: "mousedown", x: pos.x, y: pos.y }));
+    });
+
+    // Window Mouse Move
+    window.addEventListener("mousemove", (e) => {
+        if (!isMouseDown) return;
+        if (!ws || ws.readyState !== WebSocket.OPEN) return;
+        const pos = getCanvasCoords(e.clientX, e.clientY);
+        currentDragX = pos.x;
+        currentDragY = pos.y;
+
+        const now = performance.now();
+        if (now - lastMoveTime > 30) {
+            lastMoveTime = now;
+            ws.send(JSON.stringify({ type: "mousemove", x: pos.x, y: pos.y }));
+        }
+
+        if (currentFrameImage) {
+            ctx.drawImage(currentFrameImage, 0, 0, canvas.width, canvas.height);
+            renderDragVisual(dragStartX, dragStartY, currentDragX, currentDragY);
+        }
+    });
+
+    // Window Mouse Up
+    window.addEventListener("mouseup", (e) => {
+        if (!isMouseDown) return;
+        isMouseDown = false;
+        canvas.style.cursor = "crosshair";
+        if (!ws || ws.readyState !== WebSocket.OPEN) return;
+        const pos = getCanvasCoords(e.clientX, e.clientY);
+        const dist = Math.hypot(pos.x - dragStartX, pos.y - dragStartY);
+
+        if (dist < 6) {
+            ws.send(JSON.stringify({ type: "click", x: pos.x, y: pos.y }));
+        } else {
+            ws.send(JSON.stringify({ type: "mouseup", x: pos.x, y: pos.y }));
+            ws.send(JSON.stringify({
+                type: "drag",
+                from_x: dragStartX,
+                from_y: dragStartY,
+                to_x: pos.x,
+                to_y: pos.y,
+                steps: Math.max(25, Math.min(60, Math.round(dist / 6)))
+            }));
+        }
+
+        if (currentFrameImage) {
+            ctx.drawImage(currentFrameImage, 0, 0, canvas.width, canvas.height);
+        }
+    });
+
+    // Touch Support
+    canvas.addEventListener("touchstart", (e) => {
+        if (e.touches.length !== 1) return;
+        const t = e.touches[0];
+        const pos = getCanvasCoords(t.clientX, t.clientY);
+        isMouseDown = true;
+        dragStartX = pos.x;
+        dragStartY = pos.y;
+        currentDragX = pos.x;
+        currentDragY = pos.y;
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "mousedown", x: pos.x, y: pos.y }));
+        }
+    });
+
+    canvas.addEventListener("touchmove", (e) => {
+        if (!isMouseDown || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        const pos = getCanvasCoords(t.clientX, t.clientY);
+        currentDragX = pos.x;
+        currentDragY = pos.y;
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "mousemove", x: pos.x, y: pos.y }));
+        }
+        if (currentFrameImage) {
+            ctx.drawImage(currentFrameImage, 0, 0, canvas.width, canvas.height);
+            renderDragVisual(dragStartX, dragStartY, currentDragX, currentDragY);
+        }
+        e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener("touchend", (e) => {
+        if (!isMouseDown) return;
+        isMouseDown = false;
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            const dist = Math.hypot(currentDragX - dragStartX, currentDragY - dragStartY);
+            if (dist < 6) {
+                ws.send(JSON.stringify({ type: "click", x: currentDragX, y: currentDragY }));
+            } else {
+                ws.send(JSON.stringify({
+                    type: "drag",
+                    from_x: dragStartX,
+                    from_y: dragStartY,
+                    to_x: currentDragX,
+                    to_y: currentDragY,
+                    steps: 35
+                }));
+            }
+        }
+        if (currentFrameImage) {
+            ctx.drawImage(currentFrameImage, 0, 0, canvas.width, canvas.height);
+        }
+    });
+
+    // Quick Drag Assistant
+    function quickDrag(dx) {
+        if (!ws || ws.readyState !== WebSocket.OPEN) {
+            alert("Bağlantı aktiv deyil!");
+            return;
+        }
+        const startX = dragStartX || 480;
+        const startY = dragStartY || 620;
+        const targetX = startX + dx;
+        const targetY = startY;
+
+        ws.send(JSON.stringify({
+            type: "drag",
+            from_x: startX,
+            from_y: startY,
+            to_x: targetX,
+            to_y: targetY,
+            steps: 35
+        }));
+    }
+
+    function customDragPrompt() {
+        const val = prompt("Sürüşdürüləcək məsafəni (məsələn: 180) daxil edin:", "180");
+        if (val) {
+            const px = parseInt(val, 10);
+            if (!isNaN(px) && px !== 0) {
+                quickDrag(px);
+            }
+        }
+    }
+
+    // Keyboard helpers
+    function sendTypedText() {
+        const text = keyInput.value;
+        if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+        ws.send(JSON.stringify({ type: "type", text: text }));
+        keyInput.value = "";
+    }
+
+    function sendKey(key) {
+        if (!ws || ws.readyState !== WebSocket.OPEN) return;
+        ws.send(JSON.stringify({ type: "press", key: key }));
+    }
+
+    keyInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            sendTypedText();
+            sendKey("Enter");
+        }
+    });
+
+    function navigateUrl() {
+        const url = navInput.value;
+        if (url && ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "navigate", url: url }));
+        }
+    }
+
+    function saveSessionCookies() {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "save_session" }));
+        }
+    }
+
+    function stopSession() {
+        if (confirm("Brauzer sessiyasını dayandırmaq istəyirsiniz?")) {
+            if (ws) ws.send(JSON.stringify({ type: "close" }));
+            window.location.href = "/connectors";
+        }
+    }
+
+    connectWs();
+</script>
+{% endblock %}

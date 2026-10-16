@@ -1269,6 +1269,7 @@
       </a>
       <nav aria-label="Əsas naviqasiya">
         <ul class="nav-links">
+          <li><a href="#dual-hosting" style="color:var(--accent-cyan); font-weight:700;">İstifadə Modelləri</a></li>
           <li><a href="#kalkulyator">Tarif və Gömrük</a></li>
           <li><a href="#proses">Bəyannamə Axını</a></li>
           <li><a href="#loyd-engine">Loyd Mühərriki</a></li>
@@ -1276,7 +1277,12 @@
           <li><a href="#sss">Suallar (SSS)</a></li>
         </ul>
       </nav>
-      <a href="#qurasdirma" class="btn-primary">Sürətli Quraşdır</a>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button type="button" onclick="openDualHostingModal()" data-kp-connection-badge class="btn-secondary" style="padding:7px 12px; font-size:11px; cursor:pointer;" title="Server və Bağlantı Rejimini Dəyişin">
+          <span>☁️ Bulud Serveri</span>
+        </button>
+        <a href="#dual-hosting" class="btn-primary">Başla (Get Started)</a>
+      </div>
     </div>
   </header>
 
@@ -1290,8 +1296,8 @@
             Trendyol, Taobao, Temu və Amazon bağlamalarını avtomatik izləyən, Starex, Limak, Camex və Dynamex tariflərini saniyəlik müqayisə edən və SmartCustoms 300 USD aylıq kvotasını qoruyan müstəqil sistem.
           </p>
           <div class="hero-actions" data-reveal>
-            <a href="#kalkulyator" class="btn-primary">Canlı Tarif Hesabla</a>
-            <a href="#loyd-engine" class="btn-secondary">Loyd Terminalını Yoxla</a>
+            <a href="#dual-hosting" class="btn-primary" style="background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; box-shadow:0 8px 24px rgba(0,210,255,0.3);">İstifadə Modelini Seçin (Bulud və ya Öz Serverin) →</a>
+            <a href="#kalkulyator" class="btn-secondary">Canlı Tarif Hesabla</a>
           </div>
           <div class="hero-facts" data-reveal>
             <div class="fact-tile" data-reveal>
@@ -1359,6 +1365,134 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Section 1.5: Dual-Hosting (Open-Core / Cloud + Self-Hosted) Mode Selector -->
+    <section id="dual-hosting" class="engine-section" style="padding-top:40px; padding-bottom:60px;">
+      <div class="container">
+        <div style="text-align:center; margin:0 auto 40px auto;" data-reveal>
+          <span class="meta-copy" style="color:var(--accent-cyan); font-weight:700; text-transform:uppercase; letter-spacing:1.5px;">Dual-Hosting Arxitekturası v4.5</span>
+          <h2 class="section-title" style="margin-top:8px;">İstifadə Modelinizi Seçin</h2>
+          <p class="body-copy" style="margin-top:12px; max-width:680px; margin-left:auto; margin-right:auto;">
+            KargoPilot iki fərqli rejimdə təqdim olunur: sıfır texniki quraşdırma ilə 30 saniyədə başlayan <b>Rəsmi Bulud Xidməti</b> və ya bütün məlumatların 100% yalnız sizin infrastrukturunuzda qaldığı <b>Açıq Qaynaqlı Öz Serverin (Sovereign)</b>.
+          </p>
+        </div>
+
+        <!-- Mode Comparison Cards -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:24px; margin-bottom:32px;">
+          
+          <!-- Card A: Managed Cloud -->
+          <div class="identity-panel" style="flex-direction:column; align-items:stretch; border:2px solid rgba(0,210,255,0.4); background:linear-gradient(180deg, rgba(11,15,25,0.8), rgba(6,10,18,0.95)); border-radius:24px; padding:32px; box-shadow:0 12px 32px rgba(0,210,255,0.15);" data-reveal>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; background:rgba(0,210,255,0.15); color:var(--accent-cyan); font-size:12px; font-weight:700; border:1px solid rgba(0,210,255,0.3);">
+                ☁️ Bulud Xidməti (Tövsiyə Olunan)
+              </span>
+              <span class="meta-copy" style="color:var(--ink-light); font-weight:700;">30 Saniyəlik Başlanğıc</span>
+            </div>
+
+            <div class="block-title" style="font-size:22px; font-weight:800; color:#fff;">Bizim Serverdə (Managed Cloud)</div>
+            <p class="body-copy" style="margin-top:10px; font-size:14px; line-height:1.6;">
+              Heç bir texniki quraşdırma tələb olunmur. 30 saniyədə qeydiyyatdan keçin, server təhlükəsizliyini, avtomatik yeniləmələri və daşıyıcı sinxronizasiyasını biz idarə edək.
+            </p>
+
+            <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px; font-size:13px; color:var(--ink-light);">
+              <div style="display:flex; align-items:flex-start; gap:8px;">
+                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
+                <span><b>Quraşdırma yoxdur</b> — brauzerdən dərhal daxil olub istifadə edin.</span>
+              </div>
+              <div style="display:flex; align-items:flex-start; gap:8px;">
+                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
+                <span><b>Avtomatik yeniləmələr və backup</b> — 7/24 otopilot və gündəlik arxivləmə.</span>
+              </div>
+              <div style="display:flex; align-items:flex-start; gap:8px;">
+                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
+                <span><b>İstənilən cihazdan giriş</b> — telefon, planşet və noutbukdan fasiləsiz idarəetmə.</span>
+              </div>
+              <div style="display:flex; align-items:flex-start; gap:8px; color:var(--ink-muted);">
+                <span>🎯</span>
+                <span><b>Kimlər üçündür:</b> Vaxt itirmədən dərhal başlamaq istəyən fərdlər və komandalar.</span>
+              </div>
+            </div>
+
+            <div style="margin-top:32px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+              <button type="button" onclick="openDualHostingModal(); showCloudFlow();" class="btn-primary" style="width:100%; text-align:center; padding:14px; font-weight:800; font-size:14px; background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; box-shadow:0 8px 24px rgba(0,210,255,0.25); cursor:pointer;">
+                Hesab Yarat və Buludda Başla →
+              </button>
+            </div>
+          </div>
+
+          <!-- Card B: Self-Hosted -->
+          <div class="identity-panel" style="flex-direction:column; align-items:stretch; border:2px solid rgba(255,255,255,0.1); background:linear-gradient(180deg, rgba(11,15,25,0.8), rgba(6,10,18,0.95)); border-radius:24px; padding:32px; box-shadow:0 12px 32px rgba(0,0,0,0.3); transition:border 0.2s;" data-reveal>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; background:rgba(16,185,129,0.15); color:var(--accent-lime); font-size:12px; font-weight:700; border:1px solid rgba(16,185,129,0.3);">
+                🖥️ Açıq Qaynaq · Tam Müstəqil
+              </span>
+              <span class="meta-copy" style="color:var(--ink-light); font-weight:700;">Sovereign Edition</span>
+            </div>
+
+            <div class="block-title" style="font-size:22px; font-weight:800; color:#fff;">Öz Serverində İşlət (Self-Hosted)</div>
+            <p class="body-copy" style="margin-top:10px; font-size:14px; line-height:1.6;">
+              Tətbiqi öz serverinizdə (və ya lokal Docker mühitində) qurun və ya tətbiqi öz server ünvanınıza qoşun. Bütün məlumatlar 100% sizin infrastrukturunuzda saxlanılır.
+            </p>
+
+            <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px; font-size:13px; color:var(--ink-light);">
+              <div style="display:flex; align-items:flex-start; gap:8px;">
+                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
+                <span><b>100% məlumat suverenliyi</b> — şirkətimizə sıfır telemetriya və sıfır FİN ötürülməsi.</span>
+              </div>
+              <div style="display:flex; align-items:flex-start; gap:8px;">
+                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
+                <span><b>Açıq qaynaq koduna tam nəzarət</b> — yerli Docker container və şəxsi şifrələmə açarı.</span>
+              </div>
+              <div style="display:flex; align-items:flex-start; gap:8px;">
+                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
+                <span><b>Şirkətdaxili təhlükəsizlik</b> — on-premise, xüsusi VPN və qanuni uyğunluq.</span>
+              </div>
+              <div style="display:flex; align-items:flex-start; gap:8px; color:var(--ink-muted);">
+                <span>🎯</span>
+                <span><b>Kimlər üçündür:</b> Tərtibatçılar, dropshipperlər və məlumatını kənara verməyən şirkətlər.</span>
+              </div>
+            </div>
+
+            <div style="margin-top:32px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+              <button type="button" onclick="openDualHostingModal(); showSelfHostedFlow();" class="btn-secondary" style="width:100%; text-align:center; padding:14px; font-weight:800; font-size:14px; color:var(--accent-lime); border-color:rgba(16,185,129,0.4); cursor:pointer;">
+                Öz Serverini Qoş və ya Qur →
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 2-Question Interactive Decision Helper -->
+        <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:24px;" data-reveal>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+            <span style="font-size:20px;">🤔</span>
+            <div>
+              <div style="font-weight:800; font-size:15px; color:#fff;">Hansı model mənə daha uyğundur? (2 suallıq köməkçi)</div>
+              <div class="meta-copy">Qərarsız qalmısınızsa, bu sadə sualları cavablandıraraq ən uyğun variantı tapın:</div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+            <div style="background:rgba(0,0,0,0.3); padding:16px; border-radius:14px; border:1px solid rgba(255,255,255,0.06);">
+              <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:10px;">1. Texniki server idarəetmə təcrübəniz və ya Docker serveriniz var?</div>
+              <div style="display:flex; gap:8px;">
+                <button type="button" onclick="answerHelper('tech', false); openDualHostingModal();" class="btn-secondary" style="flex:1; padding:8px; font-size:12px; font-weight:700; border-color:var(--accent-cyan); color:var(--accent-cyan);">Xeyr (Sadə Başlanğıc)</button>
+                <button type="button" onclick="answerHelper('tech', true); openDualHostingModal();" class="btn-secondary" style="flex:1; padding:8px; font-size:12px; font-weight:700;">Bəli (Serverimiz var)</button>
+              </div>
+            </div>
+
+            <div style="background:rgba(0,0,0,0.3); padding:16px; border-radius:14px; border:1px solid rgba(255,255,255,0.06);">
+              <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:10px;">2. FİN və bəyannamələr harada saxlanılsın?</div>
+              <div style="display:flex; gap:8px;">
+                <button type="button" onclick="answerHelper('storage', 'cloud'); openDualHostingModal();" class="btn-secondary" style="flex:1; padding:8px; font-size:12px; font-weight:700; border-color:var(--accent-cyan); color:var(--accent-cyan);">24/7 Təhlükəsiz Buludda</button>
+                <button type="button" onclick="answerHelper('storage', 'self'); openDualHostingModal();" class="btn-secondary" style="flex:1; padding:8px; font-size:12px; font-weight:700;">Yalnız Öz Serverimizdə</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -2299,5 +2433,538 @@
       }
     })();
   </script>
+<script src="assets/kargopilot-connection.js"></script>
+
+<!-- Dual-Hosting (Managed Cloud vs Self-Hosted) Universal Modal & Manager -->
+<div id="kp-dual-hosting-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 sm:p-6 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="kp-dh-title">
+  <div class="relative w-full max-w-4xl bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden my-8">
+    
+    <!-- Top Modal Header -->
+    <div class="flex items-center justify-between px-6 py-5 border-b border-slate-800 bg-slate-950/60">
+      <div class="flex items-center gap-3">
+        <img src="assets/logo_concept_6_infinity_loop.jpg" alt="KargoPilot Loqo" class="w-9 h-9 rounded-xl object-cover border border-white/10 shrink-0">
+        <div>
+          <h2 id="kp-dh-title" class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+            <span>İstifadə Modelini Seçin</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono font-semibold">Dual-Hosting v4.5</span>
+          </h2>
+          <p class="text-xs text-slate-400">Bulud Xidməti (Managed Cloud) və ya Öz Serverində Müstəqil (Self-Hosted)</p>
+        </div>
+      </div>
+      <button type="button" onclick="closeDualHostingModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition" aria-label="Bağla">
+        ✕
+      </button>
+    </div>
+
+    <!-- Interactive Decision Helper ("Hansını seçməliyəm?") -->
+    <div class="p-6 bg-slate-950/30 border-b border-slate-800/80">
+      <div class="flex items-center justify-between cursor-pointer" onclick="toggleDecisionHelper()">
+        <div class="flex items-center gap-2.5">
+          <span class="text-base">💡</span>
+          <span class="text-xs sm:text-sm font-bold text-slate-200">Hansı seçim mənə daha uyğundur? (2 suallıq köməkçi)</span>
+        </div>
+        <span id="decision-helper-chevron" class="text-xs text-slate-400 font-bold transition-transform">▼</span>
+      </div>
+
+      <div id="decision-helper-body" class="hidden mt-4 pt-4 border-t border-slate-800/60 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+          <div class="text-xs font-bold text-white mb-2">1. Texniki komandanız və ya şəxsi serveriniz var?</div>
+          <div class="flex gap-2">
+            <button type="button" onclick="answerHelper('tech', false)" id="helper-btn-tech-no" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Xeyr (Sadə Başlanğıc)</button>
+            <button type="button" onclick="answerHelper('tech', true)" id="helper-btn-tech-yes" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Bəli (Serverimiz var)</button>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+          <div class="text-xs font-bold text-white mb-2">2. FİN və qəbzlər harada saxlanılsın?</div>
+          <div class="flex gap-2">
+            <button type="button" onclick="answerHelper('storage', 'cloud')" id="helper-btn-store-cloud" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">24/7 Təhlükəsiz Buludda</button>
+            <button type="button" onclick="answerHelper('storage', 'self')" id="helper-btn-store-self" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Yalnız Öz Serverimizdə</button>
+          </div>
+        </div>
+
+        <div id="helper-recommendation" class="md:col-span-2 p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-200 flex items-center justify-between">
+          <span>✨ <b>Tövsiyə:</b> Sizin üçün <b>Bulud Xidməti (Managed Cloud)</b> ən rahat seçimdir. Heç bir quraşdırma tələb olunmur.</span>
+          <span class="text-[11px] underline font-bold cursor-pointer" onclick="selectCardA()">Kart A-nı Seç →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Two-Card Mode Selector Grid -->
+    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- CARD A: MANAGED CLOUD -->
+      <div id="mode-card-cloud" class="p-6 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-cyan-500/40 relative flex flex-col justify-between transition-all hover:border-cyan-400">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+              ☁️ Tövsiyə Olunan · Ən Sadə
+            </span>
+            <span class="text-xs font-mono text-slate-400">30 saniyə</span>
+          </div>
+
+          <h3 class="text-lg font-bold text-white tracking-tight">Bulud Xidməti (Bizim Serverdə)</h3>
+          <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+            Heç bir texniki quraşdırma yoxdur. 30 saniyədə hesab yaradın, server infrastrukturunu və 7/24 otopilotu biz idarə edək.
+          </p>
+
+          <div class="mt-4 space-y-2.5 text-xs text-slate-200">
+            <div class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><b>Quraşdırma tələb olunmur</b> — qeydiyyatdan dərhal sonra işə başlayır.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><b>Avtomatik yeniləmələr və ehtiyat nüsxə</b> — daima ən son versiya və arxivləmə.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><b>İstənilən cihazdan giriş</b> — mobil, planşet və kompüterdən fasiləsiz sinxronizasiya.</span>
+            </div>
+            <div class="flex items-start gap-2 text-slate-400">
+              <span class="text-slate-500">🎯</span>
+              <span><b>Kimlər üçündür:</b> Tez başlamaq istəyən fərdlər, ailələr və komandalar.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-800">
+          <button type="button" onclick="showCloudFlow()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/20 transition flex items-center justify-center gap-2">
+            <span>Hesab Yarat və Buludda Başla</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CARD B: SELF-HOSTED -->
+      <div id="mode-card-self" class="p-6 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-slate-800 hover:border-emerald-500/40 relative flex flex-col justify-between transition-all">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              🖥️ Açıq Qaynaq · Tam Müstəqil
+            </span>
+            <span class="text-xs font-mono text-slate-400">Sovereign Edition</span>
+          </div>
+
+          <h3 class="text-lg font-bold text-white tracking-tight">Öz Serverində İşlət (Self-Hosted)</h3>
+          <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+            Tətbiqi öz serverinizdə (və ya lokal Docker mühitində) qurun və ya mövcud server ünvanınıza qoşulun. Bütün məlumatlar yalnız sizdə qalır.
+          </p>
+
+          <div class="mt-4 space-y-2.5 text-xs text-slate-200">
+            <div class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><b>100% məlumat suverenliyi</b> — şirkətimizə sıfır telemetriya və sıfır FİN ötürülməsi.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><b>Açıq qaynaq koduna tam nəzarət</b> — yerli SQLite WAL və şəxsi şifrələmə açarı.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><b>Korporativ daxili təhlükəsizlik</b> — on-premise və xüsusi şəbəkə tələblərinə uyğun.</span>
+            </div>
+            <div class="flex items-start gap-2 text-slate-400">
+              <span class="text-slate-500">🎯</span>
+              <span><b>Kimlər üçündür:</b> Tərtibatçılar, dropshipperlər və məlumatını kənara verməyən şirkətlər.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-800">
+          <button type="button" onclick="showSelfHostedFlow()" class="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs border border-emerald-500/30 transition flex items-center justify-center gap-2">
+            <span>Öz Serverini Qoş və ya Qur</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SUB-FLOW A: MANAGED CLOUD ONBOARDING -->
+    <div id="flow-cloud-container" class="hidden p-6 border-t border-slate-800 bg-slate-950/70">
+      <div class="max-w-xl mx-auto space-y-4">
+        <div class="flex items-center justify-between">
+          <h4 class="text-sm font-bold text-white flex items-center gap-2">
+            <span>☁️ Bulud Xidməti Qeydiyyatı və Məlumat İcazəsi</span>
+          </h4>
+          <button type="button" onclick="resetToModeCards()" class="text-xs text-slate-400 hover:text-white">← Geri qayıt</button>
+        </div>
+
+        <form id="kp-cloud-auth-form" onsubmit="handleCloudAuthSubmit(event)" class="space-y-3.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Ad və Soyad</label>
+              <input type="text" id="cloud-name" required placeholder="Vasif Məcidli" class="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Telefon (WhatsApp)</label>
+              <input type="text" id="cloud-phone" required placeholder="+994501234567" class="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">E-poçt ünvanı</label>
+            <input type="email" id="cloud-email" required placeholder="istifadeci@kargopilot.az" class="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Təhlükəsiz Şifrə</label>
+            <input type="password" id="cloud-password" required minlength="8" placeholder="Ən azı 8 simvol" class="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <!-- Human-Readable Transparent Data Consent Box -->
+          <div class="p-3.5 rounded-xl bg-slate-900 border border-cyan-500/30 flex items-start gap-3">
+            <input type="checkbox" id="cloud-consent" required checked class="mt-0.5 rounded bg-slate-800 border-slate-600 text-cyan-500 focus:ring-0">
+            <label for="cloud-consent" class="text-xs text-slate-300 leading-relaxed cursor-pointer">
+              <b>Şəffaf Məlumat Razılığı:</b> Məlumatlarımın bu xidmətin bulud serverlərində təhlükəsiz şəkildə saxlanılmasına, AES-256 ilə şifrələnməsinə və daşıyıcı/SmartCustoms əməliyyatları üçün emal edilməsinə icazə verirəm. İstədiyim vaxt məlumatlarımı tam olaraq endirə (export) və ya silə bilərəm.
+            </label>
+          </div>
+
+          <div id="cloud-auth-alert" class="hidden p-3 rounded-lg text-xs"></div>
+
+          <button type="submit" id="cloud-submit-btn" class="w-full py-2.5 px-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs shadow-lg transition">
+            Bulud Hesabı Yarat və Paneli Aç →
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- SUB-FLOW B: SELF-HOSTED ONBOARDING (2 TABS) -->
+    <div id="flow-self-container" class="hidden p-6 border-t border-slate-800 bg-slate-950/70">
+      <div class="max-w-xl mx-auto space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex gap-2">
+            <button type="button" onclick="switchSelfTab('connect')" id="self-tab-btn-connect" class="py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              1. Mövcud Serverə Qoşul
+            </button>
+            <button type="button" onclick="switchSelfTab('guide')" id="self-tab-btn-guide" class="py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">
+              2. Yeni Server Qur (Bələdçi)
+            </button>
+          </div>
+          <button type="button" onclick="resetToModeCards()" class="text-xs text-slate-400 hover:text-white">← Geri qayıt</button>
+        </div>
+
+        <!-- TAB 1: CONNECT TO EXISTING SERVER -->
+        <div id="self-tab-connect" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Serverinizin Ünvanı (URL və ya IP:Port)</label>
+            <div class="flex gap-2">
+              <input type="text" id="self-server-url" value="http://127.0.0.1:48481" placeholder="http://127.0.0.1:48481 və ya https://kargo.sirket.az" class="flex-1 px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white font-mono placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+              <button type="button" onclick="runConnectionTest()" id="self-test-btn" class="py-2 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition flex items-center gap-1.5 shrink-0">
+                <span id="test-spinner" class="hidden animate-spin text-xs">⟳</span>
+                <span>Bağlantını Yoxla</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Lokal mühit üçün standart port: <code>http://127.0.0.1:48481</code></p>
+          </div>
+
+          <!-- Connection Health Result Box -->
+          <div id="self-health-result" class="hidden p-3.5 rounded-xl border text-xs leading-relaxed space-y-1"></div>
+
+          <button type="button" onclick="confirmSelfHostedConnection()" id="self-connect-confirm-btn" class="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-lg transition">
+            Bu Serverə Qoşul və İdarəetmə Panelinə Keç →
+          </button>
+        </div>
+
+        <!-- TAB 2: SETUP GUIDE (1-CLICK DOCKER / SCRIPT) -->
+        <div id="self-tab-guide" class="hidden space-y-4 text-xs text-slate-300">
+          <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+            <div class="font-bold text-white flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono">1</span>
+              <span>1-Kliklə Avtomatik Quraşdırma Əmri (Linux / macOS / VPS)</span>
+            </div>
+            <div class="relative bg-black/60 p-3 rounded-lg font-mono text-[11px] text-emerald-300 overflow-x-auto flex items-center justify-between">
+              <code>curl -sSL https://raw.githubusercontent.com/VaskaMc/kargopilot/main/install_sovereign.sh | bash</code>
+              <button type="button" onclick="copySnippet('curl -sSL https://raw.githubusercontent.com/VaskaMc/kargopilot/main/install_sovereign.sh | bash', this)" class="ml-3 px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-[10px] shrink-0 font-sans font-bold">Kopyala</button>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+            <div class="font-bold text-white flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono">2</span>
+              <span>Və ya Docker Compose ilə birbaşa işə salın:</span>
+            </div>
+            <div class="relative bg-black/60 p-3 rounded-lg font-mono text-[11px] text-emerald-300 overflow-x-auto flex items-center justify-between">
+              <code>docker-compose -f docker-compose.sovereign.yml up -d</code>
+              <button type="button" onclick="copySnippet('docker-compose -f docker-compose.sovereign.yml up -d', this)" class="ml-3 px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-[10px] shrink-0 font-sans font-bold">Kopyala</button>
+            </div>
+            <p class="text-[11px] text-slate-400">
+              Quraşdırma bitdikdən sonra KargoPilot avtomatik olaraq <code>http://127.0.0.1:48481</code> ünvanında fəaliyyətə başlayır.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2 font-bold text-white">
+              <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono">3</span>
+              <span>Server işə düşdümü?</span>
+            </div>
+            <button type="button" onclick="switchSelfTab('connect')" class="py-1.5 px-3 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/30 transition">
+              Tab 1-ə Keçib Bağlantını Yoxlayın →
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Active Server Controls Footer (Data Export & Settings) -->
+    <div class="px-6 py-4 bg-slate-950 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2 text-slate-400">
+        <span>Cari Aktiv Rejim:</span>
+        <span id="modal-current-mode-badge" class="font-bold text-white">Yüklənir...</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="triggerDataExport()" id="modal-export-btn" class="py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold transition flex items-center gap-1.5">
+          <span>📥 Məlumatları Endir (Export JSON)</span>
+        </button>
+        <button type="button" onclick="closeDualHostingModal()" class="py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition">
+          Bağla
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal Interaction Controller Script -->
+<script>
+  function openDualHostingModal() {
+    var modal = document.getElementById('kp-dual-hosting-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    refreshModalModeBadge();
+  }
+
+  function closeDualHostingModal() {
+    var modal = document.getElementById('kp-dual-hosting-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  function refreshModalModeBadge() {
+    var badge = document.getElementById('modal-current-mode-badge');
+    if (!badge || !window.KargoPilotConnection) return;
+    var mode = window.KargoPilotConnection.getMode();
+    if (mode === 'cloud') {
+      badge.innerHTML = '<span class="text-cyan-400">☁️ Bulud Xidməti (Managed Cloud)</span>';
+    } else {
+      var customUrl = window.KargoPilotConnection.getCustomUrl();
+      badge.innerHTML = '<span class="text-emerald-400">🖥️ Öz Serverim (' + customUrl + ')</span>';
+    }
+  }
+
+  function toggleDecisionHelper() {
+    var body = document.getElementById('decision-helper-body');
+    var chevron = document.getElementById('decision-helper-chevron');
+    if (!body) return;
+    if (body.classList.contains('hidden')) {
+      body.classList.remove('hidden');
+      if (chevron) chevron.textContent = '▲';
+    } else {
+      body.classList.add('hidden');
+      if (chevron) chevron.textContent = '▼';
+    }
+  }
+
+  function answerHelper(type, value) {
+    var rec = document.getElementById('helper-recommendation');
+    var btnTechYes = document.getElementById('helper-btn-tech-yes');
+    var btnTechNo = document.getElementById('helper-btn-tech-no');
+    var btnStoreCloud = document.getElementById('helper-btn-store-cloud');
+    var btnStoreSelf = document.getElementById('helper-btn-store-self');
+
+    if (type === 'tech') {
+      if (value) {
+        btnTechYes.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        btnTechNo.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700';
+      } else {
+        btnTechNo.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30';
+        btnTechYes.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700';
+      }
+    } else if (type === 'storage') {
+      if (value === 'self') {
+        btnStoreSelf.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        btnStoreCloud.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700';
+      } else {
+        btnStoreCloud.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30';
+        btnStoreSelf.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700';
+      }
+    }
+
+    var isSelf = (btnTechYes && btnTechYes.classList.contains('border-emerald-500/30')) || (btnStoreSelf && btnStoreSelf.classList.contains('border-emerald-500/30'));
+    if (rec) {
+      if (isSelf) {
+        rec.className = 'md:col-span-2 p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200 flex items-center justify-between';
+        rec.innerHTML = '<span>🛡️ <b>Tövsiyə:</b> Sizə <b>Öz Serverində İşlət (Self-Hosted)</b> uyğundur. Məlumatlar 100% sizin serverinizdə qalacaq.</span><span class="text-[11px] underline font-bold cursor-pointer" onclick="selectCardB()">Kart B-ni Seç →</span>';
+      } else {
+        rec.className = 'md:col-span-2 p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-200 flex items-center justify-between';
+        rec.innerHTML = '<span>✨ <b>Tövsiyə:</b> Sizin üçün <b>Bulud Xidməti (Managed Cloud)</b> ən rahat seçimdir. Heç bir quraşdırma tələb olunmur.</span><span class="text-[11px] underline font-bold cursor-pointer" onclick="selectCardA()">Kart A-nı Seç →</span>';
+      }
+    }
+  }
+
+  function selectCardA() { showCloudFlow(); }
+  function selectCardB() { showSelfHostedFlow(); }
+
+  function showCloudFlow() {
+    var c = document.getElementById('flow-cloud-container');
+    var s = document.getElementById('flow-self-container');
+    if (c) c.classList.remove('hidden');
+    if (s) s.classList.add('hidden');
+    c.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function showSelfHostedFlow() {
+    var c = document.getElementById('flow-cloud-container');
+    var s = document.getElementById('flow-self-container');
+    if (s) s.classList.remove('hidden');
+    if (c) c.classList.add('hidden');
+    s.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function resetToModeCards() {
+    var c = document.getElementById('flow-cloud-container');
+    var s = document.getElementById('flow-self-container');
+    if (c) c.classList.add('hidden');
+    if (s) s.classList.add('hidden');
+  }
+
+  function switchSelfTab(tab) {
+    var cTab = document.getElementById('self-tab-connect');
+    var gTab = document.getElementById('self-tab-guide');
+    var cBtn = document.getElementById('self-tab-btn-connect');
+    var gBtn = document.getElementById('self-tab-btn-guide');
+
+    if (tab === 'connect') {
+      if (cTab) cTab.classList.remove('hidden');
+      if (gTab) gTab.classList.add('hidden');
+      if (cBtn) cBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+      if (gBtn) gBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700';
+    } else {
+      if (gTab) gTab.classList.remove('hidden');
+      if (cTab) cTab.classList.add('hidden');
+      if (gBtn) gBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+      if (cBtn) cBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700';
+    }
+  }
+
+  async function runConnectionTest() {
+    var urlInput = document.getElementById('self-server-url');
+    var resBox = document.getElementById('self-health-result');
+    var spinner = document.getElementById('test-spinner');
+    if (!urlInput || !resBox) return;
+
+    if (spinner) spinner.classList.remove('hidden');
+    resBox.classList.remove('hidden');
+    resBox.className = 'p-3.5 rounded-xl border border-cyan-500/30 bg-cyan-950/30 text-cyan-200 text-xs';
+    resBox.innerHTML = 'Bağlantı yoxlanılır... Endpoint-ə sorğu göndərilir.';
+
+    var result = await window.KargoPilotConnection.testConnection(urlInput.value);
+    if (spinner) spinner.classList.add('hidden');
+
+    if (result.ok) {
+      resBox.className = 'p-3.5 rounded-xl border border-emerald-500/40 bg-emerald-950/40 text-emerald-200 text-xs space-y-1';
+      resBox.innerHTML =
+        '<div class="font-bold flex items-center gap-1.5"><span>✅</span> <span>' + result.message + '</span></div>' +
+        '<div>Versiya: <b>' + result.version + '</b> · Rejim: <b>' + result.edition + '</b> · Latency: <b>' + result.latencyMs + ' ms</b></div>';
+    } else {
+      resBox.className = 'p-3.5 rounded-xl border border-amber-500/40 bg-amber-950/40 text-amber-200 text-xs space-y-1';
+      resBox.innerHTML =
+        '<div class="font-bold flex items-center gap-1.5"><span>⚠️</span> <span>Bağlantı Uğursuz Oldu</span></div>' +
+        '<p class="text-slate-300">' + result.message + '</p>';
+    }
+  }
+
+  function confirmSelfHostedConnection() {
+    var urlInput = document.getElementById('self-server-url');
+    var target = urlInput ? urlInput.value : 'http://127.0.0.1:48481';
+    window.KargoPilotConnection.setMode('self-hosted', target);
+    closeDualHostingModal();
+    window.location.reload();
+  }
+
+  async function handleCloudAuthSubmit(e) {
+    e.preventDefault();
+    var email = document.getElementById('cloud-email').value;
+    var name = document.getElementById('cloud-name').value;
+    var phone = document.getElementById('cloud-phone').value;
+    var password = document.getElementById('cloud-password').value;
+    var consent = document.getElementById('cloud-consent').checked;
+    var alertBox = document.getElementById('cloud-auth-alert');
+    var btn = document.getElementById('cloud-submit-btn');
+
+    if (btn) btn.disabled = true;
+    if (alertBox) {
+      alertBox.classList.remove('hidden');
+      alertBox.className = 'p-3 rounded-lg bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-xs';
+      alertBox.textContent = 'Bulud hesabı təsdiqlənir...';
+    }
+
+    try {
+      var res = await fetch('/api/v1/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          full_name: name,
+          phone: phone
+        })
+      });
+
+      if (!res.ok) {
+        var errData = await res.json().catch(function () { return {}; });
+        var msg = errData.detail || 'Qeydiyyat zamanı xəta baş verdi. Zəhmət olmasa məlumatları yoxlayın.';
+        if (alertBox) {
+          alertBox.className = 'p-3 rounded-lg bg-amber-950/40 border border-amber-500/30 text-amber-200 text-xs';
+          alertBox.textContent = msg;
+        }
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      window.KargoPilotConnection.setMode('cloud', null, consent);
+      if (alertBox) {
+        alertBox.className = 'p-3 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-emerald-200 text-xs font-bold';
+        alertBox.textContent = 'Hesab uğurla yaradıldı! İdarəetmə panelinə yönləndirilirsiniz...';
+      }
+      setTimeout(function () {
+        closeDualHostingModal();
+        window.location.reload();
+      }, 1000);
+    } catch (err) {
+      if (alertBox) {
+        alertBox.className = 'p-3 rounded-lg bg-amber-950/40 border border-amber-500/30 text-amber-200 text-xs';
+        alertBox.textContent = 'Şəbəkə xətası baş verdi: ' + err.message;
+      }
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function copySnippet(text, btn) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      if (btn) {
+        var orig = btn.textContent;
+        btn.textContent = 'Kopyalandı!';
+        setTimeout(function () { btn.textContent = orig; }, 2000);
+      }
+    }
+  }
+
+  async function triggerDataExport() {
+    var btn = document.getElementById('modal-export-btn');
+    if (btn) btn.textContent = 'Arxivlənir...';
+    var res = await window.KargoPilotConnection.exportData();
+    if (btn) {
+      btn.textContent = res.ok ? 'Endirildi! ✓' : 'Xəta baş verdi';
+      setTimeout(function () { btn.textContent = '📥 Məlumatları Endir (Export JSON)'; }, 2500);
+    }
+  }
+</script>
+
 </body>
 </html>

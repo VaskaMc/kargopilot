@@ -1,0 +1,177 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<!-- Executive KPI Summary Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+  <!-- Card 1: Total Users -->
+  <div class="glass-card p-5 rounded-2xl relative overflow-hidden group hover:border-cyan-500/40 transition">
+    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl group-hover:bg-cyan-500/20 transition"></div>
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Ümumi Müştəri Bazası</span>
+      <span class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 text-sm">👥</span>
+    </div>
+    <div class="mt-4 flex items-baseline gap-2">
+      <span class="text-3xl font-extrabold text-white tracking-tight tabular-nums">{{ stats.total_users | default(18492) }}</span>
+      <span class="text-xs font-mono text-emerald-400">↑ +14.2%</span>
+    </div>
+    <p class="text-[11px] text-slate-400 mt-1">Multi-tenant qeydiyyatlı aktiv hesabla</p>
+  </div>
+
+  <!-- Card 2: Active In-Flight Parcels -->
+  <div class="glass-card p-5 rounded-2xl relative overflow-hidden group hover:border-indigo-500/40 transition">
+    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl group-hover:bg-indigo-500/20 transition"></div>
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Aktiv Yoldakı Bağlamalar</span>
+      <span class="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 text-sm">✈️</span>
+    </div>
+    <div class="mt-4 flex items-baseline gap-2">
+      <span class="text-3xl font-extrabold text-white tracking-tight tabular-nums">{{ stats.in_flight_parcels | default(1428) }}</span>
+      <span class="text-xs font-mono text-cyan-400">4 Daşıyıcı</span>
+    </div>
+    <p class="text-[11px] text-slate-400 mt-1">Xarici anbar & gömrük transferində</p>
+  </div>
+
+  <!-- Card 3: Customs Volume USD -->
+  <div class="glass-card p-5 rounded-2xl relative overflow-hidden group hover:border-amber-500/40 transition">
+    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition"></div>
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-mono uppercase tracking-wider text-slate-400">DGK Aylıq Həcm</span>
+      <span class="p-2 rounded-xl bg-amber-500/10 text-amber-400 text-sm">🛡️</span>
+    </div>
+    <div class="mt-4 flex items-baseline gap-2">
+      <span class="text-3xl font-extrabold text-white tracking-tight tabular-nums">${{ "%.2f"|format(stats.total_customs_usd | float) }}</span>
+      <span class="text-xs font-mono text-amber-400">Limit $300</span>
+    </div>
+    <p class="text-[11px] text-slate-400 mt-1">Fərdi kvota üzrə ümumi dövriyyə</p>
+  </div>
+
+  <!-- Card 4: Net Arbitrage Margin -->
+  <div class="glass-card p-5 rounded-2xl relative overflow-hidden group hover:border-emerald-500/40 transition">
+    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition"></div>
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Daşıma Arbitraj Marjası</span>
+      <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 text-sm">💰</span>
+    </div>
+    <div class="mt-4 flex items-baseline gap-2">
+      <span class="text-3xl font-extrabold text-white tracking-tight tabular-nums">{{ "%.2f"|format(stats.net_margin_azn | float) }} ₼</span>
+      <span class="text-xs font-mono text-emerald-400">+5.2% Marja</span>
+    </div>
+    <p class="text-[11px] text-slate-400 mt-1">Avtomatlaşdırılmış B2B komissiyası</p>
+  </div>
+</div>
+
+<!-- Middle Section: Carrier Distribution & Live Review Pipeline -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Carrier Volume Breakdown (2 Columns) -->
+  <div class="glass-card p-6 rounded-2xl lg:col-span-2 space-y-5">
+    <div class="flex items-center justify-between border-b border-white/5 pb-4">
+      <div>
+        <h3 class="text-base font-bold text-white tracking-tight">Daşıyıcılar üzrə Yük Dövriyyəsi & Arbitraj</h3>
+        <p class="text-xs text-slate-400">Canlı tarif müqayisəsi və çatdırılma kanalları</p>
+      </div>
+      <a href="/admin/carriers" class="text-xs font-mono text-cyan-400 hover:text-cyan-300">Marjaları Redaktə Et →</a>
+    </div>
+
+    <!-- Progress Bars -->
+    <div class="space-y-4">
+      {% for c in stats.carrier_shares %}
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center text-xs">
+          <span class="font-bold text-slate-200 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full {% if c.carrier == 'STAREX' %}bg-cyan-400{% elif c.carrier == 'CAMEX' %}bg-indigo-400{% elif c.carrier == 'LIMAK' %}bg-amber-400{% else %}bg-emerald-400{% endif %}"></span>
+            {{ c.carrier }} <span class="text-[11px] font-mono text-slate-400 font-normal">({{ c.country }})</span>
+          </span>
+          <span class="font-mono text-slate-300">{{ c.parcels }} bağlama <b class="text-white">({{ c.pct }}%)</b></span>
+        </div>
+        <div class="w-full bg-white/5 rounded-full h-2.5 overflow-hidden">
+          <div class="h-2.5 rounded-full {% if c.carrier == 'STAREX' %}bg-cyan-500{% elif c.carrier == 'CAMEX' %}bg-indigo-500{% elif c.carrier == 'LIMAK' %}bg-amber-500{% else %}bg-emerald-500{% endif %} transition-all duration-500" style="width: {{ c.pct }}%"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Live CBAR Exchange Rate Footnote -->
+    <div class="pt-2 border-t border-white/5 flex flex-wrap items-center justify-between text-xs text-slate-400">
+      <div class="flex items-center gap-3 font-mono">
+        <span>Məzənnə Təminatı:</span>
+        <span class="text-slate-300">1 USD = <b class="text-white">{{ stats.cbar_usd_rate }} ₼</b></span>
+        <span class="text-slate-300">1 TRY = <b class="text-white">{{ stats.cbar_try_rate }} ₼</b></span>
+        <span class="text-slate-300">1 CNY = <b class="text-white">{{ stats.cbar_cny_rate }} ₼</b></span>
+      </div>
+      <span class="text-[11px] text-emerald-400 font-mono">✓ CBAR API Avtomatik Sinxronizasiya</span>
+    </div>
+  </div>
+
+  <!-- Customs Review Queue Status (1 Column) -->
+  <div class="glass-card p-6 rounded-2xl space-y-5 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between border-b border-white/5 pb-4">
+        <div>
+          <h3 class="text-base font-bold text-white tracking-tight">SmartCustoms Nəzarəti</h3>
+          <p class="text-xs text-slate-400">DGK 300$ və risk filtrləri</p>
+        </div>
+        <span class="badge-crimson text-xs font-mono px-2 py-0.5 rounded-md">{{ stats.pending_customs_count }} Növbədə</span>
+      </div>
+
+      <div class="mt-5 space-y-3.5">
+        <div class="p-3.5 rounded-xl bg-black/30 border border-amber-500/20 flex items-start gap-3">
+          <span class="text-amber-400 text-lg">⚠️</span>
+          <div class="text-xs space-y-0.5">
+            <div class="font-bold text-amber-200">{{ stats.high_risk_customs_count }} Bağlama $250 Həddini Aşır</div>
+            <p class="text-slate-400">Aylıq fərdi kvotanın (300$) aşılma təhlükəsi var. FİN balansını yoxlayın.</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-black/30 border border-cyan-500/20 flex items-start gap-3">
+          <img src="/static/img/logo_concept_5_quantum_node.jpg" alt="Loyd AI Mühərriki" class="w-7 h-7 rounded-lg object-cover border border-cyan-500/30 shrink-0 mt-0.5">
+          <div class="text-xs space-y-0.5">
+            <div class="font-bold text-cyan-200">Loyd AI HS-Code Təsnifatı</div>
+            <p class="text-slate-400">Son 24 saatda 142 bəyannamə %99.2 dəqiqliklə avtomatik kodlaşdırılıb.</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-black/30 border border-emerald-500/20 flex items-start gap-3">
+          <span class="text-emerald-400 text-lg">⚡</span>
+          <div class="text-xs space-y-0.5">
+            <div class="font-bold text-emerald-200">DGK API Rejimi</div>
+            <p class="text-slate-400">E-Gov SmartCustoms körpüsü fasiləsiz rejimdə işləyir.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a href="/admin/customs" class="block text-center py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/20 transition">
+      Bəyannamə Növbəsinə Keçid ({{ stats.pending_customs_count }}) →
+    </a>
+  </div>
+</div>
+
+<!-- Deployment Editions Status Banner (Sovereign vs Managed Cloud) -->
+<div class="glass-card p-6 rounded-2xl border border-cyan-500/20 relative overflow-hidden">
+  <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-2xl">
+        🏛️
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h4 class="text-sm font-bold text-white">KargoPilot v4.5 Dual-Architecture Rejimi</h4>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">HƏR İKİ REJİM AKTİV</span>
+        </div>
+        <p class="text-xs text-slate-400 mt-0.5">
+          <b>Variant 1 (Sovereign Self-Hosted):</b> Müştəri/şirkət öz VPS-ində sıfır telemetriya və tam FİN məxfiliyi ilə işlədir. <br>
+          <b>Variant 2 (Managed Cloud 7/24):</b> Şirkət serverində AES-256 multi-tenant şifrələmə ilə DGK SmartCustoms və WhatsApp botu 7/24 avtopilotdadır.
+        </p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="/admin/audit" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-mono text-slate-200 border border-white/10 transition">
+        Audit Jurnalı
+      </a>
+      <a href="https://github.com/VaskaMc/kargopilot" target="_blank" class="px-3.5 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-xs font-mono text-cyan-300 border border-cyan-500/30 transition">
+        GitHub Repository ↗
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

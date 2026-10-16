@@ -1,0 +1,495 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-8 max-w-7xl mx-auto">
+
+    <!-- HEADER TITLE -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 bg-slate-900 p-6 rounded-2xl">
+        <div class="flex items-center gap-4">
+            <img src="/static/img/logo_concept_6_infinity_loop.jpg" alt="KargoPilot Loqo" class="w-14 h-14 rounded-2xl object-cover shadow-lg border border-white/10 shrink-0">
+            <div>
+                <h1 class="text-2xl font-extrabold text-white tracking-tight">
+                    KargoPilot v4.5 · İdarəetmə Mərkəzi
+                </h1>
+                <p class="text-sm text-slate-300 mt-0.5">
+                    Canlı SQLite Verilənlər Bazası, 4-Daşıyıcı Tarif Mühərriki və DGK 300 USD Kvota Nəzarəti
+                </p>
+            </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-2.5 bg-slate-950 px-3.5 py-2 rounded-xl">
+                <img src="/static/img/logo_concept_5_quantum_node.jpg" alt="Loyd AI" class="w-8 h-8 rounded-lg object-cover border border-white/10 shrink-0">
+                <div class="text-xs">
+                    <div class="font-bold text-white">Loyd AI Mühərriki</div>
+                    <div class="text-emerald-400 font-semibold">Autopilot · Aktiv</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-xs font-mono text-slate-300 bg-slate-950 px-3.5 py-2.5 rounded-xl">
+                <i data-lucide="calendar" class="w-4 h-4 text-indigo-400"></i>
+                <span>Dövr: <strong class="text-white">{{ quota.period_label }}</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 CORE EXECUTIVE KPI CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- CARD 1: TOTAL ORDERS -->
+        <div class="bg-slate-900 p-5 rounded-2xl flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+                <span class="text-xs font-semibold text-slate-400">Cəmi Sifarişlər</span>
+                <div class="p-2 rounded-lg bg-slate-800 text-sky-400">
+                    <i data-lucide="package" class="w-4 h-4"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="text-3xl font-extrabold text-white tracking-tight font-mono">{{ total_orders }}</div>
+                <div class="text-xs text-slate-300 mt-1 flex items-center gap-1.5">
+                    <span class="text-sky-400 font-bold">{{ quota.orders_count }} bu ay</span>
+                    <span class="text-slate-600">·</span>
+                    <span>Temu, Trendyol, Taobao</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: CUSTOMS DECLARED -->
+        <div class="bg-slate-900 p-5 rounded-2xl flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+                <span class="text-xs font-semibold text-slate-400">SmartCustoms Bəyan Edilib</span>
+                <div class="p-2 rounded-lg bg-slate-800 text-emerald-400">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="text-3xl font-extrabold text-emerald-400 tracking-tight font-mono">{{ declared_count }}</div>
+                <div class="text-xs text-slate-300 mt-1 flex items-center justify-between">
+                    <span>Rəsmi DGK bəyanat</span>
+                    {% if pending_count > 0 %}
+                    <span class="text-amber-400 font-bold">{{ pending_count }} gözləyir</span>
+                    {% else %}
+                    <span class="text-emerald-400 font-semibold">Tam bəyan edilib</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: 300 USD MONTHLY QUOTA GAUGE KPI -->
+        <div class="bg-slate-900 p-5 rounded-2xl flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+                <span class="text-xs font-semibold text-slate-400">Aylıq Gömrük Limiti (300 USD)</span>
+                <div class="p-2 rounded-lg bg-slate-800 text-indigo-400">
+                    <i data-lucide="gauge" class="w-4 h-4"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-indigo-400 tracking-tight font-mono">${{ quota.used_usd }}</span>
+                    <span class="text-xs text-slate-400 font-mono">/ $300.00</span>
+                </div>
+                <div class="text-xs text-slate-300 mt-1 flex items-center justify-between">
+                    <span>Qalan: <strong class="text-emerald-400 font-mono">${{ quota.remaining_usd }}</strong></span>
+                    <span class="font-bold text-indigo-400 font-mono">{{ quota.percentage }}%</span>
+                </div>
+                <!-- Multi-FIN Profile Selector -->
+                <div class="mt-3 pt-2.5 bg-slate-950 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-xs">
+                    <span class="text-slate-400 font-semibold">FİN Profil:</span>
+                    <select onchange="switchFin(this.value)" class="bg-slate-900 text-indigo-400 rounded px-2 py-0.5 text-xs font-mono font-bold focus:outline-none">
+                        {% for fp in quota.fin_profiles %}
+                        <option value="{{ fp.fin }}" {% if fp.fin == quota.selected_fin %}selected{% endif %}>{{ fp.full_name }} ({{ fp.fin }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 4: TOTAL SPENT IN AZN -->
+        <div class="bg-slate-900 p-5 rounded-2xl flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+                <span class="text-xs font-semibold text-slate-400">Xərclənən Məbləğ (AZN)</span>
+                <div class="p-2 rounded-lg bg-slate-800 text-sky-400">
+                    <i data-lucide="banknote" class="w-4 h-4"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="text-3xl font-extrabold text-sky-400 tracking-tight font-mono">{{ quota.used_azn }} ₼</div>
+                <div class="text-xs text-slate-300 mt-1 flex items-center justify-between">
+                    <span>Cari dövr</span>
+                    <span class="text-slate-400 font-mono">Cəmi: {{ lifetime_azn }} ₼</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIVE INTERACTIVE 4-CARRIER & DGK $300 LANDED-COST CALCULATOR (SEEDED WITH LIVE DB QUOTA) -->
+    <div class="bg-slate-900 rounded-2xl p-6 lg:p-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5">
+            <div>
+                <h2 class="text-xl font-extrabold text-white tracking-tight">Canlı 4-Daşıyıcı Tarif və Gömrük Simulyatoru</h2>
+                <p class="text-xs text-slate-300 mt-1">
+                    Cari bazadakı <strong class="text-indigo-400 font-mono">${{ quota.used_usd }} USD</strong> aylıq balansınız üzərindən yeni bağlamanın daşıma və gömrük xərcini dərhal hesablayın.
+                </p>
+            </div>
+            <div id="dash-cheapest-pill" class="px-3.5 py-2 rounded-lg bg-slate-950 text-indigo-400 text-xs font-bold font-mono">
+                Ən sərfəli: Starex TR · 4.75 USD
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-5 bg-slate-950 p-5 rounded-xl space-y-4">
+                <div>
+                    <div class="flex justify-between text-xs font-semibold text-slate-300 mb-2">
+                        <span>Mənşə Anbarı</span>
+                        <span id="dash-origin-label" class="text-indigo-400">İstanbul Tuzla</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" data-dash-origin="TR" class="dash-origin-btn py-2 px-3 rounded-lg text-xs font-bold bg-indigo-600">Türkiyə (TR)</button>
+                        <button type="button" data-dash-origin="CN" class="dash-origin-btn py-2 px-3 rounded-lg text-xs font-bold bg-slate-800 text-slate-300">Çin (CN)</button>
+                        <button type="button" data-dash-origin="US" class="dash-origin-btn py-2 px-3 rounded-lg text-xs font-bold bg-slate-800 text-slate-300">ABŞ (US)</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs font-semibold text-slate-300 mb-1.5">
+                        <span>Bağlama Çəkisi</span>
+                        <span id="dash-weight-val" class="text-indigo-400 font-mono font-bold">0.75 kq</span>
+                    </div>
+                    <input id="dash-weight" type="range" min="0.10" max="5.00" step="0.05" value="0.75" class="w-full accent-[#dafa9c] cursor-pointer">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">İnqvoys Qiyməti (USD)</label>
+                        <input id="dash-price" type="number" min="1" max="1500" step="5" value="65" class="w-full bg-slate-900 text-white rounded-lg px-3 py-2 text-sm font-mono font-bold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Kateqoriya</label>
+                        <select id="dash-cat" class="w-full bg-slate-900 text-white rounded-lg px-3 py-2 text-sm font-semibold focus:outline-none">
+                            <option value="standard">Standart Geyim/Ev</option>
+                            <option value="liquid">Maye / Batareya</option>
+                            <option value="phone">Mobil Telefon (IMEI)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 bg-slate-950 p-5 rounded-xl space-y-4">
+                <div id="dash-carrier-bars" class="space-y-2.5"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div class="bg-slate-900 p-3.5 rounded-lg">
+                        <div class="text-xs text-slate-400 font-semibold">Yeni Aylıq Gömrük Balansı</div>
+                        <div id="dash-new-quota" class="text-base font-extrabold text-white font-mono mt-1">$0.00 / $300.00</div>
+                        <div id="dash-quota-note" class="text-xs text-indigo-400 font-semibold mt-0.5">300 USD limit daxilindədir</div>
+                    </div>
+                    <div class="bg-slate-900 p-3.5 rounded-lg">
+                        <div class="text-xs text-slate-400 font-semibold">Bakı Tam Təhvil Xərci (Məhsul + Kargo + Rüsum)</div>
+                        <div id="dash-landed-total" class="text-base font-extrabold text-indigo-400 font-mono mt-1">0.00 AZN</div>
+                        <div id="dash-duty-note" class="text-xs text-slate-300 font-semibold mt-0.5">Gömrük rüsumu: 0.00 AZN</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAILED 300 USD MONTHLY QUOTA GAUGE SECTION -->
+    <div class="bg-slate-900 rounded-2xl p-6 lg:p-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6">
+            <div>
+                <div class="flex items-center gap-2.5">
+                    <h2 class="text-lg font-extrabold text-white">AR Nazirlər Kabineti 305 Saylı Qərar · 300 USD Aylıq Kvota İzləyicisi</h2>
+                    <span class="px-2.5 py-0.5 rounded text-xs font-bold {{ quota.color_class }} bg-slate-950">
+                        {{ quota.risk_label }}
+                    </span>
+                </div>
+                <p class="text-xs text-slate-300 mt-1">
+                    Fiziki şəxslər tərəfindən hər təqvim ayı ərzində rüsumsuz idxal limiti 300 ABŞ dollarıdır (CBAR: 1 USD = 1.70 AZN · 510.00 AZN).
+                </p>
+            </div>
+            <div class="text-right flex md:flex-col justify-between items-end">
+                <span class="text-xs text-slate-300">Təqvim Ayı: <strong class="text-white">{{ quota.period_label }}</strong></span>
+                <span class="text-xs font-mono text-indigo-400 font-bold mt-1">Limit: $300.00 USD (510.00 AZN)</span>
+            </div>
+        </div>
+
+        <!-- PROGRESS GAUGE BAR -->
+        <div class="my-4">
+            <div class="flex justify-between items-center text-xs mb-2">
+                <span class="font-semibold text-slate-200">İstifadə Olunan Kvota: <strong class="font-mono text-white">${{ quota.used_usd }} USD</strong> ({{ quota.used_azn }} AZN)</span>
+                <span class="font-mono font-bold text-indigo-400">{{ quota.percentage }}%</span>
+            </div>
+
+            <div class="h-3.5 w-full bg-slate-950 rounded-full overflow-hidden">
+                <div class="h-full rounded-full bg-indigo-600" style="width: {{ quota.percentage }}%; background-color: #dafa9c;"></div>
+            </div>
+
+            <div class="flex justify-between items-center text-xs text-slate-400 font-mono mt-2">
+                <span>$0 (0%)</span>
+                <span>$75 (25%)</span>
+                <span class="text-emerald-400 font-semibold">$150 (50%)</span>
+                <span class="text-amber-400 font-semibold">$225 (75%)</span>
+                <span class="text-rose-400 font-bold">$300 (100% Limit)</span>
+            </div>
+        </div>
+
+        <!-- QUOTA METRIC BREAKDOWN GRID -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 text-xs">
+            <div class="p-4 bg-slate-950 rounded-xl">
+                <span class="text-slate-400 block font-semibold">Qalan Rüsumsuz Limit (USD):</span>
+                <span class="text-lg font-extrabold font-mono text-emerald-400 mt-1 block">${{ quota.remaining_usd }} USD</span>
+            </div>
+            <div class="p-4 bg-slate-950 rounded-xl">
+                <span class="text-slate-400 block font-semibold">Qalan Rüsumsuz Limit (AZN):</span>
+                <span class="text-lg font-extrabold font-mono text-emerald-400 mt-1 block">{{ quota.remaining_azn }} ₼</span>
+            </div>
+            <div class="p-4 bg-slate-950 rounded-xl">
+                <span class="text-slate-400 block font-semibold">Limiti Aşan Hissə:</span>
+                <span class="text-lg font-extrabold font-mono mt-1 block {% if quota.excess_usd > 0 %}text-rose-400{% else %}text-slate-300{% endif %}">
+                    ${{ quota.excess_usd }} USD ({{ quota.excess_azn }} ₼)
+                </span>
+            </div>
+            <div class="p-4 bg-slate-950 rounded-xl">
+                <span class="text-slate-400 block font-semibold">Təxmini Gömrük Rüsumu + ƏDV:</span>
+                <span class="text-lg font-extrabold font-mono mt-1 block {% if quota.total_duty_estimate_azn > 0 %}text-rose-400{% else %}text-emerald-400{% endif %}">
+                    {{ quota.total_duty_estimate_azn }} AZN
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECENT ORDERS EXPLORER TABLE -->
+    <div class="bg-slate-900 rounded-2xl p-6">
+        <div class="flex items-center justify-between pb-4">
+            <div>
+                <h2 class="text-lg font-extrabold text-white">Son Sifarişlər (Orders Explorer)</h2>
+                <p class="text-xs text-slate-300 mt-0.5">Verilənlər bazasında qeydə alınan son bağlamalar və SmartCustoms statusları</p>
+            </div>
+            <a href="/orders" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-indigo-400 flex items-center gap-1.5">
+                <span>Bütün Sifarişlər</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+        </div>
+
+        <div class="overflow-x-auto mt-2">
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="border-b border-slate-800 text-slate-400 font-bold">
+                        <th class="py-3 px-3">Sifariş Ref / Platforma</th>
+                        <th class="py-3 px-3">Tarix</th>
+                        <th class="py-3 px-3">Daşıyıcı &amp; Tracking</th>
+                        <th class="py-3 px-3">Məhsul Sayı</th>
+                        <th class="py-3 px-3 text-right">Məbləğ (AZN)</th>
+                        <th class="py-3 px-3 text-center">SmartCustoms</th>
+                        <th class="py-3 px-3 text-right">Əməliyyatlar</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60">
+                    {% for o in recent_orders %}
+                    <tr class="hover:bg-slate-800/50">
+                        <td class="py-3.5 px-3">
+                            <div class="font-bold text-white font-mono">{{ o.temu_order_ref }}</div>
+                            <span class="inline-block mt-1 px-2 py-0.5 rounded text-[11px] font-bold bg-slate-800 text-indigo-400">
+                                {{ o.platform }}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-3 text-slate-300 whitespace-nowrap font-mono">
+                            {{ o.created_at }}
+                        </td>
+                        <td class="py-3.5 px-3">
+                            <div class="font-bold text-slate-200 text-xs">{{ o.carrier or 'STAREX' }}</div>
+                            <div class="flex items-center gap-1.5 mt-0.5">
+                                <span class="font-mono text-sky-400 font-semibold">{{ o.tracking_number or '-' }}</span>
+                                {% if o.tracking_number %}
+                                <button onclick="copyToClipboard('{{ o.tracking_number }}', 'Tracking')" class="text-slate-400 hover:text-white">
+                                    <i data-lucide="copy" class="w-3 h-3"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-3">
+                            <span class="px-2.5 py-1 rounded bg-slate-950 text-slate-200 font-semibold text-xs num">
+                                {{ o.item_count }} məhsul
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-3 text-right font-mono font-bold text-white whitespace-nowrap">
+                            {{ o.invoice_amount_azn or o.temu_invoice_amount }} ₼
+                        </td>
+                        <td class="py-3.5 px-3 text-center">
+                            <span class="px-2.5 py-1 rounded-md text-xs font-bold {% if 'bəyan' in (o.customs_status or '').lower() or 'təsdiq' in (o.customs_status or '').lower() %}bg-emerald-950 text-emerald-400{% elif 'gözləyir' in (o.customs_status or '').lower() %}bg-amber-950 text-amber-400{% else %}bg-slate-800 text-slate-300{% endif %}">
+                                {{ o.customs_status or 'Bəyan edilib' }}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-3 text-right whitespace-nowrap space-x-1.5">
+                            <a href="/invoices/{{ o.id }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-100 rounded-lg font-semibold text-xs">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5 text-sky-400"></i>
+                                <span>İnvoys</span>
+                            </a>
+                            <a href="/invoices/{{ o.id }}/pdf" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-indigo-600 rounded-lg font-bold text-xs">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                <span>PDF</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MULTI-PLATFORM CONNECTORS SUMMARY -->
+    <div class="bg-slate-900 rounded-2xl p-6">
+        <div class="flex items-center justify-between pb-4">
+            <div>
+                <h2 class="text-base font-extrabold text-white">Ticarət Platforması Qoşulmaları (Connectors)</h2>
+                <p class="text-xs text-slate-300 mt-0.5">Temu, Trendyol, Taobao və digər platformaların aktiv sessiya vəziyyətləri</p>
+            </div>
+            <a href="/connectors" class="text-xs font-bold text-indigo-400 hover:underline flex items-center gap-1">
+                <span>Konfiqurasiya</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-2">
+            {% for s in sessions %}
+            <div class="bg-slate-950 p-4 rounded-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-sm text-white">{{ s.platform }}</span>
+                        <span class="w-2.5 h-2.5 rounded-full {% if s.status == 'ACTIVE' %}bg-emerald-400{% elif s.status == 'OTP_REQUIRED' %}bg-amber-400{% else %}bg-rose-400{% endif %}"></span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="px-2 py-0.5 rounded text-[11px] font-bold {% if s.status == 'ACTIVE' %}bg-emerald-950 text-emerald-400{% elif s.status == 'OTP_REQUIRED' %}bg-amber-950 text-amber-400{% else %}bg-rose-950 text-rose-400{% endif %}">
+                            {{ s.status }}
+                        </span>
+                    </div>
+                </div>
+                <div class="text-xs text-slate-400 mt-3 font-mono truncate">
+                    {{ s.username_hint or '-' }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function switchFin(fin) {
+        fetch('/api/fin-profiles/switch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fin: fin })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.ok) {
+                window.location.reload();
+            } else {
+                alert('Xəta: ' + (data.error || 'FİN dəyişdirilə bilmədi'));
+            }
+        })
+        .catch(err => alert('Şəbəkə xətası: ' + err));
+    }
+
+    (function () {
+        const DB_USED_USD = parseFloat("{{ quota.used_usd }}") || 0;
+        const USD_TO_AZN = 1.70;
+        const CARRIERS = {
+            TR: [
+                { name: 'Starex TR', base: 1.90, perKg: 3.80, liquid: 0.50 },
+                { name: 'Limak TR', base: 2.00, perKg: 3.90, liquid: 0.60 },
+                { name: 'Dynamex TR', base: 2.10, perKg: 4.00, liquid: 0.45 },
+                { name: 'Camex TR', base: 2.25, perKg: 4.20, liquid: 0.70 }
+            ],
+            CN: [
+                { name: 'Camex CN', base: 2.60, perKg: 7.40, liquid: 1.10 },
+                { name: 'Starex CN', base: 2.80, perKg: 7.90, liquid: 1.20 },
+                { name: 'Limak CN', base: 2.95, perKg: 8.20, liquid: 1.30 },
+                { name: 'Dynamex CN', base: 3.10, perKg: 8.50, liquid: 1.15 }
+            ],
+            US: [
+                { name: 'Dynamex US', base: 3.20, perKg: 7.60, liquid: 1.20 },
+                { name: 'Camex US', base: 3.40, perKg: 7.90, liquid: 1.00 },
+                { name: 'Starex US', base: 3.50, perKg: 8.10, liquid: 1.30 },
+                { name: 'Limak US', base: 3.70, perKg: 8.40, liquid: 1.40 }
+            ]
+        };
+
+        let origin = 'TR';
+        const wEl = document.getElementById('dash-weight');
+        const wVal = document.getElementById('dash-weight-val');
+        const pEl = document.getElementById('dash-price');
+        const cEl = document.getElementById('dash-cat');
+        const barsEl = document.getElementById('dash-carrier-bars');
+        const pillEl = document.getElementById('dash-cheapest-pill');
+        const originLabel = document.getElementById('dash-origin-label');
+        const newQuotaEl = document.getElementById('dash-new-quota');
+        const quotaNoteEl = document.getElementById('dash-quota-note');
+        const landedEl = document.getElementById('dash-landed-total');
+        const dutyNoteEl = document.getElementById('dash-duty-note');
+
+        function updateDashCalc() {
+            const w = Math.max(0.1, parseFloat(wEl.value) || 0.75);
+            const price = Math.max(0, parseFloat(pEl.value) || 0);
+            const cat = cEl.value;
+            wVal.textContent = w.toFixed(2) + ' kq';
+            originLabel.textContent = origin === 'TR' ? 'İstanbul Tuzla' : origin === 'CN' ? 'Quançjou CN' : 'Delaver US';
+
+            const list = CARRIERS[origin].map(function (c) {
+                let usd = c.base + w * c.perKg + (cat === 'liquid' ? c.liquid : 0);
+                return { name: c.name, usd: usd, azn: usd * USD_TO_AZN };
+            }).sort(function (a, b) { return a.usd - b.usd; });
+
+            const maxUsd = list[list.length - 1].usd;
+            const best = list[0];
+            pillEl.textContent = 'Ən sərfəli: ' + best.name + ' · ' + best.usd.toFixed(2) + ' USD (' + best.azn.toFixed(2) + ' ₼)';
+
+            barsEl.innerHTML = list.map(function (item, idx) {
+                const pct = Math.max(20, Math.round((item.usd / maxUsd) * 100));
+                const barColor = idx === 0 ? '#dafa9c' : '#38bdf8';
+                return (
+                    '<div class="bg-slate-900 px-3.5 py-2.5 rounded-lg grid grid-cols-12 items-center gap-3 text-xs">' +
+                        '<div class="col-span-4 font-bold text-white">' + item.name + (idx === 0 ? ' · Seçim' : '') + '</div>' +
+                        '<div class="col-span-4 bg-slate-950 h-2.5 rounded-full overflow-hidden"><div style="width:' + pct + '%; background:' + barColor + ';" class="h-full rounded-full"></div></div>' +
+                        '<div class="col-span-4 text-right font-mono font-bold text-slate-200">' + item.usd.toFixed(2) + ' $ · ' + item.azn.toFixed(2) + ' ₼</div>' +
+                    '</div>'
+                );
+            }).join('');
+
+            const newTotalUsd = DB_USED_USD + price + best.usd;
+            const overUsd = Math.max(0, newTotalUsd - 300);
+            const dutyAzn = overUsd > 0 ? (overUsd * 0.36 * USD_TO_AZN + 15.0) : 0;
+            const imeiAzn = cat === 'phone' ? 100.0 : 0;
+            const totalDutyAzn = dutyAzn + imeiAzn;
+            const landedAzn = (price + best.usd) * USD_TO_AZN + totalDutyAzn;
+
+            newQuotaEl.textContent = '$' + newTotalUsd.toFixed(2) + ' / $300.00';
+            if (overUsd > 0) {
+                quotaNoteEl.textContent = 'Limit $' + overUsd.toFixed(2) + ' aşılır (36% + 15 ₼)';
+                quotaNoteEl.className = 'text-xs text-amber-400 font-semibold mt-0.5';
+            } else {
+                quotaNoteEl.textContent = 'Rüsumsuz limit daxilindədir (Qalıq: $' + (300 - newTotalUsd).toFixed(2) + ')';
+                quotaNoteEl.className = 'text-xs text-indigo-400 font-semibold mt-0.5';
+            }
+            landedEl.textContent = landedAzn.toFixed(2) + ' AZN ($' + (landedAzn / USD_TO_AZN).toFixed(2) + ')';
+            dutyNoteEl.textContent = totalDutyAzn > 0
+                ? ('Gömrük + Rəsmiləşdirmə: ' + totalDutyAzn.toFixed(2) + ' AZN')
+                : ('Gömrük rüsumu: 0.00 AZN · Kargo: ' + best.azn.toFixed(2) + ' AZN');
+        }
+
+        document.querySelectorAll('.dash-origin-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.dash-origin-btn').forEach(function (b) {
+                    b.className = 'dash-origin-btn py-2 px-3 rounded-lg text-xs font-bold bg-slate-800 text-slate-300';
+                });
+                btn.className = 'dash-origin-btn py-2 px-3 rounded-lg text-xs font-bold bg-indigo-600';
+                origin = btn.getAttribute('data-dash-origin');
+                updateDashCalc();
+            });
+        });
+
+        wEl.addEventListener('input', updateDashCalc);
+        pEl.addEventListener('input', updateDashCalc);
+        cEl.addEventListener('change', updateDashCalc);
+        updateDashCalc();
+    })();
+</script>
+{% endblock %}

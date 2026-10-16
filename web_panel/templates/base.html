@@ -228,13 +228,13 @@
                 </div>
             </a>
 
-            <!-- Security Indicator: Localhost / SSH Tunnel Only -->
-            <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-emerald-400 text-xs font-semibold num">
+            <!-- Dual-Hosting Mode Indicator & Switcher Button -->
+            <button type="button" onclick="openDualHostingModal()" data-kp-connection-badge class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-xs font-semibold num transition hover:border-cyan-500/50 cursor-pointer" title="Server və Bağlantı Rejimini Dəyişin">
                 <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span>127.0.0.1:48481</span>
+                <span class="text-white">127.0.0.1:48481</span>
                 <span class="text-slate-600">·</span>
-                <span class="text-slate-300">SSH Tunel Aktiv</span>
-            </div>
+                <span class="text-slate-300">Sovereign Aktiv</span>
+            </button>
         </div>
 
         <!-- Right Side: Currency Rates & Actions -->
@@ -436,5 +436,7 @@
             modal.classList.remove('flex');
         }
     </script>
+    <script src="/static/js/kargopilot-connection.js"></script>
+    {% include 'components/dual_hosting_modal.html' %}
 </body>
 </html>

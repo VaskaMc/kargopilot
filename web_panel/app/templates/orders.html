@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6 max-w-7xl mx-auto">
+
+    <!-- HEADER TITLE & FILTERS -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+        <div>
+            <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
+                <span>Sifarişlər Mərkəzi (Orders Explorer)</span>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-950 text-indigo-400 border border-indigo-800/60 font-mono">{{ total_count }} Sifariş</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Bütün platformalardan (Temu, Trendyol, Taobao) toplanmış sifariş və bağlama detalları</p>
+        </div>
+
+        <!-- SEARCH & FILTER FORM -->
+        <form action="/orders" method="get" class="flex flex-wrap items-center gap-2.5">
+            <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Sifariş ID, tracking, daşıyıcı..." 
+                       class="pl-9 pr-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 w-56">
+            </div>
+
+            <select name="platform" onchange="this.form.submit()" class="bg-slate-900 border border-slate-700/80 rounded-lg text-xs text-white py-1.5 px-3 focus:outline-none focus:border-indigo-500">
+                <option value="ALL" {% if selected_platform == 'ALL' %}selected{% endif %}>Bütün Platformalar</option>
+                <option value="Temu" {% if selected_platform == 'Temu' %}selected{% endif %}>Temu</option>
+                <option value="Trendyol" {% if selected_platform == 'Trendyol' %}selected{% endif %}>Trendyol</option>
+                <option value="Taobao" {% if selected_platform == 'Taobao' %}selected{% endif %}>Taobao</option>
+            </select>
+
+            <select name="status" onchange="this.form.submit()" class="bg-slate-900 border border-slate-700/80 rounded-lg text-xs text-white py-1.5 px-3 focus:outline-none focus:border-indigo-500">
+                <option value="ALL" {% if selected_status == 'ALL' %}selected{% endif %}>Bütün Statuslar</option>
+                <option value="STORED" {% if selected_status == 'STORED' %}selected{% endif %}>Yadda Saxlanılıb (STORED)</option>
+                <option value="AWAITING_USER_CONFIRM" {% if selected_status == 'AWAITING_USER_CONFIRM' %}selected{% endif %}>Təsdiq Gözləyir</option>
+                <option value="SUBMITTED" {% if selected_status == 'SUBMITTED' %}selected{% endif %}>Bəyan Edilib (SUBMITTED)</option>
+                <option value="DELIVERED" {% if selected_status == 'DELIVERED' %}selected{% endif %}>Təhvil Verilib (DELIVERED)</option>
+            </select>
+
+            <button type="submit" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-medium">Filtrlə</button>
+            {% if search_query or selected_platform != 'ALL' or selected_status != 'ALL' %}
+            <a href="/orders" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs">Sıfırla</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- ORDERS TABLE -->
+    <div class="bg-slate-900/90 rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
+                        <th class="py-3.5 px-4">Sifariş Ref & Platforma</th>
+                        <th class="py-3.5 px-4">Tarix & Alıcı</th>
+                        <th class="py-3.5 px-4">Daşıyıcı & Tracking</th>
+                        <th class="py-3.5 px-4">Məhsullar</th>
+                        <th class="py-3.5 px-4 text-right">Məbləğ (AZN / USD)</th>
+                        <th class="py-3.5 px-4 text-center">Gömrük Statusu</th>
+                        <th class="py-3.5 px-4 text-right">Əməliyyatlar</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60 font-sans">
+                    {% for o in orders %}
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <!-- SIFARIŞ REF -->
+                        <td class="py-4 px-4">
+                            <div class="font-bold text-slate-100 font-mono text-[13px]">{{ o.temu_order_ref }}</div>
+                            <div class="mt-1 flex items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {% if o.platform == 'Temu' %}bg-orange-950 text-orange-400 border border-orange-800/50{% elif o.platform == 'Trendyol' %}bg-amber-950 text-amber-400 border border-amber-800/50{% else %}bg-blue-950 text-blue-400 border border-blue-800/50{% endif %}">
+                                    {{ o.platform }}
+                                </span>
+                                <span class="text-slate-500 text-[11px] font-mono">ID: #{{ o.id }}</span>
+                            </div>
+                        </td>
+
+                        <!-- TARIX & ALICI -->
+                        <td class="py-4 px-4 text-slate-300">
+                            <div class="font-medium text-slate-200">{{ o.created_at }}</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1">
+                                <i data-lucide="user" class="w-3 h-3 text-slate-500"></i>
+                                <span>{{ o.receiver_name or 'Vasif Məcidli' }}</span>
+                            </div>
+                        </td>
+
+                        <!-- DAŞIYICI & TRACKING -->
+                        <td class="py-4 px-4">
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 font-bold uppercase text-[11px] border border-slate-700">
+                                {{ o.carrier or 'STAREX' }}
+                            </span>
+                            <div class="flex items-center gap-1.5 mt-1">
+                                <span class="font-mono text-indigo-400 font-semibold text-xs">{{ o.tracking_number or 'Təyin edilməyib' }}</span>
+                                {% if o.tracking_number %}
+                                <button onclick="copyToClipboard('{{ o.tracking_number }}', 'Tracking')" title="Kopyala" class="text-slate-500 hover:text-slate-200 transition">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <!-- MEHSULLAR -->
+                        <td class="py-4 px-4">
+                            <button onclick="openItemsModal('{{ o.id }}')" class="group flex items-center gap-2 text-left hover:text-indigo-300 transition">
+                                <span class="px-2 py-1 rounded-md bg-indigo-950 border border-indigo-800/60 text-indigo-300 font-bold text-xs">
+                                    {{ o.item_count }} ədəd
+                                </span>
+                                <div>
+                                    <div class="text-[11px] text-slate-300 font-medium truncate max-w-xs group-hover:text-indigo-300">
+                                        {% if o.items_list and o.items_list[0] %}{{ o.items_list[0].title[:35] }}...{% else %}Məhsul siyahısı{% endif %}
+                                    </div>
+                                    <div class="text-[10px] text-slate-500">Detallı baxış &rarr;</div>
+                                </div>
+                            </button>
+                        </td>
+
+                        <!-- MEBLEG -->
+                        <td class="py-4 px-4 text-right font-mono">
+                            <div class="font-black text-white text-sm">
+                                {{ o.invoice_amount_azn or o.temu_invoice_amount }} ₼
+                            </div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">
+                                ${{ ((o.invoice_amount_azn or o.temu_invoice_amount or 0.0) / 1.70)|round(2) }} USD
+                            </div>
+                        </td>
+
+                        <!-- GOMRUK STATUSU -->
+                        <td class="py-4 px-4 text-center">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase {% if 'bəyan' in (o.customs_status or '').lower() or 'təsdiq' in (o.customs_status or '').lower() %}bg-emerald-950 text-emerald-400 border border-emerald-800/60{% elif 'gözləyir' in (o.customs_status or '').lower() %}bg-amber-950 text-amber-400 border border-amber-800/60{% else %}bg-slate-800 text-slate-400{% endif %}">
+                                {{ o.customs_status or 'Bəyan edilib' }}
+                            </span>
+                            {% if o.customs_ref %}
+                            <div class="text-[10px] text-slate-500 font-mono mt-1">Ref: {{ o.customs_ref }}</div>
+                            {% endif %}
+                        </td>
+
+                        <!-- EMELIYYATLAR -->
+                        <td class="py-4 px-4 text-right whitespace-nowrap space-x-1.5">
+                            <a href="/invoices/{{ o.id }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-medium text-xs transition border border-slate-700">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5 text-blue-400"></i>
+                                <span>İnvoys</span>
+                            </a>
+                            <a href="/invoices/{{ o.id }}/pdf" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-indigo-950 hover:bg-indigo-900 border border-indigo-800/60 text-indigo-300 rounded-lg font-medium text-xs transition">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                <span>PDF</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ITEMS BREAKDOWN MODAL -->
+<div id="items-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-2xl max-w-3xl w-full p-6 max-h-[85vh] flex flex-col">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div>
+                <h3 id="modal-order-title" class="text-base font-bold text-white">Sifariş Məhsulları</h3>
+                <p id="modal-order-subtitle" class="text-xs text-slate-400 mt-0.5">Gömrük kateqoriyaları və qiymət bölgüsü</p>
+            </div>
+            <button onclick="closeItemsModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div id="modal-items-content" class="overflow-y-auto my-4 space-y-3">
+            <!-- Dynamic items loaded via JavaScript -->
+        </div>
+
+        <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs">
+            <span class="text-slate-400">DGK 37 Əsas Qrup Təsnifatı</span>
+            <button onclick="closeItemsModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium">Bağla</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openItemsModal(orderId) {
+        fetch(`/orders/${orderId}`)
+            .then(res => res.json())
+            .then(order => {
+                document.getElementById('modal-order-title').innerText = `Sifariş: ${order.temu_order_ref} (${order.platform})`;
+                document.getElementById('modal-order-subtitle').innerText = `Tracking: ${order.tracking_number || 'Yoxdur'} | Daşıyıcı: ${order.carrier || 'STAREX'}`;
+                
+                const content = document.getElementById('modal-items-content');
+                if (!order.items || order.items.length === 0) {
+                    content.innerHTML = '<div class="text-center py-8 text-slate-500">Məhsul tapılmadı.</div>';
+                } else {
+                    let html = '<div class="space-y-2">';
+                    order.items.forEach((it, idx) => {
+                        html += `
+                        <div class="p-3 bg-slate-950/70 rounded-xl border border-slate-800 flex items-center justify-between gap-4">
+                            <div class="flex-1">
+                                <div class="font-bold text-slate-200 text-xs">${idx + 1}. ${it.title}</div>
+                                <div class="text-[11px] text-indigo-400 mt-0.5 font-mono">${it.main_cat} &rarr; ${it.sub_cat}</div>
+                            </div>
+                            <div class="text-right shrink-0 font-mono text-xs">
+                                <div class="font-black text-white">${it.total_price.toFixed(2)} ₼</div>
+                                <div class="text-[10px] text-slate-500">${it.quantity} ədəd &times; ${it.unit_price.toFixed(2)} ₼</div>
+                            </div>
+                        </div>
+                        `;
+                    });
+                    html += '</div>';
+                    content.innerHTML = html;
+                }
+                document.getElementById('items-modal').classList.remove('hidden');
+                lucide.createIcons();
+            })
+            .catch(err => {
+                showToast('Məhsul məlumatları yüklənə bilmədi: ' + err, 'error');
+            });
+    }
+
+    function closeItemsModal() {
+        document.getElementById('items-modal').classList.add('hidden');
+    }
+</script>
+{% endblock %}

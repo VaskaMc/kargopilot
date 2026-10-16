@@ -1,0 +1,94 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Header & Filter Bar -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-extrabold text-white tracking-tight">Qlobal Yük Şəbəkəsi (Master Logistics Grid)</h2>
+        <span class="text-xs font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">ÇOX DAŞIYICILI SİNXRONİZASİYA</span>
+      </div>
+      <p class="text-xs text-slate-400">Bütün daşıyıcılar (Starex, Camex, Limak, Dynamex) və e-ticarət platformaları üzrə bağlamalar</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <div class="relative">
+        <input type="text" placeholder="İzləmə nömrəsi, alıcı adı..." class="pl-8 pr-4 py-2 text-xs bg-black/40 border border-white/10 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 w-64 transition">
+        <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-500 text-xs">🔍</span>
+      </div>
+      <button onclick="location.reload()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 text-xs">
+        🔄
+      </button>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div class="glass-card rounded-2xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs text-slate-300">
+        <thead class="bg-black/50 text-[11px] font-mono uppercase tracking-wider text-slate-400 border-b border-white/5">
+          <tr>
+            <th class="py-3.5 px-4">İzləmə Kodu (Tracking)</th>
+            <th class="py-3.5 px-4">Platforma / Sifariş Ref</th>
+            <th class="py-3.5 px-4">Daşıyıcı</th>
+            <th class="py-3.5 px-4">Alıcı Məlumatı</th>
+            <th class="py-3.5 px-4">Faktura Məbləği</th>
+            <th class="py-3.5 px-4">Status</th>
+            <th class="py-3.5 px-4 text-right">Tarix</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          {% for o in orders %}
+          <tr class="hover:bg-white/[0.02] transition group">
+            <!-- Tracking Number -->
+            <td class="py-4 px-4">
+              <span class="font-mono font-bold text-white text-xs tracking-wider group-hover:text-cyan-400 transition">
+                {{ o.tracking_number }}
+              </span>
+            </td>
+
+            <!-- Platform & Ref -->
+            <td class="py-4 px-4">
+              <div class="font-semibold text-slate-200">{{ o.platform }}</div>
+              <div class="text-[11px] text-slate-400 font-mono">{{ o.temu_order_ref }}</div>
+            </td>
+
+            <!-- Carrier -->
+            <td class="py-4 px-4">
+              <span class="font-mono font-bold text-[11px] px-2 py-0.5 rounded {% if o.carrier == 'STAREX' %}bg-cyan-500/10 text-cyan-400 border border-cyan-500/30{% elif o.carrier == 'CAMEX' %}bg-indigo-500/10 text-indigo-400 border border-indigo-500/30{% elif o.carrier == 'LIMAK' %}bg-amber-500/10 text-amber-400 border border-amber-500/30{% else %}bg-slate-700 text-slate-300{% endif %}">
+                {{ o.carrier }}
+              </span>
+            </td>
+
+            <!-- Receiver -->
+            <td class="py-4 px-4">
+              <div class="font-bold text-white">{{ o.receiver_name }}</div>
+              <div class="text-[11px] text-slate-400 font-mono">{{ o.receiver_phone }}</div>
+            </td>
+
+            <!-- Amount -->
+            <td class="py-4 px-4 font-mono">
+              <div class="font-bold text-white tabular-nums">${{ "%.2f"|format(o.invoice_amount_usd | float) }}</div>
+              <div class="text-[11px] text-slate-400 tabular-nums">{{ "%.2f"|format(o.invoice_amount_azn | float) }} ₼</div>
+            </td>
+
+            <!-- Status -->
+            <td class="py-4 px-4">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono {% if o.status == 'IN_TRANSIT' %}badge-amber{% elif o.status == 'CUSTOMS_CLEARED' %}badge-emerald{% else %}bg-white/10 text-slate-300 border border-white/10{% endif %}">
+                <span class="w-1.5 h-1.5 rounded-full {% if o.status == 'IN_TRANSIT' %}bg-amber-400 animate-pulse{% elif o.status == 'CUSTOMS_CLEARED' %}bg-emerald-400{% else %}bg-slate-400{% endif %}"></span>
+                {{ o.status }}
+              </span>
+            </td>
+
+            <!-- Date -->
+            <td class="py-4 px-4 text-right text-[11px] font-mono text-slate-400">
+              {{ o.created_at }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

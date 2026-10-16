@@ -1,0 +1,222 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Header & Action Bar -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-xl font-extrabold text-white tracking-tight">İstifadəçi İdarəetməsi & Multi-FİN Şəbəkəsi</h2>
+      <p class="text-xs text-slate-400">Multi-tenant müştəri hesabları, ailə FİN kvotaları və rol icazələri</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <input type="text" id="userSearchInput" placeholder="Ad, FİN, nömrə axtar..." class="pl-8 pr-4 py-2 text-xs bg-black/40 border border-white/10 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 w-64 transition">
+        <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-500 text-xs">🔍</span>
+      </div>
+      <button onclick="openNewUserModal()" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs shadow-lg shadow-cyan-500/20 transition flex items-center gap-2">
+        <span>+</span> Yeni İstifadəçi
+      </button>
+    </div>
+  </div>
+
+  <!-- Users Table Card -->
+  <div class="glass-card rounded-2xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs text-slate-300">
+        <thead class="bg-black/50 text-[11px] font-mono uppercase tracking-wider text-slate-400 border-b border-white/5">
+          <tr>
+            <th class="py-3.5 px-4">İstifadəçi / Əlaqə</th>
+            <th class="py-3.5 px-4">FİN Kod</th>
+            <th class="py-3.5 px-4">Aylıq DGK Dövriyyəsi ($300)</th>
+            <th class="py-3.5 px-4">Aktiv Bağlama</th>
+            <th class="py-3.5 px-4">Rol / Tarif</th>
+            <th class="py-3.5 px-4">Status</th>
+            <th class="py-3.5 px-4 text-right">Əməliyyat</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          {% for u in users %}
+          <tr class="hover:bg-white/[0.02] transition group">
+            <!-- Name & Contact -->
+            <td class="py-4 px-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr {% if u.role == 'SUPER_ADMIN' %}from-purple-500 to-indigo-600{% elif u.tier == 'PRO' %}from-cyan-500 to-blue-600{% else %}from-slate-700 to-slate-800{% endif %} flex items-center justify-center font-bold text-white text-xs shrink-0">
+                  {{ u.full_name[:2] | upper }}
+                </div>
+                <div>
+                  <div class="font-bold text-white group-hover:text-cyan-400 transition">{{ u.full_name }}</div>
+                  <div class="text-[11px] text-slate-400 font-mono flex items-center gap-2">
+                    <span>{{ u.phone }}</span>
+                    <span>•</span>
+                    <span class="text-slate-500">{{ u.email }}</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <!-- FIN Code -->
+            <td class="py-4 px-4">
+              <span class="font-mono font-bold text-slate-200 bg-black/40 px-2 py-1 rounded-md border border-white/10 tracking-wider">
+                {{ u.fin | default('814CRM4') }}
+              </span>
+            </td>
+
+            <!-- Monthly Customs Progress Bar -->
+            <td class="py-4 px-4 w-56">
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] font-mono">
+                  <span class="{% if u.monthly_usd|default(0) >= 250 %}text-amber-400 font-bold{% else %}text-slate-300{% endif %}">
+                    ${{ "%.2f"|format(u.monthly_usd|default(0)) }}
+                  </span>
+                  <span class="text-slate-500">/ $300.00 ({{ u.quota_pct|default(0) }}%)</span>
+                </div>
+                <div class="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
+                  <div class="h-1.5 rounded-full {% if u.monthly_usd|default(0) >= 270 %}bg-red-500{% elif u.monthly_usd|default(0) >= 200 %}bg-amber-400{% else %}bg-emerald-400{% endif %}" style="width: {{ [u.quota_pct|default(0), 100]|min }}%"></div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Active Parcels -->
+            <td class="py-4 px-4 font-mono font-bold text-slate-200 tabular-nums">
+              {{ u.active_parcels | default(1) }} ədəd
+            </td>
+
+            <!-- Role & Tier -->
+            <td class="py-4 px-4">
+              <div class="flex flex-col gap-1">
+                <span class="inline-flex items-center text-[10px] font-mono font-bold px-2 py-0.5 rounded {% if u.role == 'SUPER_ADMIN' %}bg-purple-500/20 text-purple-300 border border-purple-500/30{% elif u.role == 'ADMIN' %}bg-cyan-500/20 text-cyan-300 border border-cyan-500/30{% else %}bg-slate-700/40 text-slate-300 border border-white/10{% endif %} w-max">
+                  {{ u.role }}
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">Tarif: {{ u.tier | default('FREE') }}</span>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td class="py-4 px-4">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono {% if u.status == 'ACTIVE' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{% else %}bg-red-500/10 text-red-400 border border-red-500/20{% endif %}">
+                <span class="w-1.5 h-1.5 rounded-full {% if u.status == 'ACTIVE' %}bg-emerald-400 animate-pulse{% else %}bg-red-400{% endif %}"></span>
+                {{ u.status }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="py-4 px-4 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button onclick="openUserDrawer('{{ u.id }}', '{{ u.full_name }}', '{{ u.fin|default('814CRM4') }}', '{{ u.phone }}', '{{ u.monthly_usd|default(0) }}')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-cyan-400 border border-white/10 text-[11px] font-mono transition">
+                  FİN Şəbəkəsi →
+                </button>
+                <button onclick="toggleUserStatus('{{ u.id }}')" title="Statusu Dəyiş" class="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition">
+                  ⚙️
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Slide-in User & FIN Quota Drawer (Modal) -->
+<div id="finDrawer" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex justify-end">
+  <div class="w-full max-w-md bg-[#0f172a] border-l border-white/10 h-full p-6 flex flex-col justify-between shadow-2xl overflow-y-auto animate-slide-left">
+    <div class="space-y-6">
+      <!-- Drawer Header -->
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+        <div>
+          <h3 id="drawerUserName" class="text-base font-bold text-white">İstifadəçi Profili</h3>
+          <p id="drawerUserPhone" class="text-xs text-slate-400 font-mono"></p>
+        </div>
+        <button onclick="closeUserDrawer()" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+
+      <!-- Family FIN Mesh List -->
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Əlaqələndirilmiş FİN Kartları</span>
+          <button class="text-xs text-cyan-400 hover:underline">+ FİN Əlavə Et</button>
+        </div>
+
+        <!-- Primary FIN Card -->
+        <div class="p-4 rounded-xl bg-black/40 border border-cyan-500/30 space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="font-mono font-bold text-white text-sm" id="drawerPrimaryFin">814CRM4</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">ƏSAS FİN</span>
+          </div>
+          <div class="flex justify-between text-xs text-slate-400">
+            <span>DGK Balansı:</span>
+            <span class="font-mono font-bold text-white" id="drawerFinBalance">$68.54 / $300.00</span>
+          </div>
+          <div class="w-full bg-white/5 rounded-full h-1.5">
+            <div class="h-1.5 rounded-full bg-cyan-400" style="width: 23%"></div>
+          </div>
+        </div>
+
+        <!-- Secondary Family Member FIN Card -->
+        <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2 opacity-80">
+          <div class="flex justify-between items-center">
+            <span class="font-mono font-bold text-slate-200 text-sm">5XX9812 (Həyat Yoldaşı)</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-slate-400">AİLƏ ÜZVÜ</span>
+          </div>
+          <div class="flex justify-between text-xs text-slate-400">
+            <span>DGK Balansı:</span>
+            <span class="font-mono font-bold text-white">$12.40 / $300.00</span>
+          </div>
+          <div class="w-full bg-white/5 rounded-full h-1.5">
+            <div class="h-1.5 rounded-full bg-emerald-400" style="width: 4.1%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="space-y-3 pt-4 border-t border-white/10">
+        <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Təhlükəsizlik Əməliyyatları</span>
+        <div class="grid grid-cols-2 gap-2">
+          <button class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-medium text-slate-200 border border-white/10 transition text-center">
+            🔑 Şifrəni Sıfırla
+          </button>
+          <button class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-medium text-slate-200 border border-white/10 transition text-center">
+            📱 WhatsApp Bağla
+          </button>
+        </div>
+        <button class="w-full p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-xs font-medium text-red-400 border border-red-500/20 transition text-center">
+          ⛔ Hesabı Dondur (Suspend)
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-6 border-t border-white/10">
+      <button onclick="closeUserDrawer()" class="w-full py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-medium text-white transition">
+        Bağla
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openUserDrawer(id, name, fin, phone, monthly) {
+  document.getElementById('drawerUserName').textContent = name;
+  document.getElementById('drawerUserPhone').textContent = phone;
+  document.getElementById('drawerPrimaryFin').textContent = fin;
+  document.getElementById('drawerFinBalance').textContent = '$' + Number(monthly).toFixed(2) + ' / $300.00';
+  document.getElementById('finDrawer').classList.remove('hidden');
+}
+
+function closeUserDrawer() {
+  document.getElementById('finDrawer').classList.add('hidden');
+}
+
+async function toggleUserStatus(userId) {
+  if (!confirm('İstifadəçi statusunu dəyişmək istədiyinizdən əminsiniz?')) return;
+  try {
+    const res = await fetch('/admin/api/users/' + userId + '/toggle-status', { method: 'POST' });
+    const data = await res.json();
+    alert(data.message || 'Status yeniləndi');
+    location.reload();
+  } catch (err) {
+    alert('Xəta baş verdi: ' + err.message);
+  }
+}
+</script>
+{% endblock %}

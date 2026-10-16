@@ -4,11 +4,14 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import os
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, PlainTextResponse, Response, FileResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, Response, FileResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
 from app.config import HOST, PORT, BASE_DIR
@@ -73,6 +76,14 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url=None,
         lifespan=lifespan,
+    )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     @app.middleware("http")
@@ -214,14 +225,69 @@ def create_app() -> FastAPI:
             return HTMLResponse(content=f.read_text(encoding="utf-8"), status_code=200)
         return HTMLResponse(content="404 Not Found", status_code=404)
 
+    @app.get("/health")
+    @app.get("/api/health")
     @app.get("/healthz")
-    async def health_check():
+    async def universal_health_check():
+        edition = os.environ.get(
+            "KARGOPILOT_EDITION",
+            "managed_cloud" if os.environ.get("PCS_MANAGED_CLOUD") == "1" else "sovereign",
+        )
         return {
             "status": "healthy",
-            "service": "kargopilot-v4-web-panel",
+            "version": "4.5.0",
+            "edition": edition,
+            "service": "kargopilot-core",
+            "dual_hosting_ready": True,
+            "capabilities": [
+                "multi_tenant",
+                "customs_supervisor",
+                "smart_arbitrage",
+                "data_sovereignty",
+                "export_ready",
+            ],
+            "timestamp": int(time.time()),
             "bind": f"{HOST}:{PORT}",
-            "access": "localhost_only_ssh_tunnel"
         }
+
+    @app.get("/api/export/data")
+    async def export_user_data():
+        """Exports user data in compliant JSON format as required by Dual-Hosting Master Prompt."""
+        from app.database import (
+            get_all_orders,
+            get_all_declarations,
+            get_fin_profiles,
+            get_db_metrics,
+        )
+        try:
+            orders = get_all_orders(limit=500)
+            declarations = get_all_declarations()
+            profiles = get_fin_profiles()
+            metrics = get_db_metrics()
+        except Exception as exc:
+            orders, declarations, profiles, metrics = [], [], [], {"error": str(exc)}
+
+        return JSONResponse(
+            content={
+                "project": "KargoPilot v4.5 Enterprise",
+                "export_version": "1.0",
+                "exported_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "edition": os.environ.get("KARGOPILOT_EDITION", "sovereign"),
+                "metrics": metrics,
+                "data": {
+                    "orders": orders,
+                    "customs_declarations": declarations,
+                    "fin_profiles": profiles,
+                },
+                "compliance": {
+                    "law": "Azərbaycan Respublikasının 'Fərdi məlumatlar haqqında' Qanunu",
+                    "sovereignty_guarantee": "Zero telemetry to third parties in Sovereign Edition.",
+                },
+            },
+            headers={
+                "Content-Disposition": f'attachment; filename="kargopilot_export_{int(time.time())}.json"'
+            },
+        )
 
     @app.exception_handler(404)
     async def not_found_handler(request: Request, exc):
