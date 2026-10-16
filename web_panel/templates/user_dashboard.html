@@ -218,6 +218,149 @@
       </div>
     </div>
 
+    <!-- ========================================================================= -->
+    <!-- ETAP 4: SMART ARBITRAGE & CUSTOMS SUPERVISOR INTERACTIVE SUITE            -->
+    <!-- ========================================================================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Card 1: ⚖️ Smart Arbitrage (Daşıyıcı Tarif Müqayisəsi) -->
+      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 shadow-xl space-y-4 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">⚖️</span>
+              <div>
+                <h3 class="text-sm font-extrabold text-white tracking-tight flex items-center gap-2">
+                  <span>Smart Arbitraj</span>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Tarif Analizatoru</span>
+                </h3>
+                <p class="text-[11px] text-slate-400">Ölkə, çəki və bağlama növünə görə ən sərfəli daşıyıcını tapın.</p>
+              </div>
+            </div>
+            <span id="arbitrage-savings-badge" class="hidden text-[10px] font-bold px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              Qənaət: $0.00
+            </span>
+          </div>
+
+          <!-- Form Inputs -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ölkə</label>
+              <select id="arb-country" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:border-cyan-500 focus:outline-none">
+                <option value="TR">🇹🇷 Türkiyə</option>
+                <option value="CN">🇨🇳 Çin / Temu</option>
+                <option value="US">🇺🇸 ABŞ</option>
+                <option value="EU">🇪🇺 Avropa</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Çəki (kq) *</label>
+              <input type="number" id="arb-weight" step="0.1" min="0.1" value="1.0" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Növ</label>
+              <select id="arb-type" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:border-cyan-500 focus:outline-none">
+                <option value="standard">Standart</option>
+                <option value="liquid">Maye / Kosmetika</option>
+                <option value="electronics">Elektronika</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <button type="button" onclick="calculateArbitrage()" id="btn-calc-arb" class="w-full min-h-[34px] px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold transition shadow flex items-center justify-center gap-1.5 cursor-pointer">
+                <span id="arb-calc-spinner" class="hidden w-3 h-3 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
+                <span>Hesabla</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Optional Dimensions Toggle -->
+          <div class="mt-2.5">
+            <details class="text-[11px] text-slate-400 cursor-pointer">
+              <summary class="hover:text-slate-200 transition">📐 Ölçülər daxil et (Həcmi çəki: L*W*H / 6000)</summary>
+              <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-800/60">
+                <div>
+                  <label class="block text-[10px] text-slate-400 mb-0.5">Uzunluq (sm)</label>
+                  <input type="number" id="arb-len" min="0" placeholder="0" class="w-full px-2 py-1 rounded-lg bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 mb-0.5">En (sm)</label>
+                  <input type="number" id="arb-wid" min="0" placeholder="0" class="w-full px-2 py-1 rounded-lg bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 mb-0.5">Hündürlük (sm)</label>
+                  <input type="number" id="arb-hei" min="0" placeholder="0" class="w-full px-2 py-1 rounded-lg bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Carrier Rate Results Container -->
+          <div id="arbitrage-results" class="mt-3.5 space-y-2">
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 text-center text-xs text-slate-400">
+              Parametrləri seçin və "Hesabla" düyməsini sıxaraq real daşıyıcı tariflərini müqayisə edin.
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-slate-800/60">
+          <span>Məzənnə: <b class="font-mono text-slate-300">1 USD = 1.70 AZN</b></span>
+          <span class="text-slate-400">Avtomatik ən ucuz daşıyıcı seçimi</span>
+        </div>
+      </div>
+
+      <!-- Card 2: 🏛️ Customs $300 Supervisor (Gömrük Limiti & Rüsum Simulyatoru) -->
+      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 shadow-xl space-y-4 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">🏛️</span>
+              <div>
+                <h3 class="text-sm font-extrabold text-white tracking-tight flex items-center gap-2">
+                  <span>DGK 300$ Supervisor</span>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">305 № Qərar</span>
+                </h3>
+                <p class="text-[11px] text-slate-400">Yeni sifarişin aylıq 300$ limitinə təsirini və 36% rüsum riskini əvvəlcədən simulyasiya edin.</p>
+              </div>
+            </div>
+            <span id="sim-status-badge" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">
+              Gözləmədə
+            </span>
+          </div>
+
+          <!-- Simulator Inputs -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-4">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Məhsulun Qiyməti (USD) *</label>
+              <input type="number" id="sim-price-usd" step="0.5" min="0" placeholder="məs: 75.00" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Daşınma Haqqı (USD)</label>
+              <input type="number" id="sim-shipping-usd" step="0.1" min="0" value="0.0" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
+            </div>
+            <div class="flex items-end">
+              <button type="button" onclick="simulateCustoms()" id="btn-calc-sim" class="w-full min-h-[34px] px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold transition shadow flex items-center justify-center gap-1.5 cursor-pointer">
+                <span id="sim-calc-spinner" class="hidden w-3 h-3 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
+                <span>Limiti Yoxla</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Simulation Live Output Container -->
+          <div id="sim-results" class="mt-3.5 space-y-2.5">
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 text-center text-xs text-slate-400">
+              Məhsulun invoys qiymətini yazaraq "Limiti Yoxla" düyməsini sıxın. Real sifarişləriniz üzərinə hesablanacaqdır.
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-slate-800/60">
+          <span>Qanunvericilik: <b class="text-slate-300">Yalnız limit aşımına 36%</b></span>
+          <span class="text-slate-400">Fərdi Şəxsi İdxal Qaydası</span>
+        </div>
+      </div>
+
+    </div>
+
     <!-- Main 2-Column Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
@@ -353,9 +496,12 @@
             <label class="block text-xs font-semibold text-slate-300 mb-1">Daşıyıcı Şirkət *</label>
             <select id="p-carrier" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:border-cyan-500 focus:outline-none">
               <option value="STAREX">STAREX</option>
+              <option value="EXPARGO">EXPARGO</option>
+              <option value="DYNAMEX">DYNAMEX</option>
               <option value="CAMEX">CAMEX</option>
+              <option value="MOVER">MOVER</option>
+              <option value="KOLIPLUS">KOLIPLUS</option>
               <option value="LIMAK">LIMAK</option>
-              <option value="Mover">Mover</option>
               <option value="Fizza">Fizza</option>
               <option value="Digər">Digər Daşıyıcı</option>
             </select>
@@ -1053,6 +1199,254 @@
         badgeText.innerText = '☁️ Bulud Serveri';
         badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse';
       }
+    }
+
+    // --- Etap 4: Smart Arbitrage Calculator ---
+    async function calculateArbitrage() {
+      const btn = document.getElementById('btn-calc-arb');
+      const spinner = document.getElementById('arb-calc-spinner');
+      const resultsBox = document.getElementById('arbitrage-results');
+      const savingsBadge = document.getElementById('arbitrage-savings-badge');
+
+      const country = document.getElementById('arb-country').value;
+      const weight = parseFloat(document.getElementById('arb-weight').value) || 1.0;
+      const parcelType = document.getElementById('arb-type').value;
+
+      const lenVal = parseFloat(document.getElementById('arb-len').value) || null;
+      const widVal = parseFloat(document.getElementById('arb-wid').value) || null;
+      const heiVal = parseFloat(document.getElementById('arb-hei').value) || null;
+
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+
+      const payload = {
+        origin_country: country,
+        weight_kg: weight,
+        parcel_type: parcelType,
+      };
+      if (lenVal && widVal && heiVal) {
+        payload.length_cm = lenVal;
+        payload.width_cm = widVal;
+        payload.height_cm = heiVal;
+      }
+
+      try {
+        const res = await fetch('/api/v1/user/arbitrage/calculate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          throw new Error('Tarif hesablana bilmədi.');
+        }
+
+        const data = await res.json();
+        savingsBadge.classList.remove('hidden');
+        savingsBadge.innerText = `Maks. Qənaət: $${data.max_savings_usd.toFixed(2)} (${data.max_savings_azn.toFixed(2)} AZN)`;
+
+        let rowsHtml = '';
+        data.carriers.forEach(c => {
+          let badgeHtml = '';
+          let rowBg = 'bg-slate-950/80 border-slate-800';
+          if (c.is_cheapest) {
+            badgeHtml += `<span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">Ən Sərfəli ⭐</span> `;
+            rowBg = 'bg-emerald-950/20 border-emerald-500/30';
+          }
+          if (c.is_fastest) {
+            badgeHtml += `<span class="px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold">Ən Sürətli ⚡</span>`;
+          }
+
+          rowsHtml += `
+            <div class="p-2.5 rounded-xl border ${rowBg} flex items-center justify-between gap-2 hover:border-slate-600 transition">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-[11px] text-cyan-300">
+                  ${c.carrier_code.substring(0, 3)}
+                </span>
+                <div>
+                  <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span>${c.carrier_name}</span>
+                    ${badgeHtml}
+                  </div>
+                  <div class="text-[10px] text-slate-400">
+                    <span>Çatdırılma: <b class="text-slate-300">${c.delivery_eta}</b></span>
+                    <span> • </span>
+                    <span>${c.notes}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <div class="text-right">
+                  <div class="text-xs font-bold font-mono text-white">${c.rate_usd.toFixed(2)} USD</div>
+                  <div class="text-[10px] font-mono text-slate-400">${c.rate_azn.toFixed(2)} AZN</div>
+                </div>
+                <button type="button" onclick="applyArbitrageToOrder('${c.carrier_code}', '${c.carrier_name}', ${c.rate_usd})" class="px-2.5 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500 text-cyan-300 hover:text-slate-950 border border-cyan-500/30 text-[10px] font-bold transition cursor-pointer" title="Bu daşıyıcı ilə sifariş yarat">
+                  Seç ↳
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        resultsBox.innerHTML = `
+          <div class="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
+            ${rowsHtml}
+          </div>
+        `;
+      } catch (err) {
+        resultsBox.innerHTML = `
+          <div class="p-3 rounded-xl bg-rose-950/20 border border-rose-500/30 text-xs text-rose-300">
+            Xəta baş verdi: ${err.message}
+          </div>
+        `;
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+      }
+    }
+
+    function applyArbitrageToOrder(carrierCode, carrierName, rateUsd) {
+      openOrderModal();
+      const carrierSelect = document.getElementById('p-carrier');
+      if (carrierSelect) {
+        let found = false;
+        for (let i = 0; i < carrierSelect.options.length; i++) {
+          if (carrierSelect.options[i].value.toUpperCase() === carrierCode.toUpperCase()) {
+            carrierSelect.selectedIndex = i;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          const opt = new Option(carrierName, carrierCode, true, true);
+          carrierSelect.add(opt);
+        }
+      }
+      showToast(`${carrierName} daşıyıcısı seçildi. Sifariş məlumatlarını daxil edin. ✓`);
+    }
+
+    // --- Etap 4: DGK 300$ Customs Supervisor Simulator ---
+    async function simulateCustoms() {
+      const btn = document.getElementById('btn-calc-sim');
+      const spinner = document.getElementById('sim-calc-spinner');
+      const resultsBox = document.getElementById('sim-results');
+      const statusBadge = document.getElementById('sim-status-badge');
+
+      const priceVal = parseFloat(document.getElementById('sim-price-usd').value);
+      if (isNaN(priceVal) || priceVal < 0) {
+        showToast('Zəhmət olmasa düzgün məhsul qiyməti daxil edin.', false);
+        return;
+      }
+      const shippingVal = parseFloat(document.getElementById('sim-shipping-usd').value) || 0.0;
+
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/v1/user/customs/simulate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            item_price_usd: priceVal,
+            shipping_fee_usd: shippingVal,
+          })
+        });
+
+        if (!res.ok) {
+          throw new Error('Gömrük simulyasiyası uğursuz oldu.');
+        }
+
+        const data = await res.json();
+
+        // Update badge
+        if (data.status === 'safe') {
+          statusBadge.innerText = 'Təhlükəsiz ✓';
+          statusBadge.className = 'text-[10px] font-bold px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        } else if (data.status === 'warning') {
+          statusBadge.innerText = 'Xəbərdarlıq ⚠️';
+          statusBadge.className = 'text-[10px] font-bold px-2 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30';
+        } else {
+          statusBadge.innerText = 'Limit Aşıldı 🚨';
+          statusBadge.className = 'text-[10px] font-bold px-2 py-1 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30';
+        }
+
+        let recsHtml = '';
+        data.recommendations.forEach(r => {
+          recsHtml += `<li>• ${r}</li>`;
+        });
+
+        let dutyHighlight = '';
+        if (data.exceeds_limit) {
+          dutyHighlight = `
+            <div class="p-3 rounded-xl bg-rose-950/30 border border-rose-500/40 text-xs space-y-1">
+              <div class="flex items-center justify-between font-bold text-rose-300">
+                <span>36% Vahid Gömrük Rüsumu:</span>
+                <span class="font-mono text-sm">${data.duty_azn.toFixed(2)} AZN ($${data.duty_usd.toFixed(2)} USD)</span>
+              </div>
+              <div class="text-[11px] text-slate-300">
+                Aşılmış məbləğ: <b class="font-mono text-white">$${data.over_limit_amount_usd.toFixed(2)} USD</b> (${data.over_limit_amount_azn.toFixed(2)} AZN)
+              </div>
+            </div>
+          `;
+        } else {
+          dutyHighlight = `
+            <div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/40 text-xs flex items-center justify-between text-emerald-300 font-bold">
+              <span>0% Rüsumsuz Keçid:</span>
+              <span class="font-mono text-xs">Qalan ehtiyat: $${data.remaining_allowance_usd.toFixed(2)} USD (${data.remaining_allowance_azn.toFixed(2)} AZN)</span>
+            </div>
+          `;
+        }
+
+        resultsBox.innerHTML = `
+          <div class="space-y-2.5">
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
+                <span class="text-[10px] text-slate-400 block">Cari Ay Xərci</span>
+                <span class="font-bold font-mono text-white">$${data.current_spent_usd.toFixed(2)} USD</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
+                <span class="text-[10px] text-slate-400 block">Proqnozlaşdırılan Cəm</span>
+                <span class="font-bold font-mono ${data.exceeds_limit ? 'text-rose-400' : 'text-cyan-400'}">$${data.projected_total_usd.toFixed(2)} USD</span>
+              </div>
+            </div>
+
+            ${dutyHighlight}
+
+            <div class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80 text-[11px] text-slate-300 space-y-1">
+              <span class="font-bold text-white block">Tövsiyələr:</span>
+              <ul class="space-y-0.5 text-slate-400">
+                ${recsHtml}
+              </ul>
+            </div>
+
+            <div class="pt-1 flex justify-end">
+              <button type="button" onclick="applyCustomsToOrder(${data.item_price_usd})" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold transition cursor-pointer">
+                Bu Məbləğlə Sifariş Formasını Aç ↳
+              </button>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        resultsBox.innerHTML = `
+          <div class="p-3 rounded-xl bg-rose-950/20 border border-rose-500/30 text-xs text-rose-300">
+            Xəta baş verdi: ${err.message}
+          </div>
+        `;
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+      }
+    }
+
+    function applyCustomsToOrder(itemPriceUsd) {
+      openOrderModal();
+      const amountInput = document.getElementById('p-amount-usd');
+      if (amountInput) {
+        amountInput.value = itemPriceUsd.toFixed(2);
+        calculateAznEquivalent();
+      }
+      showToast(`$${itemPriceUsd.toFixed(2)} məbləği sifariş formasına köçürüldü. ✓`);
     }
 
     // Auto-init on page load

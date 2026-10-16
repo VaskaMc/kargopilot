@@ -176,6 +176,71 @@ class VerifyNodeResponse(BaseModel):
     message: str
 
 
+# --- Smart Arbitrage & Customs Supervisor Schemas (Etap 4) ---
+
+class ArbitrageCalculateRequest(BaseModel):
+    origin_country: str = Field("TR", description="Mənşə ölkəsi: TR, US, CN, EU")
+    weight_kg: float = Field(..., gt=0.0, description="Faktiki çəki (kq)")
+    length_cm: Optional[float] = Field(None, ge=0.0, description="Uzunluq (sm)")
+    width_cm: Optional[float] = Field(None, ge=0.0, description="En (sm)")
+    height_cm: Optional[float] = Field(None, ge=0.0, description="Hündürlük (sm)")
+    parcel_type: str = Field("standard", description="standard, liquid, electronics")
+
+
+class CarrierRateDetail(BaseModel):
+    carrier_name: str
+    carrier_code: str
+    chargeable_weight_kg: float
+    rate_usd: float
+    rate_azn: float
+    delivery_days_min: int
+    delivery_days_max: int
+    delivery_eta: str
+    notes: str
+    is_cheapest: bool
+    is_fastest: bool
+
+
+class ArbitrageResponse(BaseModel):
+    origin_country: str
+    actual_weight_kg: float
+    volumetric_weight_kg: Optional[float] = None
+    chargeable_weight_kg: float
+    parcel_type: str
+    best_value_carrier: str
+    fastest_carrier: str
+    max_savings_usd: float
+    max_savings_azn: float
+    carriers: List[CarrierRateDetail]
+
+
+class CustomsSimulateRequest(BaseModel):
+    item_price_usd: float = Field(..., ge=0.0, description="Məhsulun invoys qiyməti (USD)")
+    shipping_fee_usd: float = Field(0.0, ge=0.0, description="Xarici daşıma haqqı (USD)")
+    month: Optional[str] = Field(None, description="Təqvim ayı (YYYY-MM), default cari ay")
+
+
+class CustomsSimulateResponse(BaseModel):
+    user_id: str
+    month: str
+    current_spent_usd: float
+    item_price_usd: float
+    shipping_fee_usd: float
+    projected_total_usd: float
+    projected_total_azn: float
+    exceeds_limit: bool
+    remaining_allowance_usd: float
+    remaining_allowance_azn: float
+    over_limit_amount_usd: float
+    over_limit_amount_azn: float
+    duty_rate_percent: float = 36.0
+    duty_usd: float
+    duty_azn: float
+    status: str  # safe | warning | danger
+    status_message: str
+    recommendations: List[str]
+
+
 # ==============================================================================
 # Profile Management Routes
 # ==============================================================================
@@ -867,3 +932,231 @@ async def verify_node_user_route(req: VerifyNodeRequest) -> VerifyNodeResponse:
 async def verify_node_system_route(req: VerifyNodeRequest) -> VerifyNodeResponse:
     """Verifies reachability and version of a local or remote KargoPilot instance via system prefix."""
     return await verify_node_connection(req.target_url)
+
+
+# ==============================================================================
+# Smart Arbitrage & Customs Supervisor Engines (Etap 4)
+# ==============================================================================
+
+CARRIER_TARIFF_MATRIX = {
+    "TR": [
+        {"name": "Starex", "code": "STAREX", "base": 0.80, "per_kg": 4.20, "days_min": 3, "days_max": 5},
+        {"name": "Expargo", "code": "EXPARGO", "base": 0.90, "per_kg": 4.10, "days_min": 4, "days_max": 6},
+        {"name": "Dynamex", "code": "DYNAMEX", "base": 1.00, "per_kg": 4.50, "days_min": 3, "days_max": 4},
+        {"name": "Camex", "code": "CAMEX", "base": 1.10, "per_kg": 4.30, "days_min": 4, "days_max": 5},
+        {"name": "Mover", "code": "MOVER", "base": 1.20, "per_kg": 4.60, "days_min": 3, "days_max": 5},
+        {"name": "KoliPlus", "code": "KOLIPLUS", "base": 1.00, "per_kg": 4.40, "days_min": 4, "days_max": 6},
+    ],
+    "CN": [
+        {"name": "Camex", "code": "CAMEX", "base": 2.00, "per_kg": 9.00, "days_min": 8, "days_max": 12},
+        {"name": "Starex", "code": "STAREX", "base": 2.50, "per_kg": 9.50, "days_min": 7, "days_max": 10},
+        {"name": "Expargo", "code": "EXPARGO", "base": 2.80, "per_kg": 9.20, "days_min": 7, "days_max": 11},
+        {"name": "KoliPlus", "code": "KOLIPLUS", "base": 2.60, "per_kg": 9.80, "days_min": 8, "days_max": 12},
+        {"name": "Dynamex", "code": "DYNAMEX", "base": 3.00, "per_kg": 10.00, "days_min": 6, "days_max": 9},
+        {"name": "Mover", "code": "MOVER", "base": 3.20, "per_kg": 10.50, "days_min": 6, "days_max": 10},
+    ],
+    "US": [
+        {"name": "Camex", "code": "CAMEX", "base": 3.00, "per_kg": 8.50, "days_min": 5, "days_max": 8},
+        {"name": "Expargo", "code": "EXPARGO", "base": 3.20, "per_kg": 8.80, "days_min": 6, "days_max": 9},
+        {"name": "KoliPlus", "code": "KOLIPLUS", "base": 3.40, "per_kg": 8.90, "days_min": 6, "days_max": 9},
+        {"name": "Starex", "code": "STAREX", "base": 3.50, "per_kg": 9.00, "days_min": 5, "days_max": 7},
+        {"name": "Dynamex", "code": "DYNAMEX", "base": 3.80, "per_kg": 9.50, "days_min": 4, "days_max": 7},
+        {"name": "Mover", "code": "MOVER", "base": 4.00, "per_kg": 9.20, "days_min": 5, "days_max": 8},
+    ],
+    "EU": [
+        {"name": "Dynamex", "code": "DYNAMEX", "base": 2.50, "per_kg": 7.50, "days_min": 5, "days_max": 7},
+        {"name": "Expargo", "code": "EXPARGO", "base": 2.70, "per_kg": 7.70, "days_min": 6, "days_max": 9},
+        {"name": "Camex", "code": "CAMEX", "base": 2.80, "per_kg": 7.80, "days_min": 6, "days_max": 8},
+        {"name": "KoliPlus", "code": "KOLIPLUS", "base": 2.90, "per_kg": 7.90, "days_min": 6, "days_max": 8},
+        {"name": "Starex", "code": "STAREX", "base": 3.00, "per_kg": 7.60, "days_min": 5, "days_max": 8},
+        {"name": "Mover", "code": "MOVER", "base": 3.10, "per_kg": 8.00, "days_min": 5, "days_max": 7},
+    ],
+}
+
+
+@router.post("/arbitrage/calculate", response_model=ArbitrageResponse)
+async def calculate_smart_arbitrage(
+    req: ArbitrageCalculateRequest,
+) -> ArbitrageResponse:
+    """Calculates shipping tariffs across all major carriers with volumetric weight, surcharges, and savings optimization."""
+    # Volumetric weight calculation: (L * W * H) / 6000
+    volumetric_weight_kg: Optional[float] = None
+    if (
+        req.length_cm is not None
+        and req.width_cm is not None
+        and req.height_cm is not None
+        and req.length_cm > 0
+        and req.width_cm > 0
+        and req.height_cm > 0
+    ):
+        volumetric_weight_kg = round((req.length_cm * req.width_cm * req.height_cm) / 6000.0, 3)
+        chargeable_weight_kg = round(max(req.weight_kg, volumetric_weight_kg), 2)
+    else:
+        chargeable_weight_kg = round(req.weight_kg, 2)
+
+    # Type surcharges
+    parcel_type_norm = req.parcel_type.lower().strip()
+    if parcel_type_norm == "liquid":
+        surcharge_usd = 1.50
+        type_note = "Maye/kosmetika əlavəsi daxildir (+$1.50)"
+    elif parcel_type_norm == "electronics":
+        surcharge_usd = 1.00
+        type_note = "Elektronika/batareya əlavəsi daxildir (+$1.00)"
+    else:
+        parcel_type_norm = "standard"
+        surcharge_usd = 0.0
+        type_note = "Standart tarif"
+
+    origin = req.origin_country.upper().strip()
+    tariff_list = CARRIER_TARIFF_MATRIX.get(origin, CARRIER_TARIFF_MATRIX["TR"])
+
+    computed_carriers: List[Dict[str, Any]] = []
+    for c in tariff_list:
+        raw_usd = c["base"] + (c["per_kg"] * chargeable_weight_kg) + surcharge_usd
+        rate_usd = round(raw_usd, 2)
+        rate_azn = round(rate_usd * 1.70, 2)
+        computed_carriers.append({
+            "carrier_name": c["name"],
+            "carrier_code": c["code"],
+            "chargeable_weight_kg": chargeable_weight_kg,
+            "rate_usd": rate_usd,
+            "rate_azn": rate_azn,
+            "delivery_days_min": c["days_min"],
+            "delivery_days_max": c["days_max"],
+            "delivery_eta": f"{c['days_min']}-{c['days_max']} iş günü",
+            "notes": type_note,
+        })
+
+    # Sort cheapest to most expensive
+    computed_carriers.sort(key=lambda x: (x["rate_usd"], x["delivery_days_max"]))
+    cheapest = computed_carriers[0]
+
+    # Fastest carrier
+    fastest = min(computed_carriers, key=lambda x: (x["delivery_days_max"], x["delivery_days_min"], x["rate_usd"]))
+
+    max_usd = max(c["rate_usd"] for c in computed_carriers)
+    min_usd = min(c["rate_usd"] for c in computed_carriers)
+    max_savings_usd = round(max_usd - min_usd, 2)
+    max_savings_azn = round(max_savings_usd * 1.70, 2)
+
+    carrier_details: List[CarrierRateDetail] = []
+    for c in computed_carriers:
+        carrier_details.append(
+            CarrierRateDetail(
+                carrier_name=c["carrier_name"],
+                carrier_code=c["carrier_code"],
+                chargeable_weight_kg=c["chargeable_weight_kg"],
+                rate_usd=c["rate_usd"],
+                rate_azn=c["rate_azn"],
+                delivery_days_min=c["delivery_days_min"],
+                delivery_days_max=c["delivery_days_max"],
+                delivery_eta=c["delivery_eta"],
+                notes=c["notes"],
+                is_cheapest=(c["carrier_code"] == cheapest["carrier_code"]),
+                is_fastest=(c["carrier_code"] == fastest["carrier_code"]),
+            )
+        )
+
+    return ArbitrageResponse(
+        origin_country=origin,
+        actual_weight_kg=round(req.weight_kg, 2),
+        volumetric_weight_kg=volumetric_weight_kg,
+        chargeable_weight_kg=chargeable_weight_kg,
+        parcel_type=parcel_type_norm,
+        best_value_carrier=cheapest["carrier_name"],
+        fastest_carrier=fastest["carrier_name"],
+        max_savings_usd=max_savings_usd,
+        max_savings_azn=max_savings_azn,
+        carriers=carrier_details,
+    )
+
+
+@router.post("/customs/simulate", response_model=CustomsSimulateResponse)
+async def simulate_customs_supervisor(
+    req: CustomsSimulateRequest,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> CustomsSimulateResponse:
+    """Simulates monthly DGK 300$ quota impact, potential 36% customs duties, and compliance recommendations."""
+    target_month = req.month.strip() if req.month and req.month.strip() else datetime.now(timezone.utc).strftime("%Y-%m")
+
+    # Strict Tenant Scoping: query orders solely belonging to current_user.id in target_month
+    with get_connection() as conn:
+        row = conn.execute(
+            """SELECT COALESCE(SUM(invoice_amount_usd), 0.0)
+               FROM orders
+               WHERE user_id = ? AND (strftime('%Y-%m', created_at) = ? OR created_at LIKE ?)""",
+            (current_user.id, target_month, f"{target_month}%"),
+        ).fetchone()
+        current_spent = float(row[0]) if row and row[0] is not None else 0.0
+
+    current_spent_usd = round(current_spent, 2)
+    item_usd = round(req.item_price_usd, 2)
+    shipping_usd = round(req.shipping_fee_usd, 2)
+    projected_total_usd = round(current_spent_usd + item_usd + shipping_usd, 2)
+    projected_total_azn = round(projected_total_usd * 1.70, 2)
+
+    MONTHLY_LIMIT = 300.0
+
+    if projected_total_usd <= MONTHLY_LIMIT:
+        exceeds_limit = False
+        over_limit_usd = 0.0
+        over_limit_azn = 0.0
+        duty_usd = 0.0
+        duty_azn = 0.0
+        rem_usd = round(MONTHLY_LIMIT - projected_total_usd, 2)
+        rem_azn = round(rem_usd * 1.70, 2)
+
+        if projected_total_usd < 240.0:
+            status_val = "safe"
+            status_msg = f"Limit daxilindədir. 0% gömrük rüsumu. Aylıq 300$ limitindən {rem_usd:.2f} USD ({rem_azn:.2f} AZN) qalıq ehtiyatınız var."
+            recs = [
+                "Sifarişinizi təhlükəsiz şəkildə bəyan edə bilərsiniz.",
+                f"300 USD limitinə çatmağa hələ ${rem_usd:.2f} USD qalıb.",
+                "SmartCustoms və ya KargoPilot avtomatik bəyannaməsi ilə rüsumsuz keçəcək.",
+            ]
+        else:
+            status_val = "warning"
+            status_msg = f"Diqqət! Aylıq 300$ limitinə yaxınlaşırsınız. Qalan limit: {rem_usd:.2f} USD ({rem_azn:.2f} AZN)."
+            recs = [
+                "Bu sifariş hələlik rüsumsuzdur, lakin cari ayda növbəti sifarişlər 36% gömrük rüsumuna cəlb oluna bilər.",
+                f"Ayın sonunadək əlavə sifariş edərkən ${rem_usd:.2f} USD ehtiyatınızı nəzərə alın.",
+                "Növbəti bağlamaları gələn ayın 1-dən sonra çatdırılacaq şəkildə planlaşdırın.",
+            ]
+    else:
+        exceeds_limit = True
+        over_limit_usd = round(projected_total_usd - MONTHLY_LIMIT, 2)
+        over_limit_azn = round(over_limit_usd * 1.70, 2)
+        rem_usd = 0.0
+        rem_azn = 0.0
+        duty_usd = round(over_limit_usd * 0.36, 2)
+        duty_azn = round(duty_usd * 1.70, 2)
+        status_val = "danger"
+        status_msg = f"300 USD limiti {over_limit_usd:.2f} USD aşıldı! Təxmini 36% vahid gömrük rüsumu: {duty_azn:.2f} AZN ({duty_usd:.2f} USD)."
+        recs = [
+            f"Limit aşımı: {over_limit_usd:.2f} USD. Hesablanmış 36% rüsum: {duty_azn:.2f} AZN ({duty_usd:.2f} USD).",
+            "Sifarişi 2 hissəyə bölərək fərqli bağlamalarda göndərin.",
+            "Sifarişi növbəti təqvim ayının 1-dən sonra bəyan edin.",
+            "Və ya ailə üzvünün FİN kodu adına sifariş edin (KargoPilot Ailə Mesh).",
+            "Əgər indi bəyan etsəniz, SmartCustoms portalında rüsumu onlayn ödəyə bilərsiniz.",
+        ]
+
+    return CustomsSimulateResponse(
+        user_id=current_user.id,
+        month=target_month,
+        current_spent_usd=current_spent_usd,
+        item_price_usd=item_usd,
+        shipping_fee_usd=shipping_usd,
+        projected_total_usd=projected_total_usd,
+        projected_total_azn=projected_total_azn,
+        exceeds_limit=exceeds_limit,
+        remaining_allowance_usd=rem_usd,
+        remaining_allowance_azn=rem_azn,
+        over_limit_amount_usd=over_limit_usd,
+        over_limit_amount_azn=over_limit_azn,
+        duty_rate_percent=36.0,
+        duty_usd=duty_usd,
+        duty_azn=duty_azn,
+        status=status_val,
+        status_message=status_msg,
+        recommendations=recs,
+    )
