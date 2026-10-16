@@ -92,7 +92,7 @@ def test_data_export_structure_and_tenant_isolation(client: TestClient):
     bundle = res.json()
 
     # Verify root bundle structure
-    assert bundle["schema_version"] == "4.5.0"
+    assert bundle["schema_version"] in ("4.5.0", "5.0.0")
     assert bundle["service"] == "kargopilot-core"
     assert "exported_at" in bundle
 

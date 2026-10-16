@@ -42,6 +42,14 @@ except Exception:
 conn = sqlite3.connect(str(db_path), timeout=30.0)
 conn.row_factory = sqlite3.Row
 
+try:
+    from app.database import _ensure_users_and_auth_tables, _ensure_etap6_tables
+    _ensure_users_and_auth_tables(conn)
+    _ensure_etap6_tables(conn)
+    conn.commit()
+except Exception as e:
+    print(f"Warning running schema ensure: {e}")
+
 user_id = "demo-user-7kp2026"
 email = "demo@kargopilot.az"
 full_name = "Vasif Məcidli (Demo Pilot)"
@@ -129,6 +137,38 @@ VALUES (?, ?, ?, 1, 300.0, 'Demo Pilot İstifadəçi Profili')
 ON CONFLICT(fin) DO UPDATE SET full_name = excluded.full_name, phone = excluded.phone
 """, (fin, full_name, phone))
 
+# 4. Etap 6: Custom Store for Demo User
+conn.execute("DELETE FROM user_stores WHERE user_id = ? AND is_standard = 0", (user_id,))
+conn.execute("""
+INSERT INTO user_stores (id, user_id, name, domain_url, country_code, default_currency, category, icon_badge, is_standard, created_at)
+VALUES (?, ?, 'Morhipo VIP', 'https://morhipo.com', 'TR', 'TRY', 'Geyim', '👗', 0, ?)
+""", (f"demo-store-{uuid.uuid4().hex[:6]}", user_id, now_str))
+
+# 5. Etap 6: Custom Carrier for Demo User
+conn.execute("DELETE FROM user_carriers WHERE user_id = ? AND is_standard = 0", (user_id,))
+conn.execute("""
+INSERT INTO user_carriers (id, user_id, name, website_url, tracking_url_template, origin_country, rate_per_kg_usd, liquid_surcharge_usd, electronics_surcharge_usd, delivery_days_min, delivery_days_max, branch_address, is_standard, created_at)
+VALUES (?, ?, 'KargoPilot Super Ekspres TR', 'https://superekspres.az', 'https://superekspres.az/track/{tracking}', 'TR', 2.75, 1.0, 1.5, 2, 4, '28 May Mərkəzi Filial', 0, ?)
+""", (f"demo-carr-{uuid.uuid4().hex[:6]}", user_id, now_str))
+
+# 6. Etap 6: Family FIN Mesh for Demo User
+conn.execute("DELETE FROM family_fins WHERE user_id = ?", (user_id,))
+conn.execute("""
+INSERT INTO family_fins (id, user_id, name_relation, fin, monthly_limit_usd, spent_usd, created_at)
+VALUES (?, ?, 'Aygün Məcidli (Həyat yoldaşı)', '7AY2026', 300.0, 40.0, ?)
+""", (f"demo-ffin-{uuid.uuid4().hex[:6]}", user_id, now_str))
+
+# 7. Etap 6: AI Chat Welcome Turn for Demo User
+conn.execute("DELETE FROM ai_chat_messages WHERE user_id = ?", (user_id,))
+conn.execute("""
+INSERT INTO ai_chat_messages (id, user_id, role, content, created_at)
+VALUES (?, ?, 'user', 'Salam Loyd, 300$ limitim necədir?', ?)
+""", (f"demo-aimsg-1-{uuid.uuid4().hex[:6]}", user_id, now_str))
+conn.execute("""
+INSERT INTO ai_chat_messages (id, user_id, role, content, created_at)
+VALUES (?, ?, 'assistant', 'Salam Vasif bəy! Cari ayda 2 bağlamanız üzrə 260.00 USD xərcləmisiniz. Aylıq 300$ limitinizdən 40.00 USD (68.00 AZN) qalıq ehtiyatınız var. Əlavə olaraq ailə FİN şəbəkənizdə Aygün xanımın (7AY2026) 260.00 USD sərbəst limiti mövcuddur.', ?)
+""", (f"demo-aimsg-2-{uuid.uuid4().hex[:6]}", user_id, now_str))
+
 conn.commit()
 conn.close()
 print("[OK] Demo Account seeded successfully:")
@@ -136,3 +176,7 @@ print(f"  Email: {email}")
 print(f"  Password: KargoPilot2026!")
 print(f"  FIN: {fin}")
 print(f"  Parcels: 2 ($85.00 + $175.00 = $260.00 USD, Warning status)")
+print("  Custom Store: Morhipo VIP (TR)")
+print("  Custom Carrier: KargoPilot Super Ekspres TR ($2.75/kq)")
+print("  Family FIN: 7AY2026 - Aygun Mecidli ($260 qaliq)")
+print("  AI Copilot: Welcome conversation history primed.")
