@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [5.5.0] - 2026-10-17
+
+### 🚀 Major Release: Interactive Session Vault, 1-Click SmartCustoms Declaration, and Dual-Hosting Alignment
+
+KargoPilot v5.5 represents the complete fusion of autonomous marketplace/forwarder session management, seamless electronic customs filing, and full-spectrum end-to-end user journeys:
+
+### ✨ Added
+- **Interactive Session Vault (`/sessions/*`)**:
+  - Fernet AES-256 cryptographic vault for third-party marketplace and forwarder sessions (Trendyol, Temu, Amazon, Starex, Expargo, Camex, and SmartCustoms).
+  - Universal interactive modal supporting direct credentials handshake, OTP 2FA challenge resolution, and automated background order synchronization.
+  - Zero Secret Leak: masked identification tokens (`****`) across all public JSON API surfaces; strict IDOR and SSRF defense boundaries preventing intranet exploitation.
+- **1-Click SmartCustoms Gömrük Bəyannaməsi (`/smartcustoms/declare/{parcel_id}`)**:
+  - Automated electronic customs declaration dispatch conforming to Cabinet of Ministers Decision No. 305.
+  - Instant declaration status indicators (`declared` vs `not_declared`) embedded in parcel grids.
+- **Pre-Seeded Production Demo Account**:
+  - Out-of-the-box demonstration account (`demo@kargopilot.az` / `KargoPilot2026!` / FİN `7KP2026`) equipped with active Trendyol/Starex/SmartCustoms sessions and realistic parcel telemetry.
+- **Automated Verification**:
+  - Added `tests/test_etap7_interactive_sessions_and_sync_flow.py` covering session lifecycle, OTP verification, IDOR isolation, and zero-leak boundary tests.
+  - Full suite expanded to 85 passing tests locally (100%) and 47/47 passing tests on production VPS.
+
+---
+
+## [5.0.0] - 2026-10-16
+
+### 🚀 Major Release: Stores & Carriers Ecosystem Hub, AI Copilot, and Smart Arbitrage / Customs Supervisor
+
+### ✨ Added
+- **Stores & Forwarders Ecosystem Hub (`/stores`, `/carriers`)**:
+  - Dynamic user-managed store catalog (Trendyol, Temu, Amazon, Zara, Hepsiburada, Shein, iHerb, AliExpress, etc.).
+  - User-managed forwarder accounts with custom branch routing across 76+ Baku and regional pickup hubs.
+- **Autonomous AI Copilot (`/api/v1/user/ai/chat`)**:
+  - Context-aware logistics assistant conversant in natural Azerbaijani, trained on customs regulations, prohibited commodities (drones, lithium batteries, dangerous liquids), and multi-carrier cost optimizations.
+- **Smart Arbitrage Engine (`/api/v1/user/arbitrage/calculate`)**:
+  - Multi-carrier rate comparison (Starex, Expargo, Camex, Dynamex, Limak, Mover, KoliPlus) across Turkey, USA, China, and Europe origins.
+  - Real-time volumetric ($L \times W \times H / 6000$) vs physical weight comparison with USD and CBAR AZN (1.7000) conversions.
+- **Customs Supervisor & Duty Simulator (`/api/v1/user/customs/*`)**:
+  - Real-time rolling 30-day $300 USD duty-free quota monitoring with visual safety zones (Green, Amber, Crimson).
+  - 36% unified customs tariff + 15 AZN processing fee simulator for parcels exceeding the legal exemption limit.
+- **Data Portability & Sovereignty (`/api/v1/user/data/*`)**:
+  - Full JSON export of user profiles, FIN records, and parcel histories.
+  - Cryptographically confirmed account purge (Right to be Forgotten).
+  - Validated JSON data re-import flow.
+- **Advanced User Dashboard & Bento UI (`/user/dashboard`)**:
+  - Modernized user interface featuring responsive glassmorphic Bento cards, quick-copy addresses, and family quota distributions.
+
+---
+
 ## [4.5.0] - 2026-10-16
 
 ### 🚀 Major Release: Dual-Architecture Sovereign & Cloud Platform, Multi-Tenant Auth, and Admin Cockpit

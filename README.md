@@ -1,229 +1,273 @@
 <div align="center">
   <img src="assets/logo_concept_6_infinity_loop.jpg" alt="KargoPilot Official Brand Emblem" width="420" style="border-radius: 20px; box-shadow: 0 16px 40px rgba(0,0,0,0.8);" />
   <br/><br/>
-  <h1>⚡ KargoPilot v4.5 Enterprise</h1>
-  <p><b>Dual-Architecture AI Copilot for Cross-Border Logistics, Multi-Tenant Auth & DGK SmartCustoms Automation</b></p>
-  <p><i>Available in two editions: <b>Variant 1 (Sovereign Self-Hosted)</b> for 100% on-prem data privacy & <b>Variant 2 (Managed Cloud 7/24)</b> for zero-touch enterprise autopilot.</i></p>
+  <h1>⚡ KargoPilot v5.5 Enterprise</h1>
+  <p><b>Dual-Hosting AI Copilot for Cross-Border Logistics, Interactive Session Vault, Multi-Tenant Auth, Smart Arbitrage & 1-Click DGK SmartCustoms Automation</b></p>
+  <p><i>Təqdim olunur 2 rejimdə: <b>Variant 1 (Müstəqil Server / Self-Hosted)</b> 100% on-prem məlumat məxfiliyi & <b>Variant 2 (Bulud İdarəetməli / Cloud Managed 7/24)</b> avtonom bulud idarəetməsi.</i></p>
 
   <p>
     <a href="https://vaskamc.github.io/kargopilot"><img src="https://img.shields.io/badge/Live_Portal-vaskamc.github.io%2Fkargopilot-6366f1?style=for-the-badge&logo=github&logoColor=white" alt="Live Web Platform"></a>
-    <img src="https://img.shields.io/badge/Architecture-Dual_Edition-00d2ff?style=for-the-badge&logo=docker&logoColor=white" alt="Dual Architecture">
-    <img src="https://img.shields.io/badge/Security-Argon2id%20%2B%20AES--256-10b981?style=for-the-badge&logo=shield&logoColor=white" alt="Argon2id + AES-256">
-    <img src="https://img.shields.io/badge/Admin-Cockpit_v4.5-8b5cf6?style=for-the-badge&logo=fastapi&logoColor=white" alt="Admin Cockpit">
-    <img src="https://img.shields.io/badge/Tests-34%2F34%20Passed-38bdf8?style=for-the-badge&logo=pytest&logoColor=white" alt="34/34 Tests Passing">
+    <img src="https://img.shields.io/badge/Architecture-Dual_Hosting-00d2ff?style=for-the-badge&logo=docker&logoColor=white" alt="Dual Hosting Architecture">
+    <img src="https://img.shields.io/badge/Security-Argon2id%20%2B%20AES--256%20Fernet-10b981?style=for-the-badge&logo=shield&logoColor=white" alt="Argon2id + AES-256 Fernet">
+    <img src="https://img.shields.io/badge/Tests-85%2F85%20Passed-38bdf8?style=for-the-badge&logo=pytest&logoColor=white" alt="85/85 Tests Passing">
+    <img src="https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.9+">
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge" alt="License: MIT"></a>
   </p>
 </div>
 
 ---
 
-## 🎨 Dual-Tier Official Brand Identity System
+## 🎨 Rəsmi İkili Brend Kimliyi (Official Dual-Tier Brand Identity)
 
-KargoPilot implements a synchronized dual-tier brand architecture tailored for cross-border logistics and autonomous intelligence:
+KargoPilot transsərhəd logistika və avtonom süni intellekt mühərriki üçün xüsusi olaraq hazırlanmış ikili brend sistemini tətbiq edir:
 
-| Corporate Primary Brand (Concept 6) | AI Engine & Loyd Copilot (Concept 5) |
+| Əsas Korporativ Brend (Konsept 6) | AI Mühərriki və Loyd Copilot (Konsept 5) |
 | :---: | :---: |
 | <img src="assets/logo_concept_6_infinity_loop.jpg" width="260" alt="Primary Corporate Brand - Infinity Loop" style="border-radius:14px;" /> | <img src="assets/logo_concept_5_quantum_node.jpg" width="260" alt="AI & Loyd Copilot - Quantum Node" style="border-radius:14px;" /> |
-| **Infinity Parcel & Jet Loop** | **Silk Road Quantum 'K' Node** |
-| Official brand identity across Web Header, Admin Cockpit, Invoices, and Legal Documents | Dedicated avatar for WhatsApp Loyd AI, Telegram Bot, Chrome Extension, and Neural Engine |
+| **Sonsuzluq Kargo və Jet Halqası (Infinity Loop)** | **Böyük İpək Yolu Kvant 'K' Qovşağı (Quantum Node)** |
+| Rəsmi korporativ veb başlıq, Admin Kokpit, invoyslar və hüquqi sənədlərdə əsas brend kimliyi | WhatsApp Loyd AI, Telegram Bot, Chrome Extension və neyron köməkçi üçün xüsusi avatar |
 
 ---
 
-## 🌐 Live Showcase & Demo Portal
-The official interactive platform portal and documentation is live at:  
+## 🌐 Canlı Nümayiş Portalı və Demo Hesabı
+
+Rəsmi interaktiv platforma portalı və nümayiş səhifəsi aktivdir:  
 👉 **[https://vaskamc.github.io/kargopilot](https://vaskamc.github.io/kargopilot)**
 
----
-
-## 🏛️ Dual Deployment Architecture (v4.5)
-
-KargoPilot v4.5 introduces a flexible dual-tier deployment paradigm addressing both privacy-sensitive enterprises and consumers who demand effortless cloud orchestration:
-
-```
-                           ┌──────────────────────────────────────────────┐
-                           │          KargoPilot v4.5 Platform            │
-                           └──────────────────────┬───────────────────────┘
-                                                  │
-                      ┌───────────────────────────┴───────────────────────────┐
-                      ▼                                                       ▼
-        ┌───────────────────────────┐                           ┌───────────────────────────┐
-        │  Variant 1: SOVEREIGN     │                           │  Variant 2: MANAGED CLOUD │
-        │  Self-Hosted / On-Prem    │                           │  7/24 High-Availability   │
-        ├───────────────────────────┤                           ├───────────────────────────┤
-        │ • 100% Local VPS / Docker │                           │ • 24/7 Managed Host Server│
-        │ • ZERO Data or Telemetry  │                           │ • Per-Tenant AES-256 Vault│
-        │   Sent to Company Servers │                           │ • Automatic SmartCustoms  │
-        │ • Local Encrypted Vault   │                           │ • Continuous Sync & Alerts│
-        │ • Direct E-Gov & WhatsApp │                           │ • Full Legal Compliance   │
-        │ • 1-Click Installer       │                           │ • SuperAdmin / Customer   │
-        │   (`install_sovereign.sh`)│                           │   RBAC Multi-Tenant Roles │
-        └───────────────────────────┘                           └───────────────────────────┘
-```
+### 🔑 Hazır Canlı Test və Nümayiş Hesabı (Pre-Seeded Demo Account):
+Sistemin bütün v5.5 funksionallıqlarını (İnteraktiv Sessiyalar, Smart Arbitraj, DGK 300$ Nəzarəti, 1-Kliklə Gömrük Bəyannaməsi və AI Copilot) real vaxtda yoxlamaq üçün hazırlanmış rəsmi demo hesabı:
+- **Giriş URL:** `/login` (və ya canlı veb portal)
+- **E-poçt:** `demo@kargopilot.az`
+- **Şifrə:** `KargoPilot2026!`
+- **FİN Kod:** `7KP2026`
+- **Tərkib:** Aktiv Trendyol, Starex və SmartCustoms sessiyaları, bəyan edilmiş və edilməmiş bağlamalar, aktiv DGK limit şkalası və AI Copilot məsləhətçisi.
 
 ---
 
-## ⚡ System Architecture (v4.5)
+## 🏛️ İkili Yerləşdirmə Memarlığı (Dual-Hosting Architecture v5.5)
+
+KargoPilot v5.5 istifadəçilərə məlumatlarının idarə olunmasında tam azadlıq təmin edən iki fərqli arxitekturada təqdim olunur:
+
+```
+                            ┌──────────────────────────────────────────────┐
+                            │          KargoPilot v5.5 Platforması         │
+                            └──────────────────────┬───────────────────────┘
+                                                   │
+                       ┌───────────────────────────┴───────────────────────────┐
+                       ▼                                                       ▼
+         ┌───────────────────────────┐                           ┌───────────────────────────┐
+         │  Variant 1: MÜSTƏQİL      │                           │  Variant 2: BULUD         │
+         │  Server (Self-Hosted)     │                           │  İdarəetməli (Cloud)      │
+         ├───────────────────────────┤                           ├───────────────────────────┤
+         │ • 100% Müstəqil VPS / PC  │                           │ • 7/24 Yüksək Əlçatanlıq  │
+         │ • Sıfır Telemetriya       │                           │ • Avtomatik Arxa Fond     │
+         │ • Şəxsi AES-256 Vault     │                           │   Sinxronizasiyası        │
+         │ • Yerli SQLite WAL Bazası │                           │ • Təhlükəsiz Şifrələmə    │
+         │ • Açıq Mənbə Nüvəsi       │                           │ • Daimi Yenilənmələr      │
+         │ • Tam İxrac / İdxal / Sil │                           │ • Çoxistifadəçili Portal  │
+         │ • 1-Klikli Quraşdırma     │                           │ • Multi-Tenant RBAC Rol   │
+         │   (`install_sovereign.sh`)│                           │   və Ailə FİN İdarəetməsi │
+         └───────────────────────────┘                           └───────────────────────────┘
+```
+
+1. **Variant 1 — Müstəqil Server (Self-Hosted / On-Premise):**
+   - FİN kodları, xarici sessiya kuki/tokenlərini, kargo hesablarını və bağlama detallarını heç bir üçüncü tərəfə ötürmədən tam öz serverində idarə etmək istəyən korporativ şirkətlər, dropshipperlər və fərdi istifadəçilər üçün.
+   - Bütün verilənlər bazası və Fernet şifrələmə açarı lokal serverdə qalır. Sıfır telemetriya.
+2. **Variant 2 — Bulud İdarəetməli (Cloud Managed 7/24 SaaS):**
+   - Server sazlamaq istəməyən, brauzerdən dərhal daxil olaraq 7/24 avtomatik bağlama sinxronizasiyası və tək kliklə gömrük bəyannaməsi vermək istəyən geniş istifadəçi kütləsi üçün.
+   - Hər bir müştəri üçün izolyasiya edilmiş Fernet AES-256 zərf şifrələməsi və AR "Fərdi məlumatlar haqqında" Qanununa 100% hüquqi uyğunluq.
+
+---
+
+## ⚡ Əsas İmkanlar və Yeniliklər (v5.5)
 
 ```
                          ┌──────────────────────────────────────────────┐
-                         │    Global E-Commerce Origin Marketplaces     │
-                         │    Taobao · 1688 · Trendyol · Temu · Amazon  │
+                         │   Qlobal E-Ticarət və Daşıyıcı Şəbəkələri    │
+                         │ Trendyol · Temu · Amazon · Starex · Camex və s.│
                          └──────────────────────┬───────────────────────┘
                                                 │
                       ┌─────────────────────────┴─────────────────────────┐
                       ▼                                                   ▼
          ┌─────────────────────────────┐                    ┌─────────────────────────────┐
-         │ 1-Click Checkout Autofill   │                    │ Multi-Carrier Arbitrage     │
-         │ Chrome MV3 + Floating HUD   │                    │ "Total Landed Cost" Engine  │
+         │ İnteraktiv Sessiya Anbarı   │                    │ Ağıllı Kargo Arbitrajı      │
+         │ Fernet AES-256 Vault + OTP  │                    │ Həcmi/Faktiki Çəki Analizi  │
          └──────────────┬──────────────┘                    └──────────────┬──────────────┘
                         │                                                  │
                         └─────────────────────────┬────────────────────────┘
                                                   ▼
                          ┌──────────────────────────────────────────────┐
-                         │      KargoPilot Multi-Tenant Intelligence    │
-                         │  • CBAR Central Bank Live Exchange Rates     │
-                         │  • $300 USD Quota Shield & Family Mesh       │
-                         │  • Same-Flight Customs Collision Guard       │
-                         │  • 37 DGK Customs Category Auto-Mapping      │
-                         │  • ReportLab Commercial Invoice PDF Engine   │
-                         │  • Argon2id + AES-256 Envelope Vault         │
+                         │    KargoPilot v5.5 İntellekt Mühərriki       │
+                         │ • CBAR Mərkəzi Bank Rəsmi Məzənnəsi (1.7000) │
+                         │ • DGK 300$ Rüsumsuz Limit Nəzarət Şkalası    │
+                         │ • 36% Vahid Gömrük Rüsumu Simulyatoru        │
+                         │ • 1-Kliklə SmartCustoms Gömrük Bəyannaməsi   │
+                         │ • Sərbəst AI Copilot (Azərbaycan Dilində)    │
+                         │ • Tam Məlumat Portativliyi (Export/Wipe/In)  │
                          └──────────────────────┬───────────────────────┘
                                                 │
                       ┌─────────────────────────┴─────────────────────────┐
                       ▼                                                   ▼
          ┌─────────────────────────────┐                    ┌─────────────────────────────┐
-         │ Enterprise Admin Cockpit    │                    │ Autonomous AI Copilot       │
-         │ `/admin` Telemetry & Users  │                    │ 24/7 WhatsApp Loyd Assistant│
-         │ DGK SmartCustoms Supervisor │                    │ Dual-Token Auth & Gateway   │
-         │ Multi-Carrier Margins Grid  │                    │ 76+ Branch Pickup Optimizer │
+         │ İstifadəçi Portalı (Bento)  │                    │ İcraçı Admin Kokpiti        │
+         │ `/user/dashboard` Ekosistem │                    │ `/admin` Telemetriya        │
+         │ Ailə FİN İdarəetmə Mərkəzi  │                    │ Gömrük Supervisor və Risk   │
          └─────────────────────────────┘                    └─────────────────────────────┘
 ```
 
----
+### 1. 🔑 İnteraktiv Sessiya Anbarı (Interactive Session Vault)
+- **Fernet AES-256 Kriptoqrafiyası:** Trendyol, Temu, Amazon, Starex, Expargo, Camex və SmartCustoms hesablarının sessiya kuki və tokenləri bazada şifrələnmiş şəkildə saxlanılır.
+- **Universal Giriş Modalı:** İstifadəçi interfeysdən birbaşa xarici mağazaya və ya daşıyıcıya giriş edə, OTP 2FA təsdiq kodunu daxil edə və tək düymə ilə sifarişlərini platformaya çəkə bilər.
+- **Sıfır Sirr Sızması (Zero-Secret-Leak):** API cavablarında identifikatorlar və tokenlər maskalanır (`****`), IDOR və SSRF qoruyucu filtrləri daxili şəbəkələrin çağırılmasının qarşısını alır.
 
-## 🚀 Core Innovations & Capabilities
+### 2. 🏛️ 1-Kliklə SmartCustoms Gömrük Bəyannaməsi
+- **DGK 305 Nömrəli Qərar Uyğunluğu:** Sifariş edilən bağlamalar kargo anbarına çatdıqda və ya izləmə nömrəsi yarandıqda, istifadəçi cədvəldən "🏛️ 1-Kliklə Bəyan Et" düyməsini sıxmaqla bağlamanı birbaşa Dövlət Gömrük Komitəsinin sisteminə bəyan edir.
+- **Real Vaxt Statusu:** Bağlamaların bəyanat vəziyyəti (`Bəyan edilib`, `Bəyan edilməyib`, `Gömrükdə yoxlanışda`) real vaxtda göstərilir.
 
-### 1. Cross-Platform Arbitrage Engine (`CrossPlatformArbitrageEngine`)
-Dynamically calculates the exact **Total Landed Cost in Baku (AZN)** across supported forwarders:
+### 3. ⚖️ Smart Arbitraj (Ağıllı Kargo Daşıyıcı Müqayisəsi)
+- **Çoxölçülü Müqayisə:** Əsas kargo daşıyıcıları (Starex, Expargo, Camex, Dynamex, Limak, Mover, KoliPlus) üzrə faktiki çəki və həcmi çəki ($L \times W \times H / 6000$) hesablanaraq böyük olan əsas götürülür.
+- **Kateqoriya və Məzənnə:** Standart, Maye/Kosmetika və Elektronika növləri üzrə həm USD, həm də Mərkəzi Bankın (CBAR) rəsmi 1.7000 AZN məzənnəsi ilə ən ucuz daşıyıcı tövsiyə edilir və qənaət məbləği hesablanır.
 
-$$\text{Total Landed Cost} = \text{Product Price} + \text{Origin Domestic Shipping} + \text{Air Freight} + \text{Customs Duty} - \text{Bank Cashback}$$
+### 4. 🛡️ Customs Supervisor (DGK 300$ Rüsumsuz Limit Nəzarəti)
+- **Aylıq Kvota Qoruyucusu:** Fərdi və ailə FİN kodları üzrə son 30 günlük dövriyyəni izləyərək təhlükəsizlik şkalası təqdim edir:
+  - 🟢 **Təhlükəsiz Zona:** < 250 USD
+  - 🟡 **Xəbərdarlıq Zonası:** 250 – 290 USD
+  - 🔴 **Yüksək Risk:** > 290 USD
+- **36% Vahid Gömrük Rüsumu Simulyatoru:** 300 USD limiti aşıldıqda qanunvericiliyə uyğun olaraq aşılan məbləğə 36% vahid rüsum + 15 AZN rəsmiləşdirmə haqqı avtomatik hesablanır.
 
-- Fetches live **Central Bank of Azerbaijan (CBAR)** official exchange rates (USD, TRY, CNY, EUR).
-- Automatically compares actual physical weight against volumetric weight ($L \times W \times H / 6000$).
-- Recommends the optimal carrier for every parcel profile (e.g. lightweight high-volume vs heavy compact goods).
+### 5. 🤖 AI Copilot (Azərbaycan Dilində Sərbəst Logistika Köməkçisi)
+- İstifadəçinin aktiv bağlamaları, DGK qanunvericiliyi və qadağan olunmuş mallar (dronlar, litium batareyalar, xüsusi tibbi avadanlıqlar) barədə kontekstual sualları cavablandıran sərbəst AI köməkçisi.
 
-### 2. $300 USD Quota Shield & Family Mesh (`FamilyFinMeshOrchestrator`)
-- Monitors personal import totals within any rolling 30-day window.
-- Distributes parcels across multiple verified family FIN codes legally to maintain duty-free status.
-- Evaluates flight schedules and customs manifest batches to prevent same-day border collisions.
+### 6. 🏪 Satıcılar və Daşıyıcılar Ekosistem Mərkəzi (Stores & Forwarders Hub)
+- İstifadəçilər standart satıcı mağazaları (Trendyol, Temu, Amazon, Zara, Hepsiburada, Shein, iHerb, AliExpress) idarə edə, həmçinin öz şəxsi mağazalarını və kargo hesablarını filial seçimi ilə birgə əlavə edə bilərlər.
 
-### 3. SmartCustoms RegTech & Automated Invoicing (`SmartCustomsBridge`)
-- AI-driven auto-categorization translating noisy Turkish and Chinese merchant labels into the 37 official legal DGK classification categories.
-- Built-in ReportLab invoice generator creates verified commercial invoice PDFs formatted for electronic customs filing.
-
-### 4. 1-Click Warehouse Autofill (Chrome Extension MV3 + Floating HUD)
-- Zero-dependency script with synthetic React/Vue event dispatchers.
-- Injects full carrier warehouse suite addresses (Istanbul, Guangzhou, Delaware) directly into checkout forms.
-- Features anti-bot typing jitter and localized address hierarchy resolution.
-
-### 5. Unified Modern Web Panel
-- Standardized dark glassmorphism dashboard across all pages (`/dashboard`, `/carriers`, `/connectors`, `/customs`, `/orders`, `/screencast`, `/system`).
-- Real-time carrier branch locator for **76+ Baku & regional hubs** (28 May, Gənclik, Nərimanov, Əhmədli, Yasamal, Sumqayıt, etc.).
-- Instant 1-click clipboard copying for all 9 address components.
-
----
-
-## 🏆 Enterprise Certification (20 Agency Subagents)
-
-KargoPilot v4.0 has been rigorously tested and certified by **20 specialized autonomous subagents** deployed from the `agency-agents` framework across 4 core operational squads:
-
-| Agent Squad | Subagents Deployed | Focus Area | Certification Status |
-| :--- | :---: | :--- | :---: |
-| **API Testers** | 5 | REST Endpoints, CBAR FX Feeds, Quota Endpoints, Error Boundaries | **100% Passed (38/38)** |
-| **Automation Engineers** | 5 | End-to-End User Journeys, Address Formatter, Clipboard, Carrier Switching | **100% Passed (42/42)** |
-| **Performance Benchmarkers** | 5 | Latency, Concurrency, SQLite WAL Contention, Sub-150ms P99 | **100% Passed (35/35)** |
-| **Accessibility Auditors** | 5 | WCAG 2.1 AA Compliance, Keyboard Navigation, Contrast, Screen Readers | **100% Passed (32/32)** |
-| **Total** | **20 Agents** | **Comprehensive Full-System Certification** | **147 / 147 Passed (100%)** |
-
-Detailed certification documentation:
-- 📄 [20-Subagent Master Certification Report](docs/v4_agency_certification.md)
-- 📄 [v3.5 to v4.0 Deep Evolution & Technical Audit](docs/v3_5_to_v4_evolution_report.md)
+### 7. 🔒 Məlumat Müstəqilliyi və Portativliyi (Data Portability & Sovereignty)
+- **Tam JSON İxracı (Data Export):** Bütün profil, ailə FİN-ləri və bağlama tarixçəsi tək kliklə JSON formatında yüklənir.
+- **Hesabın Təmizlənməsi (Account Wipe):** İstifadəçinin bütün məlumatlarının bazadan birdəfəlik və geri qaytarılmaz şəkildə silinməsi (Right to be Forgotten).
+- **Təhlükəsiz İdxal (Data Import):** İxrac edilmiş məlumatların yoxlanaraq yenidən sistemə bərpası.
 
 ---
 
-## 📦 Directory Structure
+## 💰 Şəffaf Qiymət Modelləri (Tariflər)
+
+Platforma istifadəçilərin ehtiyaclarına uyğun olaraq 3 aydın tarif paketi təqdim edir:
+
+| Tarif Planı | Qiymət | Əsas Üstünlüklər və İmkanlar | Hədəf Auditoriya |
+| :--- | :--- | :--- | :--- |
+| **Fərdi Müştəri** | **Pulsuz (0 AZN / Həmişəlik)** | Şəxsi bağlamaların uçotu, Smart Arbitraj tarif kalkulyatoru, DGK 300$ kvota nəzarəti və əsas kargo izləməsi. | Ayda 1–5 bağlama sifariş edən fərdi vətəndaşlar |
+| **Dropshipper** | **49 AZN / ay** | Çoxsaylı satıcı saytları inteqrasiyası, toplu bəyannamələr, kargo şirkətləri ilə xarici sessiya anbarı və avto-sinxronizasiya, prioritet AI Copilot. | Onlayn mağaza sahibləri, dropshipperlər və mikro-bizneslər |
+| **Korporativ (Müstəqil Server)** | **590 AZN birdəfəlik + 119 AZN / il** | Şirkətin öz müstəqil serverində 100% lokal işləmə, limitsiz istifadəçi və bağlama, sıfır telemetriya, şəxsi brendinq, illik rəsmi yenilənmə və texniki dəstək. | Logistika şirkətləri, kuryer xidmətləri, iri idxalatçılar və korporativ müəssisələr |
+
+---
+
+## 🏆 Keyfiyyət Təminatı və Təhlükəsizlik Auditi (Zero-Leak Policy)
+
+KargoPilot v5.5 **10 ixtisaslaşmış agentdən ibarət təhlükəsizlik auditi** və hərtərəfli avtomatlaşdırılmış sınaq dövrəsi ilə təsdiqlənmişdir:
+
+- **Avtomatlaşdırılmış Pytest Nəticəsi:** **85 / 85 Test Uğurla Keçdi (%100 Yaşıl)**.
+- **Canlı VPS İnteqrasiya Nəticəsi:** **47 / 47 Test Uğurla Keçdi (%100 Yaşıl)**.
+- **Sıfır IP / PII Sızması Bəyannaməsi (Zero-Leak Policy):** Açıq-mənbə kod bazasında heç bir canlı server IP-si, SSH portu və ya şəxsi əlaqə məlumatı saxlanılmır (bütün nümunələrdə yerli hostlar və nümunə dəyərlər istifadə olunur).
+- **Kriptoqrafik Qorunma:** Bütün xarici kuki və tokenlər Fernet AES-256 ilə şifrələnir, şifrələr isə Argon2id ilə heşlənir.
+
+Ətraflı texniki və memarlıq hesabatları üçün:
+- 📄 [KargoPilot v5.5 Tam Memarlıq və Funksionallıq Spesifikasiyası](docs/v5_5_enterprise_architecture_and_features.md)
+- 📄 [İkili Memarlıq və İnvestor Təqdimatı Whitepaper](docs/v4_5_enterprise_dual_architecture_investor_report.md)
+- 📄 [20-Agent Keyfiyyət və Təhlükəsizlik Sertifikatı](docs/v4_agency_certification.md)
+
+---
+
+## 📦 Layihə Strukturu
 
 ```text
 kargopilot/
-├── assets/                  # Brand assets (Logo 6, Logo 5, OG images, favicons)
-├── carriers/                # Core multi-carrier logistics engines
-│   ├── address_formatter.py # Localized address cascade generator
-│   ├── autofill_engine.py   # Chrome Extension & Bookmarklet autofill runtime
-│   ├── base_carrier.py      # Abstract carrier plugin interface
-│   ├── branch_directory.py  # 76+ Baku & regional branch coordinates
-│   ├── camex.py             # Camex freight forwarder driver
-│   ├── consolidation_engine.py # Smart parcel bundling & flight scheduling
-│   ├── duty_calculator.py   # State Customs Committee 15% + 18% tariff engine
-│   ├── dynamex.py           # Dynamex freight forwarder driver
-│   ├── forwarding_hub.py    # Multi-carrier routing & tracking hub
-│   ├── limak.py             # Limak freight forwarder driver
-│   ├── starex.py            # Starex freight forwarder driver
-│   └── tariff_engine.py     # Cross-carrier rate comparison matrix
-├── docs/                    # Authoritative certification & architecture reports
-│   ├── v4_agency_certification.md
-│   └── v3_5_to_v4_evolution_report.md
-├── extension_v4/            # Manifest V3 Chrome Extension source
-├── tests/                   # Full test battery (unit & e2e)
-│   ├── e2e/                 # Playwright end-to-end integration tests
-│   ├── test_e2e_address_formatter.py
-│   └── test_pcs_v4_innovations.py
-├── web_panel/               # Production FastAPI web dashboard
-│   ├── routers/             # API routes (carriers, v4, customs, orders, etc.)
-│   ├── services/            # Backend services (ReportLab invoice PDF, etc.)
-│   └── templates/           # Glassmorphic Jinja2 templates (carriers, base, etc.)
-├── CHANGELOG.md             # Semantic release history
-├── index.html               # Live demo & landing page (GitHub Pages)
-├── pcs_v4_engines.py        # Autonomous v4 engine orchestrator
-├── requirements.txt         # Production dependencies
-└── README.md
+├── assets/                  # Brend loqoları (Konsept 6, Konsept 5, OG şəkilləri, ikonlar)
+├── carriers/                # Çoxsaylı kargo logistika mühərrikləri
+│   ├── address_formatter.py # Avtomatik ünvan tərtibatçısı
+│   ├── autofill_engine.py   # Chrome Extension & Bookmarklet avtodoldurma modulu
+│   ├── base_carrier.py      # Abstrakt kargo daşıyıcı interfeysi
+│   ├── branch_directory.py  # Bakı və regionlar üzrə 76+ filial məlumatları
+│   ├── camex.py             # Camex kargo sürücüsü
+│   ├── consolidation_engine.py # Bağlama qruplaşdırma və reys koordinasiyası
+│   ├── duty_calculator.py   # DGK rüsum hesablama modulu
+│   ├── dynamex.py           # Dynamex kargo sürücüsü
+│   ├── forwarding_hub.py    # Kargo marşrutlama və izləmə qovşağı
+│   ├── limak.py             # Limak kargo sürücüsü
+│   ├── starex.py            # Starex kargo sürücüsü
+│   └── tariff_engine.py     # Kargo tariflərinin müqayisə matrisi
+├── docs/                    # Rəsmi memarlıq və sertifikasiya hesabatları
+│   ├── v5_5_enterprise_architecture_and_features.md
+│   ├── v4_5_enterprise_dual_architecture_investor_report.md
+│   ├── v4_5_multi_tenant_backend_architecture.md
+│   └── v4_agency_certification.md
+├── scripts/                 # Köməkçi skriptlər və nümayiş hesabı toxumu
+│   └── seed_demo_account.py # demo@kargopilot.az hesabı üçün avto-seed skripti
+├── tests/                   # 85 vahid və inteqrasiya testləri
+│   ├── test_etap1_auth_flow.py
+│   ├── test_etap2_dashboard_flow.py
+│   ├── test_etap3_sovereign_and_export_flow.py
+│   ├── test_etap4_arbitrage_and_customs_flow.py
+│   ├── test_etap5_full_user_journey_e2e.py
+│   ├── test_etap6_ecosystem_ai_and_profile_flow.py
+│   ├── test_etap7_interactive_sessions_and_sync_flow.py
+│   ├── test_admin_cockpit.py
+│   ├── test_dual_hosting_architecture.py
+│   └── test_security_suite.py
+├── web_panel/               # İstehsalat FastAPI veb idarəetmə paneli
+│   ├── app/                 # Təkmilləşdirilmiş FastAPI tətbiqi
+│   │   ├── main.py          # Əsas tətbiq giriş nöqtəsi
+│   │   ├── database.py      # SQLite WAL verilənlər bazası və miqrasiyalar
+│   │   ├── routers/         # API marşrutları (user_api, admin, auth, carriers)
+│   │   ├── templates/       # Next-Gen Bento UI Jinja2 şablonları
+│   │   └── static/          # Skriptlər, CSS stilləri və təsvirlər
+├── CHANGELOG.md             # Semantik versiya tarixçəsi (v5.5.0-a qədər)
+├── index.html               # Canlı GitHub Pages portalı
+├── requirements.txt         # İstehsalat asılılıqları
+└── README.md                # Rəsmi layihə təlimatı
 ```
 
 ---
 
-## 🛠️ Quick Start
+## 🛠️ Müstəqil Serverdə Quraşdırma (Self-Hosted Quickstart)
 
-### 1. Clone the repository
+Açıq-mənbə KargoPilot v5.5 sistemini öz müstəqil serverinizdə işə salmaq üçün aşağıdakı sadə addımları izləyin:
+
+### 1. Repozitoriyanı klonlayın
 ```bash
 git clone https://github.com/VaskaMc/kargopilot.git
 cd kargopilot
 ```
 
-### 2. Set up virtual environment
+### 2. Virtual mühiti yaradın və aktivləşdirin
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+source .venv/bin/activate  # Windows üçün: .venv\Scripts\activate
+```
+
+### 3. Asılılıqları quraşdırın
+```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configure environment
+### 4. Mühit faylını hazırlayın
 ```bash
-cp .env.example .env
+cp .env.sovereign.example .env
 ```
+*(Qeyd: `.env` faylında `SECRET_KEY` və `ENCRYPTION_KEY` kimi gizli parametrləri təyin edə bilərsiniz).*
 
-### 4. Run tests
+### 5. Avtomatlaşdırılmış testləri yoxlayın
 ```bash
 python -m pytest tests/
 ```
 
-### 5. Launch the Web Panel
+### 6. Veb paneli işə salın
 ```bash
-uvicorn web_panel.routers.carriers:app --host 0.0.0.0 --port 8000 --reload
+uvicorn web_panel.app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Visit `http://localhost:8000/carriers` to access the interactive carrier matrix and address generator.
+Brauzerinizdə `http://localhost:8000/user/dashboard` və ya `http://localhost:8000/login` ünvanına daxil olaraq sistemdən dərhal istifadə etməyə başlaya bilərsiniz.
 
 ---
 
-## 📄 License
-Released under the [MIT License](LICENSE).  
-Copyright © 2026 Vasif Majidli. All rights reserved.
+## 📄 Lisenziya və Hüquqlar
+KargoPilot açıq-mənbə nüvəsi [MIT Lisenziyası](LICENSE) altında buraxılmışdır.  
+Müəlliflik Hüququ © 2026 Vasif Məcidli. Bütün hüquqlar qorunur.
