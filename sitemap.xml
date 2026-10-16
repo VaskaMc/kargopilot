@@ -8,7 +8,8 @@
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://vaskamc.github.io/kargopilot/assets/og-image.jpg</image:loc>
-      <image:title>KargoPilot v4.0 — Sərhədsiz E-Ticarət, Gömrük və Kargo Kopilotu</image:title>
+      <image:title>KargoPilot v4.5 Enterprise — Sərhədsiz E-Ticarət, Gömrük və Kargo Kopilotu</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://vaskamc.github.io/kargopilot/llms.txt</loc>

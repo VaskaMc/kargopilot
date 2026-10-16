@@ -3,51 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 · Marşrut Tapılmadı | KargoPilot v4.0</title>
+  <title>404 · Marşrut Tapılmadı | KargoPilot v4.5 Enterprise</title>
   <meta name="description" content="Axtardığınız səhifə və ya bağlama marşrutu mövcud deyil. KargoPilot əsas idarəetmə panelinə qayıdın.">
   <meta name="robots" content="noindex, follow">
-  <meta name="theme-color" content="#0b0f14">
-  <link rel="icon" type="image/png" sizes="64x64" href="/kargopilot/assets/favicon-64.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/kargopilot/assets/favicon-32.png">
-  <link rel="shortcut icon" href="/kargopilot/assets/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="/kargopilot/assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#0b0f19">
+
+  <!-- Instant SPA Query Router for GitHub Pages Virtual Routes -->
+  <script>
+    (function () {
+      var p = window.location.pathname.toLowerCase();
+      var base = window.location.pathname.replace(/\/404(\.html)?$/i, '').replace(/\/[^\/]*$/, '/');
+      if (p.indexOf('login') !== -1) {
+        window.location.replace(base + '?flow=login');
+      } else if (p.indexOf('register') !== -1 || p.indexOf('signup') !== -1) {
+        window.location.replace(base + '?flow=register');
+      } else if (p.indexOf('self-hosted') !== -1 || p.indexOf('sovereign') !== -1) {
+        window.location.replace(base + '?flow=self-hosted');
+      } else if (p.indexOf('pricing') !== -1 || p.indexOf('qiymetler') !== -1) {
+        window.location.replace(base + '#qiymetler');
+      }
+    })();
+  </script>
+
+  <!-- Favicons & Fonts -->
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="shortcut icon" href="assets/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg-soot: #0b0f14;
-      --bg-slate: #121922;
-      --bg-panel: #192330;
-      --ink-light: #f4f7fa;
-      --ink-soft: #b8c4d4;
-      --ink-dark: #0b0f14;
-      --accent-lime: #dafa9c;
-      --accent-cyan: #38bdf8;
+      --bg-soot: #0b0f19;
+      --bg-slate: #111827;
+      --bg-panel: #162032;
+      --bg-elevated: #1e293b;
+      --border-soft: rgba(255, 255, 255, 0.08);
+      --border-medium: rgba(255, 255, 255, 0.15);
+      --ink-light: #f8fafc;
+      --ink-soft: #cbd5e1;
+      --ink-muted: #94a3b8;
+      --accent-cyan: #00d2ff;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-crimson: #ef4444;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background-color: var(--bg-soot);
       color: var(--ink-light);
-      font-family: 'Schibsted Grotesk', sans-serif;
+      font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100svh;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       -webkit-font-smoothing: antialiased;
     }
+    code, pre, .num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
     .wrap {
-      max-width: 780px;
+      max-width: 820px;
       margin: 0 auto;
-      padding: 56px 24px;
+      padding: 64px 24px;
       width: 100%;
     }
     header {
-      background-color: var(--bg-slate);
-      padding: 20px 24px;
+      background-color: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-soft);
+      padding: 18px 24px;
     }
     .header-inner {
-      max-width: 780px;
+      max-width: 820px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -60,24 +93,43 @@
       text-decoration: none;
       color: var(--ink-light);
       font-weight: 800;
-      font-size: 1.125rem;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
     }
     .brand img {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--border-medium);
+    }
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      font-size: 0.875rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
     }
     h1 {
-      font-size: clamp(2rem, 5vw, 3.1rem);
-      line-height: 1.08;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.1;
       letter-spacing: -0.03em;
       margin-bottom: 18px;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     p {
       color: var(--ink-soft);
       font-size: 1.0625rem;
       line-height: 1.6;
-      max-width: 56ch;
+      max-width: 60ch;
       margin-bottom: 32px;
     }
     .actions {
@@ -88,33 +140,44 @@
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 13px 22px;
-      border-radius: 8px;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 24px;
+      border-radius: 10px;
       font-size: 1rem;
       font-weight: 700;
       text-decoration: none;
-      transition: background-color 160ms cubic-bezier(0.22, 1, 0.36, 1), transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
+      transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
     }
     .btn-primary {
-      background-color: var(--accent-lime);
-      color: var(--ink-dark);
+      background: linear-gradient(135deg, var(--accent-cyan) 0%, #6366f1 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 20px rgba(0, 210, 255, 0.3);
+      border: none;
     }
     .btn-primary:hover {
       transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(0, 210, 255, 0.45);
     }
     .btn-secondary {
       background-color: var(--bg-panel);
       color: var(--ink-light);
+      border: 1px solid var(--border-medium);
     }
     .btn-secondary:hover {
-      background-color: var(--bg-slate);
+      background-color: var(--bg-elevated);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
     }
     .diagnostic-panel {
-      margin-top: 44px;
-      border-radius: 12px;
-      background-color: var(--bg-slate);
-      padding: 20px 24px;
+      margin-top: 48px;
+      border-radius: 14px;
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-soft);
+      padding: 24px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -122,17 +185,20 @@
     .diag-row {
       display: flex;
       justify-content: space-between;
-      padding: 10px 14px;
-      background-color: var(--bg-soot);
-      border-radius: 8px;
+      align-items: center;
+      padding: 12px 16px;
+      background-color: rgba(11, 15, 25, 0.6);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
       font-size: 0.95rem;
     }
-    .diag-key { color: var(--ink-soft); }
-    .diag-val { color: var(--ink-light); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .diag-key { color: var(--ink-muted); font-size: 0.875rem; }
+    .diag-val { color: var(--ink-light); font-weight: 700; }
     footer {
       background-color: var(--bg-slate);
+      border-top: 1px solid var(--border-soft);
       padding: 22px 24px;
-      color: var(--ink-soft);
+      color: var(--ink-muted);
       font-size: 0.9375rem;
       text-align: center;
     }
@@ -141,42 +207,52 @@
 <body>
   <header>
     <div class="header-inner">
-      <a href="/kargopilot/" class="brand">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-black text-sm">KP</div>
-        <span>KargoPilot</span>
+      <a href="./" class="brand">
+        <img src="assets/logo_concept_6_infinity_loop.jpg" alt="KargoPilot Loqo">
+        <span>KargoPilot <span style="font-size:0.75em; color:var(--accent-cyan); font-weight:700;">v4.5</span></span>
       </a>
-      <span style="font-size: 0.9375rem; color: var(--accent-cyan); font-weight: 700;">HTTP 404</span>
+      <span class="badge-status">HTTP 404 · Not Found</span>
     </div>
   </header>
 
   <main class="wrap">
     <h1>Sorğulanan marşrut tapılmadı.</h1>
-    <p>Daxil etdiyiniz URL ünvanı dəyişdirilib və ya silinib. Canlı 4-kargo tarif kalkulyatoruna, SmartCustoms 300 USD kvota mühafizəsinə və ya Loyd AI terminalına qayıtmaq üçün aşağıdakı keçidlərdən istifadə edin.</p>
+    <p>
+      Daxil etdiyiniz URL ünvanı mövcud deyil və ya dəyişdirilib. Canlı 4-kargo tarif kalkulyatoruna, SmartCustoms 300 USD kvota mühafizəsinə, Dual-Hosting quraşdırmasına və ya Loyd AI terminalına daxil olmaq üçün aşağıdakı keçidlərdən istifadə edin.
+    </p>
 
     <div class="actions">
-      <a href="/kargopilot/" class="btn btn-primary">Əsas səhifəyə qayıt</a>
-      <a href="/kargopilot/#kalkulyator" class="btn btn-secondary">Canlı Tarif Kalkulyatoru</a>
-      <a href="https://github.com/VaskaMc/kargopilot" class="btn btn-secondary" rel="noopener">GitHub Repo</a>
+      <a href="./" class="btn btn-primary">Əsas Səhifəyə Qayıt →</a>
+      <a href="./?flow=login" class="btn btn-secondary">☁️ Bulud Girişi</a>
+      <a href="./?flow=self-hosted" class="btn btn-secondary">🖥️ Öz Serverim (Sovereign)</a>
+      <a href="./#kalkulyator" class="btn btn-secondary">Canlı Tarif Kalkulyatoru</a>
     </div>
 
-    <div class="diagnostic-panel" data-ui aria-label="Marşrut diaqnostikası">
-      <div class="diag-row">
-        <span class="diag-key">Status kodu</span>
-        <span class="diag-val">404 Not Found</span>
+    <div class="diagnostic-panel" aria-label="Marşrut diaqnostikası">
+      <div style="font-weight:700; color:var(--ink-light); font-size:0.95rem; margin-bottom:4px;">
+        Sistem və Şəbəkə Diaqnostikası:
       </div>
       <div class="diag-row">
-        <span class="diag-key">Aktiv Mühərrik</span>
-        <span class="diag-val">KargoPilot v4.0 (PCS Core)</span>
+        <span class="diag-key">Xəta kodu</span>
+        <span class="diag-val num" style="color:var(--accent-crimson);">HTTP 404 / Route Mismatch</span>
       </div>
       <div class="diag-row">
-        <span class="diag-key">Lokal Tunel Portu</span>
-        <span class="diag-val">127.0.0.1:48481</span>
+        <span class="diag-key">Platforma Versiyası</span>
+        <span class="diag-val num" style="color:var(--accent-cyan);">KargoPilot v4.5 Enterprise (Dual-Hosting)</span>
+      </div>
+      <div class="diag-row">
+        <span class="diag-key">Sovereign Tunel Portu</span>
+        <span class="diag-val num">127.0.0.1:48481</span>
+      </div>
+      <div class="diag-row">
+        <span class="diag-key">Data Suverenliyi</span>
+        <span class="diag-val" style="color:var(--accent-emerald);">100% AES-256 İkili İzolyasiya</span>
       </div>
     </div>
   </main>
 
   <footer>
-    © 2026 KargoPilot (PCS v4.0) · MIT Açıq Mənbə Lisenziyası
+    © 2026 KargoPilot v4.5 Enterprise · MIT Açıq Mənbə Lisenziyası
   </footer>
 </body>
 </html>

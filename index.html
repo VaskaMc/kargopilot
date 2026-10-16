@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KargoPilot · Sərhədsiz Kargo və Gömrük Otopilotu (PCS v4.0)</title>
-  <meta name="description" content="Azərbaycan üçün açıq mənbəli transsərhəd e-ticarət, 4 kargo tarifi müqayisəsi (Starex, Limak, Camex, Dynamex), SmartCustoms 300 USD kvota mühafizəsi və Loyd WhatsApp AI mühərriki.">
+  <title>KargoPilot v4.5 Enterprise · Sərhədsiz Kargo və Gömrük Otopilotu (Dual-Hosting)</title>
+  <meta name="description" content="Azərbaycan üçün ikili arxitekturalı (Managed Bulud və ya Suveren Öz Serverin) transsərhəd e-ticarət platforması, 4 kargo tarifi müqayisəsi (Starex, Limak, Camex, Dynamex), SmartCustoms 300 USD kvota mühafizəsi və Loyd WhatsApp AI.">
   <meta name="author" content="KargoPilot Architecture Team">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-  <meta name="theme-color" content="#0b0f14">
+  <meta name="theme-color" content="#0b0f19">
 
   <!-- Canonical & AI/LLM Discovery -->
   <link rel="canonical" href="https://vaskamc.github.io/kargopilot/">
@@ -21,34 +21,46 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="shortcut icon" href="assets/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-  <link rel="preload" as="image" href="assets/logo-icon.png" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/logo_concept_6_infinity_loop.jpg" fetchpriority="high">
 
   <!-- Open Graph (Facebook, WhatsApp, Telegram, LinkedIn) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="KargoPilot">
   <meta property="og:locale" content="az_AZ">
   <meta property="og:url" content="https://vaskamc.github.io/kargopilot/">
-  <meta property="og:title" content="KargoPilot v4.0 · Sərhədsiz Kargo və Gömrük Otopilotu">
-  <meta property="og:description" content="Temu, Trendyol, Taobao və Amazon sifarişləri üçün 4-kargo tarif müqayisəsi, DGK 300 USD aylıq kvota mühafizəsi və Loyd WhatsApp AI mühərriki.">
+  <meta property="og:title" content="KargoPilot v4.5 Enterprise · Sərhədsiz Kargo və Gömrük Otopilotu">
+  <meta property="og:description" content="Dual-Hosting (Bulud və ya Suveren Öz Serverin): 4-kargo tarif müqayisəsi, DGK 300 USD aylıq kvota mühafizəsi və Loyd WhatsApp AI mühərriki.">
   <meta property="og:image" content="https://vaskamc.github.io/kargopilot/assets/og-image.jpg">
   <meta property="og:image:secure_url" content="https://vaskamc.github.io/kargopilot/assets/og-image.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="KargoPilot v4.0 · 4-Kargo Tarif Müqayisəsi, SmartCustoms $300 Kvota Mühafizəsi və Loyd WhatsApp AI">
+  <meta property="og:image:alt" content="KargoPilot v4.5 Enterprise · Dual-Hosting, 4-Kargo Tarif Arbitrajı və SmartCustoms $300 Kvota Mühafizəsi">
 
   <!-- Twitter / X Large Summary Card -->
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@kargopilot">
+  <meta name="twitter:creator" content="@VaskaMc">
   <meta name="twitter:url" content="https://vaskamc.github.io/kargopilot/">
-  <meta name="twitter:title" content="KargoPilot v4.0 · Sərhədsiz Kargo və Gömrük Otopilotu">
-  <meta name="twitter:description" content="Azərbaycan üçün açıq mənbəli 4-kargo tarif müqayisəsi, SmartCustoms $300 kvota mühafizəsi və Loyd WhatsApp AI mühərriki.">
+  <meta name="twitter:title" content="KargoPilot v4.5 Enterprise · Sərhədsiz Kargo və Gömrük Otopilotu">
+  <meta name="twitter:description" content="Dual-Hosting (Bulud və ya Suveren Öz Serverin): 4-kargo tarif müqayisəsi, SmartCustoms $300 kvota mühafizəsi və Loyd WhatsApp AI.">
   <meta name="twitter:image" content="https://vaskamc.github.io/kargopilot/assets/og-image.jpg">
-  <meta name="twitter:image:alt" content="KargoPilot v4.0 · Sərhədsiz Kargo və Gömrük Otopilotu">
+  <meta name="twitter:image:alt" content="KargoPilot v4.5 Enterprise · Sərhədsiz Kargo və Gömrük Otopilotu">
 
-  <!-- Typography -->
+  <!-- Typography: Schibsted Grotesk + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN with Preflight Disabled (Safeguards bespoke index.html styles while activating Dual-Hosting Modal) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false
+      }
+    };
+  </script>
 
   <!-- Google Consent Mode v2 + Attribution Persistence + GTM Container -->
   <script>
@@ -99,7 +111,7 @@
       window.dataLayer.push({
         'gtm.start': new Date().getTime(),
         'event': 'gtm.js',
-        'kp_version': '4.0.0',
+        'kp_version': '4.5.0',
         'kp_surface': 'public_web',
         'kp_gtm_container': gtmId
       });
@@ -107,7 +119,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-KARGOPILOT"></script>
 
-  <!-- Schema.org Structured Data (@graph: Organization, WebSite, SoftwareApplication, FAQPage) -->
+  <!-- Schema.org Structured Data (@graph: Organization, WebSite, SoftwareApplication, FAQPage, OfferCatalog) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -119,7 +131,7 @@
         "url": "https://vaskamc.github.io/kargopilot/",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://vaskamc.github.io/kargopilot/assets/logo.jpg",
+          "url": "https://vaskamc.github.io/kargopilot/assets/logo_concept_6_infinity_loop.jpg",
           "width": 1024,
           "height": 1024
         },
@@ -131,7 +143,8 @@
         "@type": "WebSite",
         "@id": "https://vaskamc.github.io/kargopilot/#website",
         "url": "https://vaskamc.github.io/kargopilot/",
-        "name": "KargoPilot v4.0 · Sərhədsiz Kargo və Gömrük Otopilotu",
+        "name": "KargoPilot v4.5 Enterprise · Sərhədsiz Kargo və Gömrük Otopilotu",
+        "description": "Azərbaycan üçün ikili arxitekturalı (Dual-Hosting: Sovereign Self-Hosted və 7/24 Managed Cloud) transsərhəd e-ticarət logistika platforması.",
         "inLanguage": "az-AZ",
         "publisher": {
           "@id": "https://vaskamc.github.io/kargopilot/#organization"
@@ -140,26 +153,30 @@
       {
         "@type": "SoftwareApplication",
         "@id": "https://vaskamc.github.io/kargopilot/#software",
-        "name": "KargoPilot (PCS v4.0)",
+        "name": "KargoPilot v4.5 Enterprise",
         "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Linux, Windows, macOS",
-        "softwareVersion": "4.0.0",
+        "operatingSystem": "Linux, Windows, macOS, Docker, Web (Cloud)",
+        "softwareVersion": "4.5.0",
         "license": "https://opensource.org/licenses/MIT",
         "url": "https://vaskamc.github.io/kargopilot/",
         "image": "https://vaskamc.github.io/kargopilot/assets/og-image.jpg",
-        "description": "Azərbaycan üzrə sərhədsiz e-ticarət (Temu, Trendyol, Taobao, Amazon), 4-kargo tarif müqayisəsi (Starex, Limak, Camex, Dynamex), SmartCustoms 300 USD aylıq kvota mühafizəsi və Loyd WhatsApp AI mühərriki.",
+        "description": "Azərbaycan üzrə ikili arxitekturalı (Dual-Hosting: 100% lokal Sovereign və 7/24 Managed Cloud) sərhədsiz e-ticarət kopilotu: 4-kargo tarif müqayisəsi (Starex, Limak, Camex, Dynamex), SmartCustoms 300 USD aylıq kvota mühafizəsi və Loyd WhatsApp AI mühərriki.",
         "offers": {
-          "@type": "Offer",
-          "price": "0.00",
+          "@type": "AggregateOffer",
           "priceCurrency": "USD",
-          "availability": "https://schema.org/InStock"
+          "lowPrice": "0.00",
+          "highPrice": "590.00",
+          "offerCount": "3"
         },
         "featureList": [
-          "Starex, Limak, Camex və Dynamex canlı tarif kalkulyatoru",
-          "DGK SmartCustoms 300 USD aylıq kvota və gömrük rüsumu hesablayıcısı",
+          "Dual-Hosting Arxitekturası: Variant 1 (Sovereign Self-Hosted On-Premise) və Variant 2 (Managed Cloud 7/24)",
+          "Multi-Tenant Auth, SuperAdmin/Customer RBAC və AES-256 Per-Tenant Şifrələmə",
+          "Məlumatların tək kliklə JSON ixracı və silinməsi (Data Sovereignty & Portability)",
+          "Starex, Limak, Camex və Dynamex canlı tarif müqayisəsi və çatdırılma arbitrajı",
+          "DGK SmartCustoms 300 USD aylıq kvota və toqquşma mühafizəsi (QuotaGuard)",
           "Loyd WhatsApp AI Copilot (Baileys v6 + OCR qiymət arbitrajı)",
           "Trendyol və Taobao 1-klik xarici anbar ünvanı autofill",
-          "127.0.0.1:48481 SSH tunel üzərindən tam məxfi lokal idarəetmə"
+          "127.0.0.1:48481 SSH tunel və Docker Compose ilə tam məxfi suveren yerləşdirmə"
         ]
       },
       {
@@ -179,7 +196,15 @@
             "name": "KargoPilot şəxsi FİN kodumu və ya mağaza parollarımı xarici serverə göndərirmi?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Xeyr. KargoPilot tamamilə öz serverinizdə (self-hosted) çalışır. Bütün məlumatlar yalnız lokal SQLite (WAL) bazasında saxlanılır və Veb İdarəetmə Paneli yalnız 127.0.0.1:48481 ünvanında SSH tunel vasitəsilə açılır."
+              "text": "KargoPilot v4.5 ikili istifadə modeli (Dual-Hosting) təklif edir: Sovereign (Öz Serverim) rejimində tətbiq 100% lokal çalışır, məlumatlar yalnız sizin SQLite (WAL) bazanızda qalır və kənara sıfır bayt ötürülür. Managed Cloud rejimində isə bütün məlumatlar hər müştəri üçün ayrılmış per-tenant AES-256 anbarında saxlanılır, üçüncü tərəf reklam platformalarına ötürülmür və istənilən an JSON formatında tam ixrac və ya dərhal silinə bilər."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "KargoPilot v4.5 Dual-Hosting (Bulud vs Öz Serverim) fərqi nədir?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Managed Cloud heç bir quraşdırma tələb etmədən 30 saniyədə brauzerdən işə düşür, avtomatik yenilənmə və 7/24 otopilot təmin edir. Sovereign Self-Hosted isə proqram təminatını Docker və ya 1-klik skriptlə tamamilə öz VPS və ya lokal kompüterinizdə (127.0.0.1:48481) işə salaraq 100% məlumat suverenliyi təmin edir."
             }
           },
           {
@@ -197,6 +222,14 @@
               "@type": "Answer",
               "text": "Loyd mühərriki WhatsApp üzərindən !arbitraj (ekran görüntüsü ilə 4 bazar qiymət müqayisəsi), !unvan (1-klik xarici anbar rekvizitləri), !kargo (canlı bağlama və SmartCustoms bəyannamə statusu) və !tehvil (Bakı filial QR təhvil kartı) əmrlərini icra edir."
             }
+          },
+          {
+            "@type": "Question",
+            "name": "Xaricdən sifariş edilən mobil telefonlar üçün IMEI rüsumu nəzərə alınırmı?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Bəli. Kalkulyatorda 'Mobil telefon' kateqoriyası seçildikdə gömrük rüsumu ilə yanaşı Azərbaycan Qanunvericiliyinə (Dövlət rüsumu haqqında Qanunun 33-5.1 maddəsi) uyğun pilləli dövlət IMEI qeydiyyat rüsumu da yekun Bakı təhvil xərcinə əlavə olunur."
+            }
           }
         ]
       }
@@ -205,22 +238,34 @@
   </script>
   <style>
     :root {
-      --bg-soot: #0b0f14;
-      --bg-slate: #121922;
-      --bg-panel: #192330;
-      --bg-elevated: #212e3f;
-      --bg-paper: #f3f5f7;
-      --bg-paper-step: #e5e9ef;
-      --ink-light: #f4f7fa;
-      --ink-soft: #b8c4d4;
-      --ink-dark: #0b0f14;
-      --ink-dark-soft: #2c3847;
-      --accent-lime: #dafa9c;
-      --accent-cyan: #38bdf8;
-      --accent-amber: #f97316;
+      --bg-soot: #0b0f19;
+      --bg-slate: #111827;
+      --bg-panel: #162032;
+      --bg-elevated: #1e293b;
+      --surface-elevated: #1e293b;
+      --bg-paper: #111827;
+      --bg-paper-step: #162032;
+      --border-soft: rgba(255, 255, 255, 0.08);
+      --border-medium: rgba(255, 255, 255, 0.15);
+      --ink-light: #f8fafc;
+      --ink-soft: #cbd5e1;
+      --ink-muted: #94a3b8;
+      --ink-dark: #0b0f19;
+      --ink-dark-soft: #94a3b8;
+      --accent-lime: #10b981;
+      --accent-cyan: #00d2ff;
+      --accent-amber: #f59e0b;
       --accent-emerald: #10b981;
+      --accent-crimson: #ef4444;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
       --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-      --radius-motif: 10px;
+      --radius-motif: 12px;
+      --radius-lg: 18px;
+    }
+
+    /* Critical: Prevent unstyled modal blowout before JavaScript execution */
+    .hidden {
+      display: none !important;
     }
 
     *, *::before, *::after {
@@ -233,7 +278,7 @@
       scroll-behavior: smooth;
       background-color: var(--bg-soot);
       color: var(--ink-light);
-      font-family: 'Schibsted Grotesk', sans-serif;
+      font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 16px;
       -webkit-font-smoothing: antialiased;
     }
@@ -241,7 +286,7 @@
     body {
       background-color: var(--bg-soot);
       color: var(--ink-light);
-      font-family: 'Schibsted Grotesk', sans-serif;
+      font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 1.0625rem;
       line-height: 1.55;
       overflow-x: clip;
@@ -265,13 +310,14 @@
       color: inherit;
     }
 
-    code, pre, kbd, samp {
-      font-family: 'Schibsted Grotesk', sans-serif;
+    code, pre, kbd, samp, .font-mono {
+      font-family: var(--font-mono);
       font-variant-numeric: tabular-nums;
       font-weight: 600;
     }
 
     .num {
+      font-family: var(--font-mono);
       font-variant-numeric: tabular-nums;
     }
 
@@ -282,10 +328,16 @@
       padding: 0 28px;
     }
 
-    /* Top Bar */
+    /* Top Bar with Dark Glassmorphism & Sticky Header */
     .topbar {
-      background-color: var(--bg-soot);
-      padding: 22px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-soft);
+      padding: 16px 0;
     }
 
     .topbar-inner {
@@ -308,26 +360,27 @@
     .brand-lockup img {
       width: 42px;
       height: 42px;
-      border-radius: 8px;
+      border-radius: 10px;
       object-fit: cover;
+      border: 1px solid var(--border-medium);
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 32px;
+      gap: 28px;
       list-style: none;
     }
 
     .nav-links a {
-      font-size: 1.0625rem;
+      font-size: 0.95rem;
       font-weight: 600;
-      color: var(--ink-light);
+      color: var(--ink-soft);
       padding: 6px 0;
     }
 
     .nav-links a:hover {
-      color: var(--accent-lime);
+      color: var(--accent-cyan);
     }
 
     .btn-primary {
@@ -335,21 +388,22 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      background-color: var(--accent-lime);
-      color: var(--ink-dark);
-      font-weight: 700;
-      font-size: 1.0625rem;
-      padding: 13px 24px;
-      min-height: 48px;
+      background: linear-gradient(135deg, #00d2ff 0%, #6366f1 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 20px rgba(0, 210, 255, 0.3);
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 12px 24px;
+      min-height: 46px;
       border-radius: var(--radius-motif);
       border: 0;
       cursor: pointer;
-      transition: transform 150ms var(--ease-out), background-color 150ms var(--ease-out);
+      transition: transform 150ms var(--ease-out), box-shadow 150ms var(--ease-out);
     }
 
     .btn-primary:hover {
-      background-color: #e6ffba;
       transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(0, 210, 255, 0.45);
     }
 
     .btn-primary:active {
@@ -363,18 +417,19 @@
       gap: 10px;
       background-color: var(--bg-panel);
       color: var(--ink-light);
+      border: 1px solid var(--border-medium);
       font-weight: 600;
-      font-size: 1.0625rem;
-      padding: 13px 24px;
-      min-height: 48px;
+      font-size: 1rem;
+      padding: 12px 22px;
+      min-height: 46px;
       border-radius: var(--radius-motif);
-      border: 0;
       cursor: pointer;
-      transition: transform 150ms var(--ease-out), background-color 150ms var(--ease-out);
+      transition: transform 150ms var(--ease-out), background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
     }
 
     .btn-secondary:hover {
       background-color: var(--bg-elevated);
+      border-color: rgba(255, 255, 255, 0.25);
       transform: translateY(-2px);
     }
 
@@ -705,11 +760,13 @@
       border-radius: 10px;
     }
 
-    /* Section 3: Paper Chapter - One Order, Four Stages */
+    /* Section 3: Dark Glassmorphic Workflow Chapter - One Order, Four Stages */
     .paper-section {
-      background-color: var(--bg-paper);
-      color: var(--ink-dark);
+      background: linear-gradient(180deg, var(--bg-slate) 0%, var(--bg-soot) 100%);
+      color: var(--ink-light);
       padding: 96px 0;
+      border-top: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
     }
 
     .paper-header {
@@ -734,33 +791,140 @@
     }
 
     .stage-column {
-      background-color: #ffffff;
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      color: var(--ink-light);
       padding: 28px 26px;
-      border-radius: 12px;
+      border-radius: var(--radius-lg);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 24px;
-      transition: transform 180ms var(--ease-out);
+      transition: transform 180ms var(--ease-out), border-color 180ms var(--ease-out);
     }
 
     .stage-column.alt-tone {
-      background-color: var(--bg-paper-step);
+      background-color: rgba(22, 32, 50, 0.7);
     }
 
     .stage-column:hover {
       transform: translateY(-4px);
+      border-color: var(--accent-cyan);
     }
 
     .stage-ticket {
-      background-color: var(--bg-soot);
+      background-color: rgba(11, 15, 25, 0.85);
+      border: 1px solid var(--border-soft);
       color: var(--ink-light);
       padding: 16px;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 0.9375rem;
       display: flex;
       flex-direction: column;
       gap: 8px;
+    }
+
+    /* Section 4.5: Modern 3-Tier Pricing & Monetization */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      margin-top: 40px;
+      align-items: stretch;
+    }
+
+    .pricing-card {
+      background: linear-gradient(180deg, rgba(22, 32, 50, 0.7) 0%, rgba(17, 24, 39, 0.9) 100%);
+      border: 1px solid var(--border-soft);
+      border-radius: 24px;
+      padding: 36px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 200ms var(--ease-out);
+      position: relative;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .pricing-card.featured {
+      border: 2px solid var(--accent-cyan);
+      box-shadow: 0 12px 36px rgba(0, 210, 255, 0.15);
+      background: linear-gradient(180deg, rgba(16, 32, 56, 0.85) 0%, rgba(11, 18, 30, 0.95) 100%);
+    }
+
+    .pricing-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .pricing-price {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--ink-light);
+      line-height: 1;
+      margin: 16px 0 8px 0;
+      font-family: var(--font-mono);
+    }
+
+    .pricing-period {
+      font-size: 0.95rem;
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+
+    .pricing-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 28px 0;
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+    }
+
+    .pricing-features li .check-icon {
+      color: var(--accent-emerald);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .pricing-features li.addon-item {
+      background: rgba(0, 210, 255, 0.08);
+      border: 1px solid rgba(0, 210, 255, 0.2);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--accent-cyan);
+      font-size: 0.9rem;
+    }
+
+    .pricing-switch-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-panel);
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border-medium);
+      margin-top: 24px;
     }
 
     /* Section 4: Dual Brand & Loyd AI Engine Simulator */
@@ -1258,19 +1422,20 @@
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KARGOPILOT" height="0" width="0" style="display:none;visibility:hidden" title="GTM"></iframe></noscript>
 
-  <a href="#top" class="skip-link">Əsas məzmuna keç</a>
+  <a href="#main-content" class="skip-link">Əsas məzmuna keç</a>
 
   <!-- Top Navigation Bar -->
   <header class="topbar">
     <div class="container topbar-inner">
       <a href="#top" class="brand-lockup">
-        <img src="assets/logo_concept_6_infinity_loop.jpg" alt="KargoPilot Loqo" style="width:36px; height:36px; border-radius:10px; object-fit:cover; border:1px solid rgba(255,255,255,0.15); shrink-0;">
-        <span>KargoPilot</span>
+        <img src="assets/logo_concept_6_infinity_loop.jpg" alt="KargoPilot Loqo" style="width:38px; height:38px; border-radius:10px; object-fit:cover; border:1px solid rgba(255,255,255,0.15); shrink-0;">
+        <span>KargoPilot <span style="font-size:0.75em; color:var(--accent-cyan); font-weight:700;">v4.5</span></span>
       </a>
       <nav aria-label="Əsas naviqasiya">
         <ul class="nav-links">
           <li><a href="#dual-hosting" style="color:var(--accent-cyan); font-weight:700;">İstifadə Modelləri</a></li>
           <li><a href="#kalkulyator">Tarif və Gömrük</a></li>
+          <li><a href="#qiymetler">Tariflər</a></li>
           <li><a href="#proses">Bəyannamə Axını</a></li>
           <li><a href="#loyd-engine">Loyd Mühərriki</a></li>
           <li><a href="#hesabat">Oktyabr Hesabatı</a></li>
@@ -1281,23 +1446,23 @@
         <button type="button" onclick="openDualHostingModal()" data-kp-connection-badge class="btn-secondary" style="padding:7px 12px; font-size:11px; cursor:pointer;" title="Server və Bağlantı Rejimini Dəyişin">
           <span>☁️ Bulud Serveri</span>
         </button>
-        <a href="/login" class="btn-secondary" style="padding:7px 14px; font-size:12px; font-weight:700;">Daxil Ol</a>
-        <a href="/register" class="btn-primary" style="background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; padding:8px 16px; font-size:12px; font-weight:800; box-shadow:0 4px 16px rgba(0,210,255,0.25);">Qeydiyyat →</a>
+        <button type="button" onclick="openDualHostingModal(); showCloudFlow();" class="btn-secondary" style="padding:7px 14px; font-size:12px; font-weight:700; cursor:pointer;">Daxil Ol</button>
+        <button type="button" onclick="openDualHostingModal(); showCloudFlow();" class="btn-primary" style="background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; padding:8px 16px; font-size:12px; font-weight:800; box-shadow:0 4px 16px rgba(0,210,255,0.25); cursor:pointer;">Qeydiyyat →</button>
       </div>
     </div>
   </header>
 
-  <main id="top">
+  <main id="main-content" tabindex="-1">
     <!-- Section 1: Hero & Real Telemetry Fragment -->
-    <section class="hero-section">
+    <section class="hero-section" id="top">
       <div class="container hero-grid">
         <div class="hero-left" data-reveal>
-          <h1 class="display-title">Sərhədsiz kargo və gömrük otopilotu.</h1>
+          <h1 class="display-title">Sərhədsiz kargo və gömrük avtopilotu.</h1>
           <p class="body-copy">
             Trendyol, Taobao, Temu və Amazon bağlamalarını avtomatik izləyən, Starex, Limak, Camex və Dynamex tariflərini saniyəlik müqayisə edən və SmartCustoms 300 USD aylıq kvotasını qoruyan müstəqil sistem.
           </p>
           <div class="hero-actions" data-reveal>
-            <a href="/register" class="btn-primary" style="background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; box-shadow:0 8px 24px rgba(0,210,255,0.3); font-weight:800;">Bizim Serverdə Başla (30 Saniyəlik Qeydiyyat) →</a>
+            <button type="button" onclick="openDualHostingModal(); showCloudFlow();" class="btn-primary" style="background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; box-shadow:0 8px 24px rgba(0,210,255,0.3); font-weight:800; cursor:pointer;">Bizim Serverdə Başla (30 Saniyəlik Qeydiyyat) →</button>
             <a href="#dual-hosting" class="btn-secondary">Seçimləri Müqayisə Et (Bulud vs Self-Hosted)</a>
           </div>
           <div class="hero-facts" data-reveal>
@@ -1330,8 +1495,8 @@
               <span class="meta-copy">Aylıq DGK 300 USD Kvota İstifadəsi</span>
               <span class="block-title num">142.50 USD / 300.00 USD</span>
             </div>
-            <div class="quota-bar-track">
-              <div class="quota-bar-fill"></div>
+            <div class="quota-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="300" aria-valuenow="142.50" aria-label="Aylıq DGK 300 USD Kvota Göstəricisi">
+              <div class="quota-bar-fill" style="width:47.5%;"></div>
             </div>
             <div style="display:flex; justify-content:space-between;">
               <span class="meta-copy">Ehtiyat limit: 157.50 USD (267.75 AZN)</span>
@@ -1376,7 +1541,7 @@
           <span class="meta-copy" style="color:var(--accent-cyan); font-weight:700; text-transform:uppercase; letter-spacing:1.5px;">Dual-Hosting Arxitekturası v4.5</span>
           <h2 class="section-title" style="margin-top:8px;">İstifadə Modelinizi Seçin</h2>
           <p class="body-copy" style="margin-top:12px; max-width:680px; margin-left:auto; margin-right:auto;">
-            KargoPilot iki fərqli rejimdə təqdim olunur: sıfır texniki quraşdırma ilə 30 saniyədə başlayan <b>Rəsmi Bulud Xidməti</b> və ya bütün məlumatların 100% yalnız sizin infrastrukturunuzda qaldığı <b>Açıq Qaynaqlı Öz Serverin (Sovereign)</b>.
+            KargoPilot iki fərqli rejimdə təqdim olunur: sıfır texniki quraşdırma ilə 30 saniyədə başlayan <b>Rəsmi Bulud Xidməti (Managed Cloud)</b> və ya bütün məlumatların 100% yalnız sizin infrastrukturunuzda qaldığı <b>Açıq Mənbəli Öz Serverin (Sovereign Self-Hosted)</b>.
           </p>
         </div>
 
@@ -1384,78 +1549,82 @@
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:24px; margin-bottom:32px;">
           
           <!-- Card A: Managed Cloud -->
-          <div class="identity-panel" style="flex-direction:column; align-items:stretch; border:2px solid rgba(0,210,255,0.4); background:linear-gradient(180deg, rgba(11,15,25,0.8), rgba(6,10,18,0.95)); border-radius:24px; padding:32px; box-shadow:0 12px 32px rgba(0,210,255,0.15);" data-reveal>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-              <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; background:rgba(0,210,255,0.15); color:var(--accent-cyan); font-size:12px; font-weight:700; border:1px solid rgba(0,210,255,0.3);">
-                ☁️ Bulud Xidməti (Tövsiyə Olunan)
-              </span>
-              <span class="meta-copy" style="color:var(--ink-light); font-weight:700;">30 Saniyəlik Başlanğıc</span>
-            </div>
+          <div class="identity-panel" style="display:flex; flex-direction:column; justify-content:space-between; align-items:stretch; border:2px solid rgba(0,210,255,0.4); background:linear-gradient(180deg, rgba(11,15,25,0.85), rgba(6,10,18,0.98)); border-radius:24px; padding:32px; box-shadow:0 12px 32px rgba(0,210,255,0.15);" data-reveal>
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; background:rgba(0,210,255,0.15); color:var(--accent-cyan); font-size:12px; font-weight:700; border:1px solid rgba(0,210,255,0.3);">
+                  ☁️ Bulud Xidməti (Tövsiyə Olunan)
+                </span>
+                <span class="meta-copy" style="color:var(--ink-light); font-weight:700;">30 Saniyəlik Başlanğıc</span>
+              </div>
 
-            <div class="block-title" style="font-size:22px; font-weight:800; color:#fff;">Bizim Serverdə (Managed Cloud)</div>
-            <p class="body-copy" style="margin-top:10px; font-size:14px; line-height:1.6;">
-              Heç bir texniki quraşdırma tələb olunmur. 30 saniyədə qeydiyyatdan keçin, server təhlükəsizliyini, avtomatik yeniləmələri və daşıyıcı sinxronizasiyasını biz idarə edək.
-            </p>
+              <div class="block-title" style="font-size:22px; font-weight:800; color:#fff;">Bizim Serverdə (Managed Cloud)</div>
+              <p class="body-copy" style="margin-top:10px; font-size:14px; line-height:1.6; color:var(--ink-soft);">
+                Heç bir texniki quraşdırma tələb olunmur. 30 saniyədə qeydiyyatdan keçin, server təhlükəsizliyini, avtomatik yeniləmələri və daşıyıcı sinxronizasiyasını biz idarə edək.
+              </p>
 
-            <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px; font-size:13px; color:var(--ink-light);">
-              <div style="display:flex; align-items:flex-start; gap:8px;">
-                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
-                <span><b>Quraşdırma yoxdur</b> — brauzerdən dərhal daxil olub istifadə edin.</span>
-              </div>
-              <div style="display:flex; align-items:flex-start; gap:8px;">
-                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
-                <span><b>Avtomatik yeniləmələr və backup</b> — 7/24 otopilot və gündəlik arxivləmə.</span>
-              </div>
-              <div style="display:flex; align-items:flex-start; gap:8px;">
-                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
-                <span><b>İstənilən cihazdan giriş</b> — telefon, planşet və noutbukdan fasiləsiz idarəetmə.</span>
-              </div>
-              <div style="display:flex; align-items:flex-start; gap:8px; color:var(--ink-muted);">
-                <span>🎯</span>
-                <span><b>Kimlər üçündür:</b> Vaxt itirmədən dərhal başlamaq istəyən fərdlər və komandalar.</span>
+              <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px; font-size:13px; color:var(--ink-light);">
+                <div style="display:flex; align-items:flex-start; gap:8px;">
+                  <span style="color:var(--accent-emerald); font-weight:800;">✓</span>
+                  <span><b>Quraşdırma yoxdur</b> — brauzerdən dərhal daxil olub istifadə edin.</span>
+                </div>
+                <div style="display:flex; align-items:flex-start; gap:8px;">
+                  <span style="color:var(--accent-emerald); font-weight:800;">✓</span>
+                  <span><b>Avtomatik yeniləmələr və backup</b> — 7/24 avtopilot və gündəlik arxivləmə.</span>
+                </div>
+                <div style="display:flex; align-items:flex-start; gap:8px;">
+                  <span style="color:var(--accent-emerald); font-weight:800;">✓</span>
+                  <span><b>İstənilən cihazdan giriş</b> — telefon, planşet və noutbukdan fasiləsiz idarəetmə.</span>
+                </div>
+                <div style="display:flex; align-items:flex-start; gap:8px; color:var(--ink-muted);">
+                  <span>🎯</span>
+                  <span><b>Kimlər üçündür:</b> Vaxt itirmədən dərhal başlamaq istəyən fərdlər və komandalar.</span>
+                </div>
               </div>
             </div>
 
             <div style="margin-top:32px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1); display:flex; flex-direction:column; gap:10px;">
-              <a href="/register?plan=cloud" class="btn-primary" style="width:100%; text-align:center; padding:14px; font-weight:800; font-size:14px; background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; box-shadow:0 8px 24px rgba(0,210,255,0.25); text-decoration:none; display:block;">
+              <button type="button" onclick="openDualHostingModal(); showCloudFlow();" class="btn-primary" style="width:100%; text-align:center; padding:14px; font-weight:800; font-size:14px; background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; box-shadow:0 8px 24px rgba(0,210,255,0.25); cursor:pointer;">
                 Hesab Yarat və Buludda Başla →
-              </a>
-              <a href="/login" class="btn-secondary" style="width:100%; text-align:center; padding:10px; font-weight:700; font-size:12px; text-decoration:none; display:block;">
+              </button>
+              <button type="button" onclick="openDualHostingModal(); showCloudFlow();" class="btn-secondary" style="width:100%; text-align:center; padding:10px; font-weight:700; font-size:12px; cursor:pointer;">
                 Artıq hesabınız var? Daxil Olun
-              </a>
+              </button>
             </div>
           </div>
 
           <!-- Card B: Self-Hosted -->
-          <div class="identity-panel" style="flex-direction:column; align-items:stretch; border:2px solid rgba(255,255,255,0.1); background:linear-gradient(180deg, rgba(11,15,25,0.8), rgba(6,10,18,0.95)); border-radius:24px; padding:32px; box-shadow:0 12px 32px rgba(0,0,0,0.3); transition:border 0.2s;" data-reveal>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-              <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; background:rgba(245,158,11,0.15); color:#f59e0b; font-size:12px; font-weight:700; border:1px solid rgba(245,158,11,0.3);">
-                🖥️ Mərhələli Aktivləşdirmə · Qapalı Beta
-              </span>
-              <span class="meta-copy" style="color:var(--ink-light); font-weight:700;">On-Premise Edition</span>
-            </div>
+          <div class="identity-panel" style="display:flex; flex-direction:column; justify-content:space-between; align-items:stretch; border:2px solid rgba(255,255,255,0.1); background:linear-gradient(180deg, rgba(11,15,25,0.85), rgba(6,10,18,0.98)); border-radius:24px; padding:32px; box-shadow:0 12px 32px rgba(0,0,0,0.3); transition:border 0.2s;" data-reveal>
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; background:rgba(245,158,11,0.15); color:#f59e0b; font-size:12px; font-weight:700; border:1px solid rgba(245,158,11,0.3);">
+                  🖥️ Suveren Rejim · Sovereign Edition
+                </span>
+                <span class="meta-copy" style="color:var(--ink-light); font-weight:700;">On-Premise Edition</span>
+              </div>
 
-            <div class="block-title" style="font-size:22px; font-weight:800; color:#fff;">Öz Serverində İşlət (Self-Hosted)</div>
-            <p class="body-copy" style="margin-top:10px; font-size:14px; line-height:1.6;">
-              Məlumatlarını öz serverində saxlamaq istəyən korporativ şirkətlər üçün nəzərdə tutulub (bu rejimə mərhələli şəkildə keçilir). İlkin mərhələdə sistemin bütün funksiyalarından "Bizim Serverimizdə" dərhal istifadə etmək tövsiyə olunur.
-            </p>
+              <div class="block-title" style="font-size:22px; font-weight:800; color:#fff;">Öz Serverində İşlət (Self-Hosted)</div>
+              <p class="body-copy" style="margin-top:10px; font-size:14px; line-height:1.6; color:var(--ink-soft);">
+                Məlumatlarını öz serverində saxlamaq istəyən fərdlər və korporativ şirkətlər üçün suveren versiya. Bütün bazalar və invoyslar yalnız sizin serverinizdə qalır.
+              </p>
 
-            <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px; font-size:13px; color:var(--ink-light);">
-              <div style="display:flex; align-items:flex-start; gap:8px;">
-                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
-                <span><b>100% məlumat suverenliyi</b> — şirkətimizə sıfır telemetriya və sıfır FİN ötürülməsi.</span>
-              </div>
-              <div style="display:flex; align-items:flex-start; gap:8px;">
-                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
-                <span><b>Açıq qaynaq koduna tam nəzarət</b> — yerli Docker container və şəxsi şifrələmə açarı.</span>
-              </div>
-              <div style="display:flex; align-items:flex-start; gap:8px;">
-                <span style="color:var(--accent-lime); font-weight:800;">✓</span>
-                <span><b>Şirkətdaxili təhlükəsizlik</b> — on-premise, xüsusi VPN və qanuni uyğunluq.</span>
-              </div>
-              <div style="display:flex; align-items:flex-start; gap:8px; color:var(--ink-muted);">
-                <span>🎯</span>
-                <span><b>Kimlər üçündür:</b> Tərtibatçılar, dropshipperlər və məlumatını kənara verməyən şirkətlər.</span>
+              <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px; font-size:13px; color:var(--ink-light);">
+                <div style="display:flex; align-items:flex-start; gap:8px;">
+                  <span style="color:var(--accent-emerald); font-weight:800;">✓</span>
+                  <span><b>100% məlumat suverenliyi</b> — şirkətimizə sıfır telemetriya və sıfır FİN ötürülməsi.</span>
+                </div>
+                <div style="display:flex; align-items:flex-start; gap:8px;">
+                  <span style="color:var(--accent-emerald); font-weight:800;">✓</span>
+                  <span><b>Açıq mənbə koduna tam nəzarət</b> — yerli Docker container və şəxsi şifrələmə açarı.</span>
+                </div>
+                <div style="display:flex; align-items:flex-start; gap:8px;">
+                  <span style="color:var(--accent-emerald); font-weight:800;">✓</span>
+                  <span><b>Şirkətdaxili təhlükəsizlik</b> — on-premise, xüsusi VPN və qanuni uyğunluq.</span>
+                </div>
+                <div style="display:flex; align-items:flex-start; gap:8px; color:var(--ink-muted);">
+                  <span>🎯</span>
+                  <span><b>Kimlər üçündür:</b> Tərtibatçılar, dropshipperlər və məlumatını kənara verməyən şirkətlər.</span>
+                </div>
               </div>
             </div>
 
@@ -1513,7 +1682,7 @@
             <div class="field-group">
               <div class="field-label">
                 <span>Anbar və Mənşə Ölkəsi</span>
-                <span id="origin-currency-label" class="num">TRY / USD</span>
+                <span id="origin-currency-label" class="num">İstanbul Tuzla Anbarı (TR)</span>
               </div>
               <div class="toggle-pills" role="tablist" aria-label="Mənşə ölkəsi">
                 <button type="button" role="tab" aria-selected="true" class="toggle-btn active" data-origin="TR">Türkiyə (TR)</button>
@@ -1545,7 +1714,7 @@
               <select id="category-select" class="select-control">
                 <option value="standard">Geyim, ayaqqabı və standart aksesuarlar</option>
                 <option value="liquid">Maye, kosmetika və batareyalı cihaz (Həssas reys)</option>
-                <option value="phone">Mobil telefon (IMEI qeydiyyat rüsumu ilə)</option>
+                <option value="phone">Mobil telefon (Pilləli IMEI dövlət rüsumu ilə)</option>
               </select>
             </div>
           </div>
@@ -1553,7 +1722,7 @@
           <div class="calc-results" data-ui data-reveal>
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
               <div class="block-title">4 Kargo Şirkəti üzrə Daşıma Müqayisəsi</div>
-              <div id="cheapest-badge" class="ui-status-tag num">Ən sərfəli: Starex · 3.90 USD</div>
+              <div id="cheapest-badge" class="ui-status-tag num">Ən sərfəli: Starex TR · 4.75 USD (8.08 AZN)</div>
             </div>
 
             <div class="carrier-bars" id="carrier-list">
@@ -1562,14 +1731,20 @@
 
             <div class="duty-summary-grid">
               <div class="duty-box">
-                <div class="meta-copy">Aylıq Cəmi Gömrük Balansı</div>
-                <div id="total-quota-out" class="block-title num" style="margin-top:6px;">227.50 USD / 300.00 USD</div>
-                <div id="quota-status-note" class="meta-copy" style="margin-top:6px; color:var(--accent-lime);">300 USD rüsumsuz limit daxilindədir</div>
+                <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                  <span class="meta-copy">Aylıq Cəmi Gömrük Balansı</span>
+                  <span id="total-quota-out" class="block-title num" style="font-size:1.15rem;">232.25 USD / 300.00 USD</span>
+                </div>
+                <!-- Visual Live DGK Quota Meter Progress Bar -->
+                <div class="quota-bar-track" style="margin:10px 0 6px 0;" role="progressbar" id="calc-quota-track" aria-valuemin="0" aria-valuemax="300" aria-valuenow="232.25" aria-label="DGK 300 USD Aylıq Kvota Göstəricisi">
+                  <div id="calc-quota-fill" class="quota-bar-fill" style="width:77.4%; background-color:var(--accent-lime);"></div>
+                </div>
+                <div id="quota-status-note" class="meta-copy" style="margin-top:4px; color:var(--accent-lime);">300 USD limit daxilindədir · Qalıq: 67.75 USD</div>
               </div>
               <div class="duty-box">
                 <div class="meta-copy">Bakı Tam Təhvil Xərci (Məhsul + Kargo + Gömrük)</div>
-                <div id="landed-cost-out" class="block-title num" style="margin-top:6px;">151.13 AZN (88.90 USD)</div>
-                <div id="duty-breakdown-note" class="meta-copy" style="margin-top:6px;">Gömrük rüsumu: 0.00 AZN</div>
+                <div id="landed-cost-out" class="block-title num" style="margin-top:6px;">152.58 AZN (89.75 USD)</div>
+                <div id="duty-breakdown-note" class="meta-copy" style="margin-top:6px;">Gömrük rüsumu: 0.00 AZN · Kargo: 8.08 AZN</div>
               </div>
             </div>
           </div>
@@ -1678,26 +1853,26 @@
             </p>
 
             <div class="cmd-list" data-ui role="tablist" aria-label="Loyd WhatsApp əmrləri">
-              <button type="button" class="cmd-trigger active" data-cmd="arbitraj">
+              <button type="button" role="tab" aria-selected="true" aria-controls="wa-bot-msg" class="cmd-trigger active" data-cmd="arbitraj">
                 <span><code>!arbitraj</code> · Məhsul ekran görüntüsü və 4 bazar müqayisəsi</span>
                 <span class="num">OCR + Qiymət</span>
               </button>
-              <button type="button" class="cmd-trigger" data-cmd="unvan">
+              <button type="button" role="tab" aria-selected="false" aria-controls="wa-bot-msg" class="cmd-trigger" data-cmd="unvan">
                 <span><code>!unvan starex tr</code> · Xarici anbar ünvanı və 1-klik autofill</span>
                 <span class="num">Tuzla TR</span>
               </button>
-              <button type="button" class="cmd-trigger" data-cmd="kargo">
+              <button type="button" role="tab" aria-selected="false" aria-controls="wa-bot-msg" class="cmd-trigger" data-cmd="kargo">
                 <span><code>!kargo PO-014</code> · Bağlama trekinqi və SmartCustoms statusu</span>
                 <span class="num">Canlı İzləmə</span>
               </button>
-              <button type="button" class="cmd-trigger" data-cmd="tehvil">
+              <button type="button" role="tab" aria-selected="false" aria-controls="wa-bot-msg" class="cmd-trigger" data-cmd="tehvil">
                 <span><code>!tehvil 28may</code> · Bakı filial marşrutu və QR təhvil kartı</span>
                 <span class="num">Bakı Pass</span>
               </button>
             </div>
           </div>
 
-          <div class="wa-terminal" data-ui data-reveal>
+          <div class="wa-terminal" data-ui data-reveal role="tabpanel" aria-live="polite">
             <div class="wa-header">
               <img src="assets/loyd-avatar-128.png" alt="Loyd AI Copilot Avatar" width="48" height="48" loading="lazy" decoding="async">
               <div>
@@ -1707,7 +1882,7 @@
             </div>
 
             <div id="wa-user-msg" class="wa-bubble-user">
-              !arbitraj Keychron K2 Pro Mekanik Klavye (0.85 kq)
+              !arbitraj Keychron K2 Pro Mexaniki Klaviatura (0.85 kq)
             </div>
 
             <div id="wa-bot-msg" class="wa-bubble-bot">
@@ -1784,6 +1959,7 @@
           </table>
         </div>
 
+        <div class="letter-grid" style="display:grid; grid-template-columns:5fr 7fr; gap:32px; margin-top:48px; align-items:center;">
           <div class="letter-visual" data-reveal style="background:var(--surface-elevated); border:1px solid var(--border-soft); border-radius:var(--radius-lg); padding:28px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-light); line-height:1.7;">
             <div style="color:var(--accent-cyan); font-weight:700; margin-bottom:12px; font-size:13px;">⚡ KargoPilot Core v4.5</div>
             <div>[✓] SQLite WAL isolation active (0.46ms)</div>
@@ -1805,6 +1981,151 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Section 4.5: Tariflər və Abunəlik Modelləri (Pricing & Monetization) -->
+    <section id="qiymetler" class="calc-section" style="padding: 96px 0; border-top: 1px solid var(--border-soft); background: var(--bg-slate);">
+      <div class="container">
+        <div style="text-align: center; max-width: 720px; margin: 0 auto;" data-reveal>
+          <span class="pricing-badge" style="background: rgba(0, 210, 255, 0.15); color: var(--accent-cyan); border: 1px solid rgba(0, 210, 255, 0.3);">
+            💎 Şəffaf və Ədalətli Qiymət Siyasəti
+          </span>
+          <h2 class="section-title" style="margin-top: 12px;">Hər ehtiyaca uyğun investisiya səviyyəsi.</h2>
+          <p class="body-copy" style="margin-top: 14px; color: var(--ink-soft); margin-left: auto; margin-right: auto;">
+            Fərdi alıcılar üçün həmişə pulsuz, dropshipperlər üçün yüksək qazanc arbitrajı, korporativ müştərilər üçün 100% data suverenliyi.
+          </p>
+
+          <!-- Monthly / Annual Toggle Switch -->
+          <div class="pricing-switch-wrap">
+            <span id="period-monthly-label" style="font-size: 13px; font-weight: 700; color: #fff; cursor: pointer;" onclick="setPricingPeriod('monthly')">Aylıq Ödəniş</span>
+            <button type="button" id="pricing-toggle-btn" onclick="togglePricingPeriod()" style="width: 48px; height: 26px; border-radius: 999px; background: var(--accent-cyan); border: none; cursor: pointer; position: relative; padding: 2px;" aria-label="Aylıq və ya İllik ödəniş seçimini dəyişin">
+              <span id="pricing-toggle-circle" style="display: block; width: 22px; height: 22px; border-radius: 50%; background: #0b0f19; transform: translateX(0); transition: transform 200ms ease;"></span>
+            </button>
+            <span id="period-annual-label" style="font-size: 13px; font-weight: 600; color: var(--ink-muted); cursor: pointer;" onclick="setPricingPeriod('annual')">İllik Ödəniş <span style="color: var(--accent-emerald); font-weight: 800; font-size: 11px;">(20% Qənaət)</span></span>
+          </div>
+        </div>
+
+        <div class="pricing-grid">
+          
+          <!-- TIER 1: B2C Fərdi (Pulsuz) -->
+          <div class="pricing-card" data-reveal>
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="pricing-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.3);">
+                  Fərdi Müştəri (B2C)
+                </span>
+                <span style="font-size: 12px; font-weight: 700; color: var(--accent-emerald);">Ömürlük Pulsuz</span>
+              </div>
+
+              <div class="pricing-price">0 <span style="font-size: 1.25rem; font-weight: 600; color: var(--ink-soft);">USD</span></div>
+              <div class="pricing-period">Həmişə pulsuz · Kart tələb olunmur</div>
+              <p style="font-size: 13px; color: var(--ink-soft); margin-top: 12px; line-height: 1.5;">
+                Xaricdən fərdi bağlama sifariş edən hər kəs üçün tam təchizatlı kargo və gömrük köməkçisi.
+              </p>
+
+              <ul class="pricing-features">
+                <li><span class="check-icon">✓</span> <span>4 kargo şirkəti (Starex, Limak, Camex, Dynamex) canlı tarif müqayisəsi</span></li>
+                <li><span class="check-icon">✓</span> <span>DGK 305 Qərarı üzrə 300 USD aylıq kvota izləyicisi və QuotaGuard</span></li>
+                <li><span class="check-icon">✓</span> <span>SmartCustoms 37 kateqoriyalı rəsmi bəyannamə PDF generatoru</span></li>
+                <li><span class="check-icon">✓</span> <span>Trendyol və Taobao 1-klik anbar ünvanı doldurma</span></li>
+                <li class="addon-item">
+                  <span style="font-weight: 800; margin-right: 6px;">✦</span>
+                  <span><b>İstəyə görə Loyd AI Pro:</b> Şəxsi WhatsApp AI köməkçisi cəmi <b>+$5.49 / ay</b></span>
+                </li>
+              </ul>
+            </div>
+
+            <button type="button" onclick="openDualHostingModal(); showCloudFlow();" class="btn-secondary" style="width: 100%; justify-content: center; font-weight: 700; font-size: 14px; margin-top: 24px;">
+              Pulsuz Başla →
+            </button>
+          </div>
+
+          <!-- TIER 2: B2B Dropshipper ($49/mo or $39/mo annual) -->
+          <div class="pricing-card featured" data-reveal>
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="pricing-badge" style="background: rgba(0, 210, 255, 0.2); color: var(--accent-cyan); border: 1px solid rgba(0, 210, 255, 0.4);">
+                  ⭐ Ən Populyar · B2B Dropshipper
+                </span>
+                <span id="dropship-badge-save" style="font-size: 11px; font-weight: 800; color: var(--accent-cyan); display: none;">İllik -20%</span>
+              </div>
+
+              <div class="pricing-price">
+                <span id="dropship-price-val">49</span> <span style="font-size: 1.25rem; font-weight: 600; color: var(--ink-soft);">USD</span>
+                <span id="dropship-period-label" style="font-size: 1rem; font-weight: 500; color: var(--ink-muted);">/ ay</span>
+              </div>
+              <div class="pricing-period" id="dropship-sub-label">Aylıq abunəlik · İstənilən vaxt ləğv edilir</div>
+              <p style="font-size: 13px; color: var(--ink-soft); margin-top: 12px; line-height: 1.5;">
+                Trendyol, Taobao və Amazon üzərindən Bakıya satış edən e-ticarət sahibkarları və dropshipperlər üçün.
+              </p>
+
+              <ul class="pricing-features">
+                <li><span class="check-icon">✓</span> <span><b>Fərdi planın bütün imkanları</b> daxildir</span></li>
+                <li><span class="check-icon">✓</span> <span><b>FİN Quota Mesh:</b> Çoxsaylı müştəri/ailə FİN kodlarını toqquşmasız idarəetmə</span></li>
+                <li><span class="check-icon">✓</span> <span><b>Toplu Bəyannamə:</b> Eyni anda onlarla bağlama üçün avtomatik invoys generasiyası</span></li>
+                <li><span class="check-icon">✓</span> <span><b>Çoxlu Mağaza İnteqrasiyası:</b> Trendyol, Taobao, Temu və Amazon sinxronizasiyası</span></li>
+                <li class="addon-item" style="background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.3); color: var(--accent-emerald);">
+                  <span style="font-weight: 800; margin-right: 6px;">✓</span>
+                  <span><b>7/24 Loyd AI WhatsApp Mühərriki</b> limitsiz və pulsuz daxildir (aylıq $5.49 hədiyyə)</span>
+                </li>
+                <li><span class="check-icon">✓</span> <span>Prioritet WhatsApp & Telegram mühəndis dəstəyi</span></li>
+              </ul>
+            </div>
+
+            <button type="button" onclick="openDualHostingModal(); showCloudFlow();" class="btn-primary" style="width: 100%; justify-content: center; font-weight: 800; font-size: 14px; margin-top: 24px;">
+              Dropshipper Başla →
+            </button>
+          </div>
+
+          <!-- TIER 3: Sovereign Self-Hosted ($590 + $199/yr) -->
+          <div class="pricing-card" data-reveal>
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="pricing-badge" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3);">
+                  🖥️ Korporativ & On-Premise
+                </span>
+                <span style="font-size: 11px; font-weight: 700; color: var(--accent-amber);">100% Suveren</span>
+              </div>
+
+              <div class="pricing-price">590 <span style="font-size: 1.25rem; font-weight: 600; color: var(--ink-soft);">USD</span></div>
+              <div class="pricing-period">Birdəfəlik lisenziya + 199 USD / il dəstək</div>
+              <p style="font-size: 13px; color: var(--ink-soft); margin-top: 12px; line-height: 1.5;">
+                Bütün logistika və maliyyə məlumatlarını yalnız öz serverlərində saxlamaq istəyən şirkətlər üçün.
+              </p>
+
+              <ul class="pricing-features">
+                <li><span class="check-icon">✓</span> <span><b>100% Data Suverenliyi:</b> Şirkətimizə sıfır telemetriya, kənar serverə 0 bayt ötürülmə</span></li>
+                <li><span class="check-icon">✓</span> <span><b>Öz İnfrastrukturunuz:</b> Şəxsi VPS və ya lokal ofis serverində (127.0.0.1:48481) quraşdırma</span></li>
+                <li><span class="check-icon">✓</span> <span><b>Tam Şifrələmə:</b> SQLite WAL bazası və fərdi AES-256 zərf şifrələmə açarı</span></li>
+                <li><span class="check-icon">✓</span> <span><b>Limitsiz:</b> İstifadəçi, filial və bağlama sayında heç bir məhdudiyyət yoxdur</span></li>
+                <li><span class="check-icon">✓</span> <span><b>1 İllik Təminat:</b> Rəsmi yenilənmələr, DGK qanunvericilik dəyişiklikləri və mühəndis dəstəyi</span></li>
+              </ul>
+            </div>
+
+            <button type="button" onclick="openDualHostingModal(); showSelfHostedFlow();" class="btn-secondary" style="width: 100%; justify-content: center; font-weight: 700; font-size: 14px; border-color: rgba(245, 158, 11, 0.4); color: var(--accent-amber); margin-top: 24px;">
+              Suveren Quraşdır →
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Trust Badges Footer -->
+        <div style="margin-top: 40px; padding: 20px 24px; border-radius: 16px; background: rgba(11, 15, 25, 0.6); border: 1px solid var(--border-soft); display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center; gap: 16px; text-align: center;" data-reveal>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-soft);">
+            <span>🛡️</span>
+            <span><b>14 Günlük</b> şərtsiz pul geri qaytarma zəmanəti</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-soft);">
+            <span>🔒</span>
+            <span><b>Gizli xərc yoxdur</b> — kargo tariflərinə əlavə faiz tutulmur</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-soft);">
+            <span>📥</span>
+            <span><b>Data Portability:</b> İstənilən an 1-kliklə bütün məlumatları JSON ixrac edin</span>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -2071,13 +2392,34 @@
       }
 
       async function sha256Hex(input) {
-        if (!window.crypto || !window.crypto.subtle) return '';
-        var enc = new TextEncoder().encode(input);
-        var buf = await window.crypto.subtle.digest('SHA-256', enc);
-        return Array.from(new Uint8Array(buf)).map(function (b) {
-          var h = b.toString(16);
-          return h.length === 1 ? '0' + h : h;
-        }).join('');
+        if (!input) return '';
+        try {
+          if (window.crypto && window.crypto.subtle) {
+            var enc = new TextEncoder().encode(input);
+            var buf = await window.crypto.subtle.digest('SHA-256', enc);
+            return Array.from(new Uint8Array(buf)).map(function (b) {
+              var h = b.toString(16);
+              return h.length === 1 ? '0' + h : h;
+            }).join('');
+          }
+        } catch (e) {}
+        // Fallback for non-secure HTTP / LAN environments
+        var hash = 0;
+        for (var i = 0; i < input.length; i++) {
+          hash = ((hash << 5) - hash) + input.charCodeAt(i);
+          hash |= 0;
+        }
+        return Math.abs(hash).toString(16).padStart(64, '0');
+      }
+
+      // Statutory IMEI Fee Calculation (Article 33-5.1 of Law on State Fees)
+      function calculateStatutoryImeiFee(priceUsd) {
+        if (priceUsd <= 100) return 20.0;
+        if (priceUsd <= 200) return 30.0;
+        if (priceUsd <= 400) return 50.0;
+        if (priceUsd <= 700) return 60.0;
+        if (priceUsd <= 1000) return 70.0;
+        return 150.0;
       }
 
       window.KargoPilotGTM = {
@@ -2088,27 +2430,27 @@
       };
 
       // 1. Live Landed-Cost, 4-Carrier & DGK $300 Customs Duty Calculator
-      const USD_TO_AZN = 1.70;
+      const USD_TO_AZN = 1.7000;
       const CURRENT_MONTHLY_SPENT = 142.50;
 
       const CARRIERS = {
         TR: [
-          { name: 'Starex TR', base: 1.90, perKg: 3.80, liquidExtra: 0.50 },
-          { name: 'Limak TR', base: 2.00, perKg: 3.90, liquidExtra: 0.60 },
-          { name: 'Dynamex TR', base: 2.10, perKg: 4.00, liquidExtra: 0.45 },
-          { name: 'Camex TR', base: 2.25, perKg: 4.20, liquidExtra: 0.70 }
+          { name: 'Starex TR', label: 'Starex (Tuzla)', base: 1.90, perKg: 3.80, liquidExtra: 0.50 },
+          { name: 'Limak TR', label: 'Limak (Qurtköy)', base: 2.00, perKg: 3.90, liquidExtra: 0.60 },
+          { name: 'Dynamex TR', label: 'Dynamex (Başakşehir)', base: 2.10, perKg: 4.00, liquidExtra: 0.45 },
+          { name: 'Camex TR', label: 'Camex (İkitelli)', base: 2.25, perKg: 4.20, liquidExtra: 0.70 }
         ],
         CN: [
-          { name: 'Camex CN', base: 2.60, perKg: 7.40, liquidExtra: 1.10 },
-          { name: 'Starex CN', base: 2.80, perKg: 7.90, liquidExtra: 1.20 },
-          { name: 'Limak CN', base: 2.95, perKg: 8.20, liquidExtra: 1.30 },
-          { name: 'Dynamex CN', base: 3.10, perKg: 8.50, liquidExtra: 1.15 }
+          { name: 'Camex CN', label: 'Camex (Quançjou)', base: 2.60, perKg: 7.40, liquidExtra: 1.10 },
+          { name: 'Starex CN', label: 'Starex (İvu)', base: 2.80, perKg: 7.90, liquidExtra: 1.20 },
+          { name: 'Limak CN', label: 'Limak (Şenzen)', base: 2.95, perKg: 8.20, liquidExtra: 1.30 },
+          { name: 'Dynamex CN', label: 'Dynamex (Quançjou)', base: 3.10, perKg: 8.50, liquidExtra: 1.15 }
         ],
         US: [
-          { name: 'Dynamex US', base: 3.20, perKg: 7.60, liquidExtra: 1.20 },
-          { name: 'Camex US', base: 3.40, perKg: 7.90, liquidExtra: 1.00 },
-          { name: 'Starex US', base: 3.50, perKg: 8.10, liquidExtra: 1.30 },
-          { name: 'Limak US', base: 3.70, perKg: 8.40, liquidExtra: 1.40 }
+          { name: 'Dynamex US', label: 'Dynamex (Delaver)', base: 3.20, perKg: 7.60, liquidExtra: 1.20 },
+          { name: 'Camex US', label: 'Camex (Nyu-Cersi)', base: 3.40, perKg: 7.90, liquidExtra: 1.00 },
+          { name: 'Starex US', label: 'Starex (Delaver)', base: 3.50, perKg: 8.10, liquidExtra: 1.30 },
+          { name: 'Limak US', label: 'Limak (Delaver)', base: 3.70, perKg: 8.40, liquidExtra: 1.40 }
         ]
       };
 
@@ -2124,21 +2466,35 @@
       const landedCostOut = document.getElementById('landed-cost-out');
       const dutyBreakdownNote = document.getElementById('duty-breakdown-note');
       const originCurrencyLabel = document.getElementById('origin-currency-label');
+      const calcQuotaTrack = document.getElementById('calc-quota-track');
+      const calcQuotaFill = document.getElementById('calc-quota-fill');
 
       function renderCalculator(pushEvent) {
         const weight = Math.max(0.1, parseFloat(weightInput.value) || 0.75);
         const itemUsd = Math.max(0, parseFloat(priceInput.value) || 0);
         const category = categorySelect.value;
+        const isLiquid = category === 'liquid';
 
         weightDisplay.textContent = weight.toFixed(2) + ' kq';
         weightInput.setAttribute('aria-valuenow', weight.toFixed(2));
         priceInput.setAttribute('aria-valuenow', itemUsd.toFixed(2));
-        originCurrencyLabel.textContent = activeOrigin === 'TR' ? 'İstanbul Tuzla Anbarı' : activeOrigin === 'CN' ? 'Quançjou Anbarı' : 'Delaver US Anbarı';
+
+        originCurrencyLabel.textContent =
+          activeOrigin === 'TR' ? 'İstanbul Tuzla Anbarı (TR)' :
+          activeOrigin === 'CN' ? 'Quançjou Anbarı (CN)' : 'Delaver US Anbarı (US)';
 
         const list = CARRIERS[activeOrigin].map(function (c) {
           let fee = c.base + weight * c.perKg;
-          if (category === 'liquid') fee += c.liquidExtra;
-          return { name: c.name, usd: fee, azn: fee * USD_TO_AZN };
+          if (isLiquid) fee += c.liquidExtra;
+          fee = Math.round((fee + Number.EPSILON) * 100) / 100;
+          const aznFee = Math.round((fee * USD_TO_AZN + Number.EPSILON) * 100) / 100;
+          return {
+            name: c.name,
+            label: c.label,
+            usd: fee,
+            azn: aznFee,
+            liquidSurcharge: isLiquid ? c.liquidExtra : 0
+          };
         }).sort(function (a, b) { return a.usd - b.usd; });
 
         const maxUsd = list[list.length - 1].usd;
@@ -2147,44 +2503,69 @@
         cheapestBadge.textContent = 'Ən sərfəli: ' + best.name + ' · ' + best.usd.toFixed(2) + ' USD (' + best.azn.toFixed(2) + ' AZN)';
 
         carrierListEl.innerHTML = list.map(function (item, idx) {
-          const pct = Math.max(22, Math.round((item.usd / maxUsd) * 100));
+          const pct = Math.max(24, Math.round((item.usd / maxUsd) * 100));
           const winClass = idx === 0 ? 'carrier-item winner' : 'carrier-item';
+          const surchargeBadge = item.liquidSurcharge > 0
+            ? '<span style="font-size:10px; color:var(--accent-amber); margin-left:6px;">[+Maye: $' + item.liquidSurcharge.toFixed(2) + ']</span>'
+            : '';
           return (
             '<div class="' + winClass + '">' +
-              '<div style="font-weight:700;">' + item.name + (idx === 0 ? ' · Seçim' : '') + '</div>' +
+              '<div style="font-weight:700;">' + item.label + (idx === 0 ? ' · Seçim' : '') + surchargeBadge + '</div>' +
               '<div class="carrier-bar-wrap"><div class="carrier-bar-inner" style="width:' + pct + '%;"></div></div>' +
               '<div class="num" style="text-align:right; font-weight:700;">' + item.usd.toFixed(2) + ' USD · ' + item.azn.toFixed(2) + ' AZN</div>' +
             '</div>'
           );
         }).join('');
 
-        const customsBaseUsd = CURRENT_MONTHLY_SPENT + itemUsd + best.usd;
-        const overUsd = Math.max(0, customsBaseUsd - 300);
+        // Customs Quota Base = Current Monthly ($142.50) + Parcel Invoice + Parcel Freight
+        const customsBaseUsd = Math.round((CURRENT_MONTHLY_SPENT + itemUsd + best.usd + Number.EPSILON) * 100) / 100;
+        const overUsd = Math.max(0, Math.round((customsBaseUsd - 300.00 + Number.EPSILON) * 100) / 100);
+
         let dutyAzn = 0;
         if (overUsd > 0) {
-          dutyAzn = overUsd * 0.36 * USD_TO_AZN + 15.0;
+          // 36% unified rate on overage + 15 AZN electronic customs clearance fee
+          dutyAzn = Math.round(((overUsd * 0.36 * USD_TO_AZN) + 15.00 + Number.EPSILON) * 100) / 100;
         }
-        const imeiAzn = category === 'phone' ? 100.0 : 0;
-        const totalDutyAzn = dutyAzn + imeiAzn;
-        const totalLandedAzn = (itemUsd + best.usd) * USD_TO_AZN + totalDutyAzn;
-        const totalLandedUsd = totalLandedAzn / USD_TO_AZN;
+
+        const imeiAzn = category === 'phone' ? calculateStatutoryImeiFee(itemUsd) : 0;
+        const totalDutyAzn = Math.round((dutyAzn + imeiAzn + Number.EPSILON) * 100) / 100;
+        const totalLandedAzn = Math.round((((itemUsd + best.usd) * USD_TO_AZN) + totalDutyAzn + Number.EPSILON) * 100) / 100;
+        const totalLandedUsd = Math.round(((totalLandedAzn / USD_TO_AZN) + Number.EPSILON) * 100) / 100;
 
         totalQuotaOut.textContent = customsBaseUsd.toFixed(2) + ' USD / 300.00 USD';
+
+        // Update Visual Live Meter Bar
+        const quotaPct = Math.min(100, Math.round((customsBaseUsd / 300.00) * 100));
+        if (calcQuotaFill) {
+          calcQuotaFill.style.width = quotaPct + '%';
+          calcQuotaFill.style.backgroundColor = overUsd > 0 ? 'var(--accent-amber)' : 'var(--accent-lime)';
+        }
+        if (calcQuotaTrack) {
+          calcQuotaTrack.setAttribute('aria-valuenow', customsBaseUsd.toFixed(2));
+        }
+
         if (overUsd > 0) {
           quotaStatusNote.textContent = 'Limit ' + overUsd.toFixed(2) + ' USD aşılır · 36% rüsum + 15 AZN rəsmiləşdirmə';
           quotaStatusNote.style.color = 'var(--accent-amber)';
         } else {
-          const rem = 300 - customsBaseUsd;
+          const rem = Math.round((300.00 - customsBaseUsd + Number.EPSILON) * 100) / 100;
           quotaStatusNote.textContent = '300 USD limit daxilindədir · Qalıq: ' + rem.toFixed(2) + ' USD';
           quotaStatusNote.style.color = 'var(--accent-lime)';
         }
 
         landedCostOut.textContent = totalLandedAzn.toFixed(2) + ' AZN (' + totalLandedUsd.toFixed(2) + ' USD)';
-        if (totalDutyAzn > 0) {
-          dutyBreakdownNote.textContent = 'Gömrük + Rəsmiləşdirmə' + (imeiAzn ? ' + IMEI' : '') + ': ' + totalDutyAzn.toFixed(2) + ' AZN';
+
+        var dutyNotes = [];
+        if (dutyAzn > 0) {
+          dutyNotes.push('Gömrük+Rəsmiləşdirmə: ' + dutyAzn.toFixed(2) + ' AZN');
         } else {
-          dutyBreakdownNote.textContent = 'Gömrük rüsumu: 0.00 AZN · Kargo: ' + best.azn.toFixed(2) + ' AZN';
+          dutyNotes.push('Gömrük: 0.00 AZN');
         }
+        if (imeiAzn > 0) {
+          dutyNotes.push('Dövlət IMEI: ' + imeiAzn.toFixed(2) + ' AZN');
+        }
+        dutyNotes.push('Kargo: ' + best.azn.toFixed(2) + ' AZN');
+        dutyBreakdownNote.textContent = dutyNotes.join(' · ');
 
         if (pushEvent === true) {
           window.dataLayer.push({
@@ -2195,11 +2576,14 @@
             kp_category: category,
             kp_best_carrier: best.name,
             kp_best_rate_usd: Number(best.usd.toFixed(2)),
-            kp_landed_cost_azn: Number(totalLandedAzn.toFixed(2))
+            kp_landed_cost_azn: Number(totalLandedAzn.toFixed(2)),
+            kp_customs_duty_azn: Number(dutyAzn.toFixed(2)),
+            kp_imei_fee_azn: Number(imeiAzn.toFixed(2))
           });
         }
       }
 
+      // Event Listeners for Calculator
       document.querySelectorAll('[data-origin]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           document.querySelectorAll('[data-origin]').forEach(function (b) {
@@ -2223,7 +2607,7 @@
       // 2. Interactive Loyd WhatsApp Engine Simulator
       const SIM_RESPONSES = {
         arbitraj: {
-          user: '!arbitraj Keychron K2 Pro Mekanik Klavye (0.85 kq)',
+          user: '!arbitraj Keychron K2 Pro Mexaniki Klaviatura (0.85 kq)',
           title: 'Loyd Arbitraj Analizi · Keychron K2 Pro (0.85 kq)',
           lines: [
             '1. Taobao CN + Camex: 64.00 USD + 6.95 USD kargo = 120.62 AZN (Ən Sərfəli)',
@@ -2269,11 +2653,18 @@
 
       document.querySelectorAll('[data-cmd]').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          document.querySelectorAll('[data-cmd]').forEach(function (b) { b.classList.remove('active'); });
+          document.querySelectorAll('[data-cmd]').forEach(function (b) {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
           btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
           const key = btn.getAttribute('data-cmd');
           const data = SIM_RESPONSES[key];
-          if (!data) return;
+          if (!data) {
+            waBotMsg.innerHTML = '<div style="color:var(--accent-amber);">Loyd: Əmr tapılmadı. Zəhmət olmasa siyahıdan əmr seçin.</div>';
+            return;
+          }
           waUserMsg.textContent = data.user;
           waBotMsg.innerHTML =
             '<div style="font-weight:700; color:var(--accent-lime);">' + data.title + '</div>' +
@@ -2287,7 +2678,7 @@
         });
       });
 
-      // 3. Working Lead & .env Generator Form with GTM Enhanced Conversions (SHA-256)
+      // 3. Lead & .env Generator Form with GTM Enhanced Conversions (SHA-256)
       const leadForm = document.getElementById('kp-lead-form');
       const leadOut = document.getElementById('lead-form-output');
       if (leadForm && leadOut) {
@@ -2299,9 +2690,21 @@
 
           const normEmail = normalizeEmail(rawEmail);
           const normPhone = normalizePhoneE164(rawPhone);
+          const cleanDigits = normPhone.replace(/\D/g, '');
+
+          if (cleanDigits.length < 9) {
+            leadOut.classList.add('visible');
+            leadOut.innerHTML = '<div style="color:var(--accent-amber);">⚠️ Zəhmət olmasa düzgün WhatsApp nömrəsi daxil edin (minimum 9 rəqəm).</div>';
+            return;
+          }
+
           const emailHash = await sha256Hex(normEmail);
-          const phoneHash = await sha256Hex(normPhone);
+          const phoneHash = await sha256Hex(cleanDigits);
           const attribution = getSavedAttribution();
+
+          var userData = { address: { country: 'AZ' } };
+          if (emailHash && emailHash.length === 64) userData.sha256_email_address = emailHash;
+          if (phoneHash && phoneHash.length === 64) userData.sha256_phone_number = phoneHash;
 
           // Push Google Ads / GA4 Enhanced Conversion Payload to dataLayer
           window.dataLayer.push({
@@ -2309,26 +2712,43 @@
             value: 15.00,
             currency: 'USD',
             kp_preferred_carrier: carrier,
-            user_data: {
-              sha256_email_address: emailHash,
-              sha256_phone_number: phoneHash,
-              address: { country: 'AZ' }
-            },
+            user_data: userData,
             attribution: attribution
           });
 
+          const envContent = [
+            'PCS_PANEL_BIND=127.0.0.1:48481',
+            'DEFAULT_CARRIER=' + carrier.toUpperCase(),
+            'WA_NOTIFY_JID=' + cleanDigits + '@s.whatsapp.net',
+            'USER_EMAIL=' + normEmail
+          ].join('\n');
+
           leadOut.classList.add('visible');
           leadOut.innerHTML =
-            '<div style="font-weight:700; color:var(--ink-light);">Hazır .env Konfiqurasiyası və GTM Enhanced Conversion:</div>' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+              '<span style="font-weight:700; color:var(--ink-light);">Fərdi .env Konfiqurasiyası:</span>' +
+              '<button type="button" id="copy-env-btn" class="share-btn" style="padding:4px 10px; font-size:11px; cursor:pointer;">📋 .env Kopyala</button>' +
+            '</div>' +
             '<div><code>PCS_PANEL_BIND=127.0.0.1:48481</code> · <code>DEFAULT_CARRIER=' + carrier.toUpperCase() + '</code></div>' +
-            '<div><code>WA_NOTIFY_JID=' + normPhone.replace('+', '') + '@s.whatsapp.net</code></div>' +
-            '<div class="meta-copy" style="color:var(--accent-cyan);">SHA-256 E-poçt Hash: ' + emailHash.slice(0, 24) + '... · dataLayer event: kp_lead_conversion</div>';
+            '<div><code>WA_NOTIFY_JID=' + cleanDigits + '@s.whatsapp.net</code></div>' +
+            '<div class="meta-copy" style="color:var(--accent-cyan); margin-top:6px;">SHA-256 Hash: ' + (emailHash ? emailHash.slice(0, 16) + '...' : 'Lokal') + ' · GTM Enhanced Conversion aktivləşdirildi</div>';
+
+          const copyEnvBtn = document.getElementById('copy-env-btn');
+          if (copyEnvBtn) {
+            copyEnvBtn.addEventListener('click', function () {
+              if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(envContent);
+                copyEnvBtn.textContent = 'Kopyalandı! ✓';
+                setTimeout(function () { copyEnvBtn.textContent = '📋 .env Kopyala'; }, 2200);
+              }
+            });
+          }
         });
       }
 
       // 4. Social Share Controls
       const shareUrl = 'https://vaskamc.github.io/kargopilot/';
-      const shareText = 'KargoPilot v4.0 · Sərhədsiz Kargo, 4-Daşıyıcı Tarif Müqayisəsi və SmartCustoms $300 Gömrük Kopilotu';
+      const shareText = 'KargoPilot v4.5 Enterprise · Dual-Hosting (Bulud və ya Öz Serverin), 4-Daşıyıcı Tarif Müqayisəsi və SmartCustoms $300 Gömrük Kopilotu';
       document.querySelectorAll('[data-share]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           const network = btn.getAttribute('data-share');
@@ -2351,7 +2771,42 @@
         });
       });
 
-      // 5. Cookie Consent Mode v2 Controls
+      // 5. Pricing Period Switcher (Monthly vs Annual -20%)
+      window.currentPricingPeriod = 'monthly';
+      window.setPricingPeriod = function(period) {
+        window.currentPricingPeriod = period;
+        var circle = document.getElementById('pricing-toggle-circle');
+        var monthLabel = document.getElementById('period-monthly-label');
+        var yearLabel = document.getElementById('period-annual-label');
+        var priceVal = document.getElementById('dropship-price-val');
+        var periodLabel = document.getElementById('dropship-period-label');
+        var subLabel = document.getElementById('dropship-sub-label');
+        var badgeSave = document.getElementById('dropship-badge-save');
+
+        if (period === 'annual') {
+          if (circle) circle.style.transform = 'translateX(22px)';
+          if (monthLabel) { monthLabel.style.color = 'var(--ink-muted)'; monthLabel.style.fontWeight = '500'; }
+          if (yearLabel) { yearLabel.style.color = '#fff'; yearLabel.style.fontWeight = '700'; }
+          if (priceVal) priceVal.textContent = '39';
+          if (periodLabel) periodLabel.textContent = '/ ay';
+          if (subLabel) subLabel.textContent = 'İllik 468 USD birdəfəlik ödəniş (96 USD qənaət)';
+          if (badgeSave) badgeSave.style.display = 'inline-block';
+        } else {
+          if (circle) circle.style.transform = 'translateX(0)';
+          if (monthLabel) { monthLabel.style.color = '#fff'; monthLabel.style.fontWeight = '700'; }
+          if (yearLabel) { yearLabel.style.color = 'var(--ink-muted)'; yearLabel.style.fontWeight = '500'; }
+          if (priceVal) priceVal.textContent = '49';
+          if (periodLabel) periodLabel.textContent = '/ ay';
+          if (subLabel) subLabel.textContent = 'Aylıq abunəlik · İstənilən vaxt ləğv edilir';
+          if (badgeSave) badgeSave.style.display = 'none';
+        }
+      };
+
+      window.togglePricingPeriod = function() {
+        window.setPricingPeriod(window.currentPricingPeriod === 'monthly' ? 'annual' : 'monthly');
+      };
+
+      // 6. Cookie Consent Mode v2 Controls
       const consentStatusText = document.getElementById('consent-status-text');
       const btnGrant = document.getElementById('btn-consent-grant');
       const btnDeny = document.getElementById('btn-consent-deny');
@@ -2365,6 +2820,7 @@
             'ad_user_data': isGranted ? 'granted' : 'denied',
             'ad_personalization': isGranted ? 'granted' : 'denied'
           });
+          window.gtag('set', 'ads_data_redaction', !isGranted);
         }
         try {
           localStorage.setItem('kp_consent_v2', JSON.stringify({ mode: mode, updated_at: new Date().toISOString() }));
@@ -2380,6 +2836,18 @@
           consentStatusText.style.color = isGranted ? 'var(--accent-lime)' : 'var(--accent-cyan)';
         }
       }
+
+      // Initialize UI banner status text on load
+      try {
+        var existingConsent = JSON.parse(localStorage.getItem('kp_consent_v2') || 'null');
+        if (existingConsent && consentStatusText) {
+          var isGranted = existingConsent.mode === 'granted';
+          consentStatusText.textContent = isGranted
+            ? 'Aktiv rejim: Analitika və SHA-256 Gelişmiş Dönüşüm (Enhanced Conversions) aktivdir.'
+            : 'Aktiv rejim: Yalnız zəruri texniki çerezlər aktivdir (analitika deaktiv edildi).';
+          consentStatusText.style.color = isGranted ? 'var(--accent-lime)' : 'var(--accent-cyan)';
+        }
+      } catch (e) {}
 
       if (btnGrant) btnGrant.addEventListener('click', function () { updateConsentState('granted'); });
       if (btnDeny) btnDeny.addEventListener('click', function () { updateConsentState('denied'); });
@@ -2765,6 +3233,7 @@
     if (!modal) return;
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
     refreshModalModeBadge();
   }
 
@@ -2773,6 +3242,7 @@
     if (!modal) return;
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+    document.body.style.overflow = '';
   }
 
   function togglePasswordVisibility(id, btn) {
@@ -2929,8 +3399,18 @@
     var urlInput = document.getElementById('self-server-url');
     var target = urlInput ? urlInput.value : 'http://127.0.0.1:48481';
     window.KargoPilotConnection.setMode('self-hosted', target);
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: 'kp_self_hosted_connected',
+        kp_mode: 'self-hosted',
+        kp_custom_url: target
+      });
+    }
     closeDualHostingModal();
-    window.location.reload();
+    var isStaticGithub = window.location.hostname.includes('github.io');
+    if (!isStaticGithub) {
+      window.location.reload();
+    }
   }
 
   async function handleCloudAuthSubmit(e) {
@@ -2955,18 +3435,25 @@
     }
 
     try {
-      var res = await fetch('/api/v1/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          full_name: name,
-          phone: phone
-        })
-      });
+      var isStaticGithub = window.location.hostname.includes('github.io');
+      var res = null;
 
-      if (!res.ok) {
+      if (!isStaticGithub) {
+        var baseUrl = (window.KargoPilotConnection && window.KargoPilotConnection.getBaseUrl()) || '';
+        var registerEndpoint = (baseUrl ? baseUrl.replace(/\/+$/, '') : '') + '/api/v1/auth/register';
+        res = await fetch(registerEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+            full_name: name,
+            phone: phone
+          })
+        });
+      }
+
+      if (res && !res.ok) {
         var errData = await res.json().catch(function () { return {}; });
         var msg = errData.detail || 'Qeydiyyat zamanı xəta baş verdi. Zəhmət olmasa məlumatları yoxlayın.';
         if (alertBox) {
@@ -2980,13 +3467,26 @@
       }
 
       window.KargoPilotConnection.setMode('cloud', null, consent);
+
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: 'kp_cloud_registration',
+          kp_mode: 'cloud_managed',
+          kp_has_consent: consent
+        });
+      }
+
       if (alertBox) {
         alertBox.className = 'p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-200 text-xs font-bold';
-        alertBox.textContent = 'Hesab uğurla yaradıldı! İdarəetmə panelinə yönləndirilirsiniz...';
+        alertBox.textContent = isStaticGithub
+          ? 'Bulud rejimi uğurla aktivləşdirildi! (GitHub Pages nümayiş mühiti).'
+          : 'Hesab uğurla yaradıldı! İdarəetmə panelinə yönləndirilirsiniz...';
       }
       setTimeout(function () {
         closeDualHostingModal();
-        window.location.reload();
+        if (!isStaticGithub) {
+          window.location.href = '/dashboard';
+        }
       }, 1000);
     } catch (err) {
       if (alertBox) {
@@ -3031,6 +3531,36 @@
       }, 2500);
     }
   }
+
+  // Universal Modal Listeners (Backdrop click, Escape key, and query routing)
+  document.addEventListener('DOMContentLoaded', function () {
+    var modal = document.getElementById('kp-dual-hosting-modal');
+    if (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+          closeDualHostingModal();
+        }
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeDualHostingModal();
+      }
+    });
+
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var flow = params.get('flow');
+      if (flow === 'login' || flow === 'register' || flow === 'cloud') {
+        openDualHostingModal();
+        showCloudFlow();
+      } else if (flow === 'self-hosted' || flow === 'sovereign') {
+        openDualHostingModal();
+        showSelfHostedFlow();
+      }
+    } catch (e) {}
+  });
 </script>
 
 </body>
