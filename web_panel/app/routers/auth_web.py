@@ -71,6 +71,22 @@ async def register_page(request: Request, plan: Optional[str] = "cloud"):
     )
 
 
+@router.get("/self-hosted", response_class=HTMLResponse)
+@router.get("/onboarding", response_class=HTMLResponse)
+async def self_hosted_page(request: Request):
+    """Renders the Sovereign / Self-Hosted onboarding and connection wizard."""
+    current_user = get_authenticated_user_from_cookie(request)
+    return templates.TemplateResponse(
+        request=request,
+        name="self_hosted.html",
+        context={
+            "request": request,
+            "user": current_user,
+            "page_title": "Öz Serverində İşlət (Sovereign Edition) — KargoPilot",
+        },
+    )
+
+
 @router.get("/user/dashboard", response_class=HTMLResponse)
 @router.get("/my-dashboard", response_class=HTMLResponse)
 async def user_dashboard_page(request: Request):

@@ -56,6 +56,12 @@
           <span>Aktiv Otopilot</span>
         </span>
 
+        <!-- Active Server Mode Badge (Data Sovereignty) -->
+        <button type="button" onclick="openSovereigntyModal()" id="active-server-badge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 hover:border-cyan-400 transition cursor-pointer" title="Server və Məlumat İdarəetməsi">
+          <span id="server-badge-dot" class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span id="server-badge-text">☁️ Bulud Serveri</span>
+        </button>
+
         <!-- Logout Button -->
         <a href="/logout" class="min-h-[40px] px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold border border-slate-700 transition flex items-center gap-1.5">
           <span>Çıxış</span>
@@ -93,7 +99,10 @@
           <span>Yeni Sifariş Əlavə Et</span>
         </button>
         <button type="button" onclick="openProfileModal()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition flex items-center gap-2 cursor-pointer">
-          <span>⚙️ Profil & Tənzimləmələr</span>
+          <span>⚙️ Profil</span>
+        </button>
+        <button type="button" onclick="openSovereigntyModal()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold border border-emerald-500/30 transition flex items-center gap-2 cursor-pointer">
+          <span>🛡️ Məlumat Müstəqilliyi</span>
         </button>
         <button type="button" onclick="openLoydAssistant()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition flex items-center gap-2 cursor-pointer">
           <img src="/assets/loyd-avatar-128.png" alt="Loyd AI" class="w-5 h-5 rounded-full object-cover">
@@ -446,6 +455,119 @@
     </div>
   </div>
 
+  <!-- ========================================================================= -->
+  <!-- MODAL: Server və Məlumat Müstəqilliyi (Data Sovereignty Mərkəzi)           -->
+  <!-- ========================================================================= -->
+  <div id="sovereignty-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="sov-title">
+    <div class="bg-slate-900 border border-white/10 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative my-6">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🛡️</span>
+          <div>
+            <h3 id="sov-title" class="text-base font-extrabold text-white flex items-center gap-2">
+              <span>Məlumat Müstəqilliyi & Server İdarəetməsi</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Dual-Hosting</span>
+            </h3>
+            <p class="text-xs text-slate-400">100% məlumat suverenliyi: İxrac edin, idxal edin və ya öz serverinizə bağlayın.</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeSovereigntyModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <div class="mt-5 space-y-6">
+
+        <!-- 1. EXPORT SECTION -->
+        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                <span>📥 1. Məlumatlarımı Endir (JSON Portability)</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+                Bütün profil məlumatlarınızı, bağlama tarixçənizi və DGK kvotanızı vahid KargoPilot JSON faylı olaraq endirin.
+              </p>
+            </div>
+            <button type="button" onclick="downloadExportJson()" id="btn-export-json" class="min-h-[38px] px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold transition shrink-0 flex items-center gap-1.5 shadow">
+              <span>İxrac Et (JSON)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. IMPORT SECTION -->
+        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+          <div>
+            <div class="text-xs font-bold text-white flex items-center gap-1.5">
+              <span>📤 2. Məlumatları İdxal Et (JSON Import)</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+              Əvvəlcədən və ya başqa KargoPilot serverindən endirilmiş JSON faylını yükləyin. Dublikatlar təkrar əlavə olunmur.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row items-center gap-2">
+            <input type="file" id="import-json-file" accept=".json" class="block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-300 hover:file:bg-slate-700 cursor-pointer">
+            <button type="button" onclick="uploadImportJson()" id="btn-import-json" class="w-full sm:w-auto min-h-[38px] px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold transition shrink-0">
+              Yüklə & İdxal Et
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. SERVER NODE VERIFIER & SWITCH SECTION -->
+        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+          <div>
+            <div class="text-xs font-bold text-white flex items-center gap-1.5">
+              <span>🖥️ 3. Şəxsi Server Bağlantısı (Sovereign Node)</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+              Öz serverinizdə (və ya lokal kompüterinizdə) quraşdırılmış KargoPilot düyününün ünvanını yoxlayın və paneli ona bağlayın.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="text" id="custom-node-url" value="http://127.0.0.1:48481" placeholder="http://127.0.0.1:48481" class="flex-1 min-h-[38px] px-3.5 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-emerald-500">
+            <button type="button" onclick="testCustomNode()" id="btn-test-custom-node" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition flex items-center justify-center gap-1.5 shrink-0">
+              <span id="custom-node-spinner" class="hidden w-3 h-3 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></span>
+              <span>Yoxla</span>
+            </button>
+            <button type="button" onclick="applyCustomNode()" id="btn-apply-custom-node" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40 text-xs font-bold transition shrink-0">
+              Bu Serverə Keç
+            </button>
+          </div>
+
+          <div id="custom-node-feedback" class="hidden p-3 rounded-xl border text-[11px] leading-relaxed"></div>
+        </div>
+
+        <!-- 4. RIGHT TO BE FORGOTTEN / WIPE SECTION -->
+        <div class="p-4 rounded-2xl bg-rose-950/20 border border-rose-500/30 space-y-3">
+          <div>
+            <div class="text-xs font-bold text-rose-300 flex items-center gap-1.5">
+              <span>⚠️ 4. Buluddakı Məlumatlarımı Sil (Right to be Forgotten)</span>
+            </div>
+            <p class="text-[11px] text-slate-300 mt-0.5 leading-relaxed">
+              Əgər platformanı yalnız öz serverinizdə işlətmək qərarına gəlsəniz, bu düymə vasitəsilə bulud serverində saxlanılan bütün şəxsi bağlamalarınızı və gömrük qeydlərinizi həmişəlik təmizləyə bilərsiniz.
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between gap-3 pt-1">
+            <span class="text-[11px] text-slate-400">İstifadəçi hesabı aktiv qalır, bağlamalar sıfırlanır.</span>
+            <button type="button" onclick="confirmWipeData()" id="btn-wipe-data" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/40 text-xs font-bold transition shrink-0">
+              Bulud Məlumatlarımı Təmizlə
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mt-6 pt-3 border-t border-slate-800 flex justify-end">
+        <button type="button" onclick="closeSovereigntyModal()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
+          Bağla
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Client-side Logic -->
   <script>
     let allParcels = [];
@@ -770,11 +892,175 @@
       }, 400);
     }
 
+    function openSovereigntyModal() {
+      document.getElementById('sovereignty-modal').classList.remove('hidden');
+      document.getElementById('sovereignty-modal').classList.add('flex');
+    }
+
+    function closeSovereigntyModal() {
+      document.getElementById('sovereignty-modal').classList.add('hidden');
+      document.getElementById('sovereignty-modal').classList.remove('flex');
+    }
+
+    async function downloadExportJson() {
+      const btn = document.getElementById('btn-export-json');
+      btn.disabled = true;
+      btn.innerText = 'Hazırlanır...';
+      try {
+        const res = await fetch('/api/v1/user/export');
+        if (!res.ok) throw new Error('İxrac sorğusu uğursuz oldu.');
+        const data = await res.json();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const fin = (data.user_profile && data.user_profile.fin) ? data.user_profile.fin : 'KP';
+        const dateStr = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `kargopilot_export_${fin}_${dateStr}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Məlumatlarınız tam şəkildə JSON faylına ixrac edildi! ✓');
+      } catch (err) {
+        alert('İxrac xətası: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'İxrac Et (JSON)';
+      }
+    }
+
+    async function uploadImportJson() {
+      const fileInput = document.getElementById('import-json-file');
+      const btn = document.getElementById('btn-import-json');
+      if (!fileInput.files || fileInput.files.length === 0) {
+        showToast('Zəhmət olmasa KargoPilot JSON faylını seçin.', false);
+        return;
+      }
+      const file = fileInput.files[0];
+      btn.disabled = true;
+      btn.innerText = 'İdxal edilir...';
+      try {
+        const text = await file.text();
+        const payload = JSON.parse(text);
+        const res = await fetch('/api/v1/user/import', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (res.ok) {
+          showToast(result.message || 'Məlumatlar uğurla idxal edildi! ✓');
+          fileInput.value = '';
+          closeSovereigntyModal();
+          await loadParcels();
+          await loadQuota();
+        } else {
+          alert('İdxal xətası: ' + (result.detail || 'Fayl oxunarkən xəta baş verdi.'));
+        }
+      } catch (err) {
+        alert('Fayl formatı düzgün deyil və ya serverlə əlaqə kəsildi: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Yüklə & İdxal Et';
+      }
+    }
+
+    async function testCustomNode() {
+      const urlInput = document.getElementById('custom-node-url');
+      const spinner = document.getElementById('custom-node-spinner');
+      const btn = document.getElementById('btn-test-custom-node');
+      const feedback = document.getElementById('custom-node-feedback');
+
+      const targetUrl = urlInput.value.trim();
+      if (!targetUrl) {
+        showToast('Zəhmət olmasa server ünvanını daxil edin', false);
+        return;
+      }
+      spinner.classList.remove('hidden');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/v1/system/verify-node', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target_url: targetUrl })
+        });
+        const data = await res.json();
+        feedback.classList.remove('hidden');
+        if (data.healthy) {
+          feedback.className = 'p-3 rounded-xl border border-emerald-500/30 bg-emerald-950/20 text-emerald-300 text-[11px] leading-relaxed';
+          feedback.innerHTML = `✓ <b>Aktiv:</b> ${data.service} (${data.edition || 'Sovereign'} v${data.version || '4.5.0'}) · Gecikmə: <b>${data.latency_ms} ms</b>`;
+          showToast('Sovereign düyünü aktivdir! ✓');
+        } else {
+          feedback.className = 'p-3 rounded-xl border border-rose-500/30 bg-rose-950/20 text-rose-300 text-[11px] leading-relaxed';
+          feedback.innerHTML = `⚠️ <b>Əlaqə xətası:</b> ${data.message || 'Server cavab vermədi.'}`;
+        }
+      } catch (err) {
+        feedback.classList.remove('hidden');
+        feedback.className = 'p-3 rounded-xl border border-rose-500/30 bg-rose-950/20 text-rose-300 text-[11px] leading-relaxed';
+        feedback.innerText = 'Yoxlama zamanı şəbəkə xətası baş verdi.';
+      } finally {
+        spinner.classList.add('hidden');
+        btn.disabled = false;
+      }
+    }
+
+    function applyCustomNode() {
+      const targetUrl = document.getElementById('custom-node-url').value.trim();
+      if (!targetUrl) return;
+      localStorage.setItem('kargopilot_node_url', targetUrl);
+      localStorage.setItem('kargopilot_node_mode', 'sovereign');
+      updateServerBadge();
+      showToast(`Sovereign Server seçildi (${targetUrl})! ✓`);
+      closeSovereigntyModal();
+    }
+
+    async function confirmWipeData() {
+      const confirmed = confirm(
+        'DİQQƏT: Buluddakı bütün şəxsi bağlamalarınız və gömrük qeydləriniz həmişəlik silinəcəkdir!\n\n' +
+        'Bu əməliyyat geri qaytarılmır. Əgər məlumatlarınızı ixrac etməmisinizsə, əvvəlcə "İxrac Et" düyməsini sıxın.\n\n' +
+        'Silməyə davam edilsin?'
+      );
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch('/api/v1/user/account-data?confirm_wipe=true', { method: 'DELETE' });
+        const result = await res.json();
+        if (res.ok) {
+          showToast('Bütün şəxsi bağlama məlumatlarınız bulud serverindən silindi.');
+          closeSovereigntyModal();
+          await loadParcels();
+          await loadQuota();
+        } else {
+          alert('Xəta: ' + (result.detail || 'Məlumatlar silinə bilmədi.'));
+        }
+      } catch (err) {
+        alert('Şəbəkə xətası.');
+      }
+    }
+
+    function updateServerBadge() {
+      const mode = localStorage.getItem('kargopilot_node_mode');
+      const url = localStorage.getItem('kargopilot_node_url');
+      const badgeText = document.getElementById('server-badge-text');
+      const badgeDot = document.getElementById('server-badge-dot');
+      if (mode === 'sovereign' && url) {
+        const cleanHost = url.replace(/^https?:\/\//, '').split('/')[0];
+        badgeText.innerText = `🖥️ ${cleanHost}`;
+        badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
+      } else {
+        badgeText.innerText = '☁️ Bulud Serveri';
+        badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse';
+      }
+    }
+
     // Auto-init on page load
     document.addEventListener('DOMContentLoaded', () => {
       loadProfile();
       loadQuota();
       loadParcels();
+      updateServerBadge();
     });
   </script>
 </body>

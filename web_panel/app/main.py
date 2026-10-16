@@ -48,6 +48,8 @@ HTML_ROUTE_ALIASES = {
     "/showcase.html": "/showcase",
     "/login.html": "/login",
     "/register.html": "/register",
+    "/self-hosted.html": "/self-hosted",
+    "/onboarding.html": "/self-hosted",
 }
 
 
@@ -191,14 +193,16 @@ def create_app() -> FastAPI:
     try:
         from app.routers import user_api as user_api_router
         app.include_router(user_api_router.router)
-        logger.info("Mounted /api/v1/user personal logistics and quota router")
+        app.include_router(user_api_router.system_router)
+        logger.info("Mounted /api/v1/user and /api/v1/system node verification & sovereignty routers")
     except Exception:
         try:
             from routers import user_api as user_api_router
             app.include_router(user_api_router.router)
-            logger.info("Mounted /api/v1/user personal logistics and quota router via fallback")
+            app.include_router(user_api_router.system_router)
+            logger.info("Mounted /api/v1/user and /api/v1/system node verification & sovereignty routers via fallback")
         except Exception as exc:
-            logger.warning("Could not mount user_api router: %s", exc)
+            logger.warning("Could not mount user_api/system router: %s", exc)
 
     @app.get("/showcase", response_class=HTMLResponse)
     async def showcase_page():
