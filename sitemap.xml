@@ -9,15 +9,6 @@
     <image:image>
       <image:loc>https://vaskamc.github.io/kargopilot/assets/og-image.jpg</image:loc>
       <image:title>KargoPilot v4.0 — Sərhədsiz E-Ticarət, Gömrük və Kargo Kopilotu</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://vaskamc.github.io/kargopilot/assets/logo.jpg</image:loc>
-      <image:title>KargoPilot Korporativ Loqo (Infinity Parcel &amp; Jet)</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://vaskamc.github.io/kargopilot/assets/ai-engine.jpg</image:loc>
-      <image:title>Loyd AI Quantum 'K' Node Mühərriki</image:title>
-    </image:image>
   </url>
   <url>
     <loc>https://vaskamc.github.io/kargopilot/llms.txt</loc>

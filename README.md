@@ -1,6 +1,4 @@
 <div align="center">
-  <img src="assets/logo.jpg" alt="KargoPilot Official Brand Emblem" width="480" style="border-radius: 20px; box-shadow: 0 16px 40px rgba(0,0,0,0.8);" />
-  <br/><br/>
   <h1>⚡ KargoPilot v4.5 Enterprise</h1>
   <p><b>Dual-Architecture AI Copilot for Cross-Border Logistics, Multi-Tenant Auth & DGK SmartCustoms Automation</b></p>
   <p><i>Available in two editions: <b>Variant 1 (Sovereign Self-Hosted)</b> for 100% on-prem data privacy & <b>Variant 2 (Managed Cloud 7/24)</b> for zero-touch enterprise autopilot.</i></p>
