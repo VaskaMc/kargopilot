@@ -30,7 +30,7 @@
             </div>
             <div>
               <h3 class="text-sm font-bold text-white">{{ c.name }}</h3>
-              <span class="text-[10px] text-slate-500 font-mono">{{ c.code }}</span>
+              <span class="text-[10px] text-slate-400 font-mono">{{ c.code }}</span>
             </div>
           </div>
           <span class="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -48,8 +48,8 @@
           <div class="flex justify-between items-center text-slate-400">
             <span>Platforma Marjası (%):</span>
             <div class="flex items-center gap-1">
-              <input type="number" step="0.5" value="{{ c.markup_pct }}" class="w-16 px-2 py-1 bg-black/50 border border-white/10 rounded-lg text-cyan-300 font-mono text-right focus:outline-none focus:border-cyan-500 text-xs">
-              <span class="text-slate-500 font-mono">%</span>
+              <input type="number" step="0.5" value="{{ c.markup_pct }}" aria-label="Platforma marjası faizi" class="w-16 px-2 py-1 bg-black/50 border border-white/10 rounded-lg text-cyan-300 font-mono text-right focus:outline-none focus:border-cyan-500 text-xs">
+              <span class="text-slate-400 font-mono">%</span>
             </div>
           </div>
 
@@ -67,7 +67,7 @@
 
       <div class="pt-3 border-t border-white/5 flex items-center justify-between">
         <a href="/carriers#{{ c.code|lower }}" class="text-[11px] font-mono text-cyan-400 hover:underline">Filialları Göstər →</a>
-        <button type="button" aria-label="Daşıyıcı sazlamalarını aç" class="p-1 text-slate-400 hover:text-white transition">⚙️</button>
+        <button type="button" aria-label="Daşıyıcı sazlamaları" class="p-1 text-slate-400 hover:text-white transition">⚙️</button>
       </div>
     </div>
     {% endfor %}

@@ -1511,10 +1511,10 @@
                 <span>Anbar və Mənşə Ölkəsi</span>
                 <span id="origin-currency-label" class="num">TRY / USD</span>
               </div>
-              <div class="toggle-pills" role="group" aria-label="Mənşə ölkəsi">
-                <button type="button" class="toggle-btn active" data-origin="TR">Türkiyə (TR)</button>
-                <button type="button" class="toggle-btn" data-origin="CN">Çin (CN)</button>
-                <button type="button" class="toggle-btn" data-origin="US">ABŞ (US)</button>
+              <div class="toggle-pills" role="tablist" aria-label="Mənşə ölkəsi">
+                <button type="button" role="tab" aria-selected="true" class="toggle-btn active" data-origin="TR">Türkiyə (TR)</button>
+                <button type="button" role="tab" aria-selected="false" class="toggle-btn" data-origin="CN">Çin (CN)</button>
+                <button type="button" role="tab" aria-selected="false" class="toggle-btn" data-origin="US">ABŞ (US)</button>
               </div>
             </div>
 
@@ -1523,7 +1523,7 @@
                 <span>Fiziki Çəki</span>
                 <span id="weight-display" class="num" style="color:var(--accent-lime);">0.75 kq</span>
               </label>
-              <input id="weight-input" type="range" class="range-slider" min="0.10" max="5.00" step="0.05" value="0.75">
+              <input id="weight-input" type="range" class="range-slider" min="0.10" max="5.00" step="0.05" value="0.75" aria-label="Fiziki çəki slayderi" aria-valuemin="0.10" aria-valuemax="5.00" aria-valuenow="0.75">
             </div>
 
             <div class="field-group">
@@ -1531,7 +1531,7 @@
                 <span>Məhsulun İnvoys Dəyəri (USD)</span>
                 <span class="num">Cari balans: 142.50 USD</span>
               </label>
-              <input id="price-input" type="number" class="input-control num" min="5" max="1500" step="5" value="85">
+              <input id="price-input" type="number" class="input-control num" min="5" max="1500" step="5" value="85" aria-label="Məhsulun invoys dəyəri USD">
             </div>
 
             <div class="field-group">
@@ -2127,6 +2127,8 @@
         const category = categorySelect.value;
 
         weightDisplay.textContent = weight.toFixed(2) + ' kq';
+        weightInput.setAttribute('aria-valuenow', weight.toFixed(2));
+        priceInput.setAttribute('aria-valuenow', itemUsd.toFixed(2));
         originCurrencyLabel.textContent = activeOrigin === 'TR' ? 'İstanbul Tuzla Anbarı' : activeOrigin === 'CN' ? 'Quançjou Anbarı' : 'Delaver US Anbarı';
 
         const list = CARRIERS[activeOrigin].map(function (c) {
@@ -2196,8 +2198,12 @@
 
       document.querySelectorAll('[data-origin]').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          document.querySelectorAll('[data-origin]').forEach(function (b) { b.classList.remove('active'); });
+          document.querySelectorAll('[data-origin]').forEach(function (b) {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
           btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
           activeOrigin = btn.getAttribute('data-origin');
           renderCalculator(true);
         });
@@ -2436,13 +2442,13 @@
 <script src="assets/kargopilot-connection.js"></script>
 
 <!-- Dual-Hosting (Managed Cloud vs Self-Hosted) Universal Modal & Manager -->
-<div id="kp-dual-hosting-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 sm:p-6 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="kp-dh-title">
-  <div class="relative w-full max-w-4xl bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden my-8">
+<div id="kp-dual-hosting-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-6 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="kp-dh-title">
+  <div class="relative w-full max-w-4xl bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden my-2 sm:my-8 max-h-[94vh] flex flex-col">
     
     <!-- Top Modal Header -->
-    <div class="flex items-center justify-between px-6 py-5 border-b border-slate-800 bg-slate-950/60">
+    <div class="flex items-center justify-between px-5 sm:px-6 py-4 sm:py-5 border-b border-slate-800 bg-slate-950/60 shrink-0">
       <div class="flex items-center gap-3">
-        <img src="assets/logo_concept_6_infinity_loop.jpg" alt="KargoPilot Loqo" class="w-9 h-9 rounded-xl object-cover border border-white/10 shrink-0">
+        <img src="assets/logo_concept_6_infinity_loop.jpg" alt="KargoPilot Loqo" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover border border-white/10 shrink-0">
         <div>
           <h2 id="kp-dh-title" class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
             <span>İstifadə Modelini Seçin</span>
@@ -2451,274 +2457,295 @@
           <p class="text-xs text-slate-400">Bulud Xidməti (Managed Cloud) və ya Öz Serverində Müstəqil (Self-Hosted)</p>
         </div>
       </div>
-      <button type="button" onclick="closeDualHostingModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition" aria-label="Bağla">
-        ✕
+      <button type="button" onclick="closeDualHostingModal()" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition" aria-label="Bağla">
+        <span class="text-base font-bold">✕</span>
       </button>
     </div>
 
-    <!-- Interactive Decision Helper ("Hansını seçməliyəm?") -->
-    <div class="p-6 bg-slate-950/30 border-b border-slate-800/80">
-      <div class="flex items-center justify-between cursor-pointer" onclick="toggleDecisionHelper()">
-        <div class="flex items-center gap-2.5">
-          <span class="text-base">💡</span>
-          <span class="text-xs sm:text-sm font-bold text-slate-200">Hansı seçim mənə daha uyğundur? (2 suallıq köməkçi)</span>
-        </div>
-        <span id="decision-helper-chevron" class="text-xs text-slate-400 font-bold transition-transform">▼</span>
-      </div>
+    <!-- Scrollable Modal Body -->
+    <div class="overflow-y-auto flex-1 divide-y divide-slate-800/80">
 
-      <div id="decision-helper-body" class="hidden mt-4 pt-4 border-t border-slate-800/60 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
-          <div class="text-xs font-bold text-white mb-2">1. Texniki komandanız və ya şəxsi serveriniz var?</div>
-          <div class="flex gap-2">
-            <button type="button" onclick="answerHelper('tech', false)" id="helper-btn-tech-no" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Xeyr (Sadə Başlanğıc)</button>
-            <button type="button" onclick="answerHelper('tech', true)" id="helper-btn-tech-yes" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Bəli (Serverimiz var)</button>
+      <!-- Interactive Decision Helper ("Hansını seçməliyəm?") -->
+      <div class="p-5 sm:p-6 bg-slate-950/30">
+        <div class="min-h-[44px] flex items-center justify-between cursor-pointer select-none py-1" onclick="toggleDecisionHelper()">
+          <div class="flex items-center gap-2.5">
+            <span class="text-base">💡</span>
+            <span class="text-xs sm:text-sm font-bold text-slate-200">Hansı seçim mənə daha uyğundur? (2 suallıq köməkçi)</span>
           </div>
+          <span id="decision-helper-chevron" class="text-xs text-slate-400 font-bold transition-transform p-2 min-w-[36px] min-h-[36px] flex items-center justify-center">▼</span>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
-          <div class="text-xs font-bold text-white mb-2">2. FİN və qəbzlər harada saxlanılsın?</div>
-          <div class="flex gap-2">
-            <button type="button" onclick="answerHelper('storage', 'cloud')" id="helper-btn-store-cloud" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">24/7 Təhlükəsiz Buludda</button>
-            <button type="button" onclick="answerHelper('storage', 'self')" id="helper-btn-store-self" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Yalnız Öz Serverimizdə</button>
-          </div>
-        </div>
-
-        <div id="helper-recommendation" class="md:col-span-2 p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-200 flex items-center justify-between">
-          <span>✨ <b>Tövsiyə:</b> Sizin üçün <b>Bulud Xidməti (Managed Cloud)</b> ən rahat seçimdir. Heç bir quraşdırma tələb olunmur.</span>
-          <span class="text-[11px] underline font-bold cursor-pointer" onclick="selectCardA()">Kart A-nı Seç →</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Two-Card Mode Selector Grid -->
-    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-      
-      <!-- CARD A: MANAGED CLOUD -->
-      <div id="mode-card-cloud" class="p-6 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-cyan-500/40 relative flex flex-col justify-between transition-all hover:border-cyan-400">
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-              ☁️ Tövsiyə Olunan · Ən Sadə
-            </span>
-            <span class="text-xs font-mono text-slate-400">30 saniyə</span>
-          </div>
-
-          <h3 class="text-lg font-bold text-white tracking-tight">Bulud Xidməti (Bizim Serverdə)</h3>
-          <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
-            Heç bir texniki quraşdırma yoxdur. 30 saniyədə hesab yaradın, server infrastrukturunu və 7/24 otopilotu biz idarə edək.
-          </p>
-
-          <div class="mt-4 space-y-2.5 text-xs text-slate-200">
-            <div class="flex items-start gap-2">
-              <span class="text-emerald-400 font-bold">✓</span>
-              <span><b>Quraşdırma tələb olunmur</b> — qeydiyyatdan dərhal sonra işə başlayır.</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <span class="text-emerald-400 font-bold">✓</span>
-              <span><b>Avtomatik yeniləmələr və ehtiyat nüsxə</b> — daima ən son versiya və arxivləmə.</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <span class="text-emerald-400 font-bold">✓</span>
-              <span><b>İstənilən cihazdan giriş</b> — mobil, planşet və kompüterdən fasiləsiz sinxronizasiya.</span>
-            </div>
-            <div class="flex items-start gap-2 text-slate-400">
-              <span class="text-slate-500">🎯</span>
-              <span><b>Kimlər üçündür:</b> Tez başlamaq istəyən fərdlər, ailələr və komandalar.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-6 pt-4 border-t border-slate-800">
-          <button type="button" onclick="showCloudFlow()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/20 transition flex items-center justify-center gap-2">
-            <span>Hesab Yarat və Buludda Başla</span>
-            <span>→</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- CARD B: SELF-HOSTED -->
-      <div id="mode-card-self" class="p-6 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-slate-800 hover:border-emerald-500/40 relative flex flex-col justify-between transition-all">
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              🖥️ Açıq Qaynaq · Tam Müstəqil
-            </span>
-            <span class="text-xs font-mono text-slate-400">Sovereign Edition</span>
-          </div>
-
-          <h3 class="text-lg font-bold text-white tracking-tight">Öz Serverində İşlət (Self-Hosted)</h3>
-          <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
-            Tətbiqi öz serverinizdə (və ya lokal Docker mühitində) qurun və ya mövcud server ünvanınıza qoşulun. Bütün məlumatlar yalnız sizdə qalır.
-          </p>
-
-          <div class="mt-4 space-y-2.5 text-xs text-slate-200">
-            <div class="flex items-start gap-2">
-              <span class="text-emerald-400 font-bold">✓</span>
-              <span><b>100% məlumat suverenliyi</b> — şirkətimizə sıfır telemetriya və sıfır FİN ötürülməsi.</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <span class="text-emerald-400 font-bold">✓</span>
-              <span><b>Açıq qaynaq koduna tam nəzarət</b> — yerli SQLite WAL və şəxsi şifrələmə açarı.</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <span class="text-emerald-400 font-bold">✓</span>
-              <span><b>Korporativ daxili təhlükəsizlik</b> — on-premise və xüsusi şəbəkə tələblərinə uyğun.</span>
-            </div>
-            <div class="flex items-start gap-2 text-slate-400">
-              <span class="text-slate-500">🎯</span>
-              <span><b>Kimlər üçündür:</b> Tərtibatçılar, dropshipperlər və məlumatını kənara verməyən şirkətlər.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-6 pt-4 border-t border-slate-800">
-          <button type="button" onclick="showSelfHostedFlow()" class="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs border border-emerald-500/30 transition flex items-center justify-center gap-2">
-            <span>Öz Serverini Qoş və ya Qur</span>
-            <span>→</span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- SUB-FLOW A: MANAGED CLOUD ONBOARDING -->
-    <div id="flow-cloud-container" class="hidden p-6 border-t border-slate-800 bg-slate-950/70">
-      <div class="max-w-xl mx-auto space-y-4">
-        <div class="flex items-center justify-between">
-          <h4 class="text-sm font-bold text-white flex items-center gap-2">
-            <span>☁️ Bulud Xidməti Qeydiyyatı və Məlumat İcazəsi</span>
-          </h4>
-          <button type="button" onclick="resetToModeCards()" class="text-xs text-slate-400 hover:text-white">← Geri qayıt</button>
-        </div>
-
-        <form id="kp-cloud-auth-form" onsubmit="handleCloudAuthSubmit(event)" class="space-y-3.5">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">Ad və Soyad</label>
-              <input type="text" id="cloud-name" required placeholder="Vasif Məcidli" class="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">Telefon (WhatsApp)</label>
-              <input type="text" id="cloud-phone" required placeholder="+994501234567" class="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">E-poçt ünvanı</label>
-            <input type="email" id="cloud-email" required placeholder="istifadeci@kargopilot.az" class="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Təhlükəsiz Şifrə</label>
-            <input type="password" id="cloud-password" required minlength="8" placeholder="Ən azı 8 simvol" class="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
-          </div>
-
-          <!-- Human-Readable Transparent Data Consent Box -->
-          <div class="p-3.5 rounded-xl bg-slate-900 border border-cyan-500/30 flex items-start gap-3">
-            <input type="checkbox" id="cloud-consent" required checked class="mt-0.5 rounded bg-slate-800 border-slate-600 text-cyan-500 focus:ring-0">
-            <label for="cloud-consent" class="text-xs text-slate-300 leading-relaxed cursor-pointer">
-              <b>Şəffaf Məlumat Razılığı:</b> Məlumatlarımın bu xidmətin bulud serverlərində təhlükəsiz şəkildə saxlanılmasına, AES-256 ilə şifrələnməsinə və daşıyıcı/SmartCustoms əməliyyatları üçün emal edilməsinə icazə verirəm. İstədiyim vaxt məlumatlarımı tam olaraq endirə (export) və ya silə bilərəm.
-            </label>
-          </div>
-
-          <div id="cloud-auth-alert" class="hidden p-3 rounded-lg text-xs"></div>
-
-          <button type="submit" id="cloud-submit-btn" class="w-full py-2.5 px-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs shadow-lg transition">
-            Bulud Hesabı Yarat və Paneli Aç →
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- SUB-FLOW B: SELF-HOSTED ONBOARDING (2 TABS) -->
-    <div id="flow-self-container" class="hidden p-6 border-t border-slate-800 bg-slate-950/70">
-      <div class="max-w-xl mx-auto space-y-4">
-        <div class="flex items-center justify-between">
-          <div class="flex gap-2">
-            <button type="button" onclick="switchSelfTab('connect')" id="self-tab-btn-connect" class="py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              1. Mövcud Serverə Qoşul
-            </button>
-            <button type="button" onclick="switchSelfTab('guide')" id="self-tab-btn-guide" class="py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">
-              2. Yeni Server Qur (Bələdçi)
-            </button>
-          </div>
-          <button type="button" onclick="resetToModeCards()" class="text-xs text-slate-400 hover:text-white">← Geri qayıt</button>
-        </div>
-
-        <!-- TAB 1: CONNECT TO EXISTING SERVER -->
-        <div id="self-tab-connect" class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Serverinizin Ünvanı (URL və ya IP:Port)</label>
+        <div id="decision-helper-body" class="hidden mt-4 pt-4 border-t border-slate-800/60 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <div class="text-xs font-bold text-white mb-2.5">1. Texniki komandanız və ya şəxsi serveriniz var?</div>
             <div class="flex gap-2">
-              <input type="text" id="self-server-url" value="http://127.0.0.1:48481" placeholder="http://127.0.0.1:48481 və ya https://kargo.sirket.az" class="flex-1 px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white font-mono placeholder-slate-500 focus:outline-none focus:border-emerald-500">
-              <button type="button" onclick="runConnectionTest()" id="self-test-btn" class="py-2 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition flex items-center gap-1.5 shrink-0">
-                <span id="test-spinner" class="hidden animate-spin text-xs">⟳</span>
-                <span>Bağlantını Yoxla</span>
+              <button type="button" onclick="answerHelper('tech', false)" id="helper-btn-tech-no" class="flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center justify-center text-center transition">Xeyr (Sadə Başlanğıc)</button>
+              <button type="button" onclick="answerHelper('tech', true)" id="helper-btn-tech-yes" class="flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center justify-center text-center transition">Bəli (Serverimiz var)</button>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <div class="text-xs font-bold text-white mb-2.5">2. FİN və qəbzlər harada saxlanılsın?</div>
+            <div class="flex gap-2">
+              <button type="button" onclick="answerHelper('storage', 'cloud')" id="helper-btn-store-cloud" class="flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center justify-center text-center transition">24/7 Təhlükəsiz Buludda</button>
+              <button type="button" onclick="answerHelper('storage', 'self')" id="helper-btn-store-self" class="flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center justify-center text-center transition">Yalnız Öz Serverimizdə</button>
+            </div>
+          </div>
+
+          <div id="helper-recommendation" class="md:col-span-2 p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-200 flex flex-wrap items-center justify-between gap-2">
+            <span>✨ <b>Tövsiyə:</b> Sizin üçün <b>Bulud Xidməti (Managed Cloud)</b> ən rahat seçimdir. Heç bir quraşdırma tələb olunmur.</span>
+            <span class="text-xs underline font-bold cursor-pointer text-cyan-300 hover:text-white py-1" onclick="selectCardA()">Kart A-nı Seç →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Two-Card Mode Selector Grid -->
+      <div class="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- CARD A: MANAGED CLOUD -->
+        <div id="mode-card-cloud" class="p-6 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-cyan-500/40 relative flex flex-col justify-between transition-all hover:border-cyan-400">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                ☁️ Tövsiyə Olunan · Ən Sadə
+              </span>
+              <span class="text-xs font-mono text-slate-400">30 saniyə</span>
+            </div>
+
+            <h3 class="text-lg font-bold text-white tracking-tight">Bulud Xidməti (Bizim Serverdə)</h3>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+              Heç bir texniki quraşdırma yoxdur. 30 saniyədə hesab yaradın, server infrastrukturunu və 7/24 otopilotu biz idarə edək.
+            </p>
+
+            <div class="mt-4 space-y-2.5 text-xs text-slate-200">
+              <div class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>Quraşdırma tələb olunmur</b> — qeydiyyatdan dərhal sonra işə başlayır.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>Avtomatik yeniləmələr və ehtiyat nüsxə</b> — daima ən son versiya və arxivləmə.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>İstənilən cihazdan giriş</b> — mobil, planşet və kompüterdən fasiləsiz sinxronizasiya.</span>
+              </div>
+              <div class="flex items-start gap-2 text-slate-400">
+                <span class="text-slate-300" aria-hidden="true">🎯</span>
+                <span><b>Kimlər üçündür:</b> Tez başlamaq istəyən fərdlər, ailələr və komandalar.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-800">
+            <button type="button" onclick="showCloudFlow()" class="min-h-[44px] w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/20 transition flex items-center justify-center gap-2">
+              <span>Hesab Yarat və Buludda Başla</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD B: SELF-HOSTED -->
+        <div id="mode-card-self" class="p-6 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-slate-800 hover:border-emerald-500/40 relative flex flex-col justify-between transition-all">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                🖥️ Açıq Qaynaq · Tam Müstəqil
+              </span>
+              <span class="text-xs font-mono text-slate-400">Sovereign Edition</span>
+            </div>
+
+            <h3 class="text-lg font-bold text-white tracking-tight">Öz Serverində İşlət (Self-Hosted)</h3>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+              Tətbiqi öz serverinizdə (və ya lokal Docker mühitində) qurun və ya mövcud server ünvanınıza qoşulun. Bütün məlumatlar yalnız sizdə qalır.
+            </p>
+
+            <div class="mt-4 space-y-2.5 text-xs text-slate-200">
+              <div class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>100% məlumat suverenliyi</b> — şirkətimizə sıfır telemetriya və sıfır FİN ötürülməsi.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>Açıq qaynaq koduna tam nəzarət</b> — yerli SQLite WAL və şəxsi şifrələmə açarı.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>Korporativ daxili təhlükəsizlik</b> — on-premise və xüsusi şəbəkə tələblərinə uyğun.</span>
+              </div>
+              <div class="flex items-start gap-2 text-slate-400">
+                <span class="text-slate-300" aria-hidden="true">🎯</span>
+                <span><b>Kimlər üçündür:</b> Tərtibatçılar, dropshipperlər və məlumatını kənara verməyən şirkətlər.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-800">
+            <button type="button" onclick="showSelfHostedFlow()" class="min-h-[44px] w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs border border-emerald-500/30 transition flex items-center justify-center gap-2">
+              <span>Öz Serverini Qoş və ya Qur</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SUB-FLOW A: MANAGED CLOUD ONBOARDING -->
+      <div id="flow-cloud-container" class="hidden p-5 sm:p-6 bg-slate-950/70">
+        <div class="max-w-xl mx-auto space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+              <span>☁️ Bulud Xidməti Qeydiyyatı və Məlumat İcazəsi</span>
+            </h4>
+            <button type="button" onclick="resetToModeCards()" class="min-h-[44px] px-3 py-2 text-xs text-slate-400 hover:text-white flex items-center justify-center transition">← Geri qayıt</button>
+          </div>
+
+          <form id="kp-cloud-auth-form" onsubmit="handleCloudAuthSubmit(event)" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label for="cloud-name" class="block text-xs font-semibold text-slate-300 mb-1.5">Ad və Soyad</label>
+                <input type="text" id="cloud-name" required autocomplete="name" placeholder="Vasif Məcidli" class="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-xs bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500">
+              </div>
+              <div>
+                <label for="cloud-phone" class="block text-xs font-semibold text-slate-300 mb-1.5">Telefon (WhatsApp)</label>
+                <input type="tel" id="cloud-phone" required autocomplete="tel" placeholder="+994501234567" class="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-xs bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500">
+              </div>
+            </div>
+
+            <div>
+              <label for="cloud-email" class="block text-xs font-semibold text-slate-300 mb-1.5">E-poçt ünvanı</label>
+              <input type="email" id="cloud-email" required autocomplete="email" placeholder="istifadeci@kargopilot.az" class="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-xs bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500">
+            </div>
+
+            <div>
+              <label for="cloud-password" class="block text-xs font-semibold text-slate-300 mb-1.5">Təhlükəsiz Şifrə</label>
+              <div class="relative">
+                <input type="password" id="cloud-password" required minlength="8" autocomplete="new-password" placeholder="Ən azı 8 simvol" class="w-full min-h-[44px] pl-3.5 pr-11 py-2.5 text-base sm:text-xs bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500">
+                <button type="button" onclick="togglePasswordVisibility('cloud-password', this)" aria-label="Şifrəni göstər və ya gizlət" class="absolute right-1 top-1/2 -translate-y-1/2 min-w-[40px] min-h-[40px] p-2 text-slate-400 hover:text-white flex items-center justify-center">
+                  👁️
+                </button>
+              </div>
+            </div>
+
+            <!-- Human-Readable Transparent Data Consent Box -->
+            <div class="p-4 rounded-xl bg-slate-900 border border-cyan-500/30 flex items-start gap-3">
+              <input type="checkbox" id="cloud-consent" required checked class="mt-1 w-5 h-5 rounded bg-slate-800 border-slate-600 text-cyan-500 focus:ring-0 cursor-pointer shrink-0">
+              <label for="cloud-consent" class="text-xs text-slate-300 leading-relaxed cursor-pointer select-none">
+                <b>Şəffaf Məlumat Razılığı:</b> Məlumatlarımın bu xidmətin bulud serverlərində təhlükəsiz şəkildə saxlanılmasına, AES-256 ilə şifrələnməsinə və daşıyıcı/SmartCustoms əməliyyatları üçün emal edilməsinə icazə verirəm. İstədiyim vaxt məlumatlarımı tam olaraq endirə (export) və ya silə bilərəm.
+              </label>
+            </div>
+
+            <div id="cloud-auth-alert" class="hidden p-3.5 rounded-xl text-xs" role="alert"></div>
+
+            <button type="submit" id="cloud-submit-btn" class="min-h-[44px] w-full py-2.5 px-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2">
+              <span id="cloud-submit-spinner" class="hidden">
+                <svg class="animate-spin w-4 h-4 text-slate-950" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </span>
+              <span id="cloud-submit-text">Bulud Hesabı Yarat və Paneli Aç →</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- SUB-FLOW B: SELF-HOSTED ONBOARDING (2 TABS) -->
+      <div id="flow-self-container" class="hidden p-5 sm:p-6 bg-slate-950/70">
+        <div class="max-w-xl mx-auto space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="switchSelfTab('connect')" id="self-tab-btn-connect" class="min-h-[44px] py-2.5 px-4 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 inline-flex items-center justify-center transition">
+                1. Mövcud Serverə Qoşul
+              </button>
+              <button type="button" onclick="switchSelfTab('guide')" id="self-tab-btn-guide" class="min-h-[44px] py-2.5 px-4 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 inline-flex items-center justify-center transition">
+                2. Yeni Server Qur (Bələdçi)
               </button>
             </div>
-            <p class="text-[11px] text-slate-400 mt-1">Lokal mühit üçün standart port: <code>http://127.0.0.1:48481</code></p>
+            <button type="button" onclick="resetToModeCards()" class="min-h-[44px] px-3 py-2 text-xs text-slate-400 hover:text-white flex items-center justify-center transition">← Geri qayıt</button>
           </div>
 
-          <!-- Connection Health Result Box -->
-          <div id="self-health-result" class="hidden p-3.5 rounded-xl border text-xs leading-relaxed space-y-1"></div>
+          <!-- TAB 1: CONNECT TO EXISTING SERVER -->
+          <div id="self-tab-connect" class="space-y-4">
+            <div>
+              <label for="self-server-url" class="block text-xs font-semibold text-slate-300 mb-1.5">Serverinizin Ünvanı (URL və ya IP:Port)</label>
+              <div class="flex flex-col sm:flex-row gap-2.5">
+                <input type="text" id="self-server-url" value="http://127.0.0.1:48481" placeholder="http://127.0.0.1:48481 və ya https://kargo.sirket.az" class="flex-1 min-h-[44px] px-3.5 py-2.5 text-base sm:text-xs bg-slate-900 border border-slate-700 rounded-xl text-white font-mono placeholder-slate-400 focus:outline-none focus:border-emerald-500">
+                <button type="button" onclick="runConnectionTest()" id="self-test-btn" class="min-h-[44px] py-2.5 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition flex items-center justify-center gap-2 shrink-0">
+                  <span id="test-spinner" class="hidden">
+                    <svg class="animate-spin w-4 h-4 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </span>
+                  <span>Bağlantını Yoxla</span>
+                </button>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1.5">Lokal mühit üçün standart port: <code>http://127.0.0.1:48481</code></p>
+            </div>
 
-          <button type="button" onclick="confirmSelfHostedConnection()" id="self-connect-confirm-btn" class="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-lg transition">
-            Bu Serverə Qoşul və İdarəetmə Panelinə Keç →
-          </button>
-        </div>
+            <!-- Connection Health Result Box -->
+            <div id="self-health-result" class="hidden p-4 rounded-xl border text-xs leading-relaxed space-y-1.5" role="status" aria-live="polite"></div>
 
-        <!-- TAB 2: SETUP GUIDE (1-CLICK DOCKER / SCRIPT) -->
-        <div id="self-tab-guide" class="hidden space-y-4 text-xs text-slate-300">
-          <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
-            <div class="font-bold text-white flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono">1</span>
-              <span>1-Kliklə Avtomatik Quraşdırma Əmri (Linux / macOS / VPS)</span>
-            </div>
-            <div class="relative bg-black/60 p-3 rounded-lg font-mono text-[11px] text-emerald-300 overflow-x-auto flex items-center justify-between">
-              <code>curl -sSL https://raw.githubusercontent.com/VaskaMc/kargopilot/main/install_sovereign.sh | bash</code>
-              <button type="button" onclick="copySnippet('curl -sSL https://raw.githubusercontent.com/VaskaMc/kargopilot/main/install_sovereign.sh | bash', this)" class="ml-3 px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-[10px] shrink-0 font-sans font-bold">Kopyala</button>
-            </div>
-          </div>
-
-          <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
-            <div class="font-bold text-white flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono">2</span>
-              <span>Və ya Docker Compose ilə birbaşa işə salın:</span>
-            </div>
-            <div class="relative bg-black/60 p-3 rounded-lg font-mono text-[11px] text-emerald-300 overflow-x-auto flex items-center justify-between">
-              <code>docker-compose -f docker-compose.sovereign.yml up -d</code>
-              <button type="button" onclick="copySnippet('docker-compose -f docker-compose.sovereign.yml up -d', this)" class="ml-3 px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-[10px] shrink-0 font-sans font-bold">Kopyala</button>
-            </div>
-            <p class="text-[11px] text-slate-400">
-              Quraşdırma bitdikdən sonra KargoPilot avtomatik olaraq <code>http://127.0.0.1:48481</code> ünvanında fəaliyyətə başlayır.
-            </p>
-          </div>
-
-          <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
-            <div class="flex items-center gap-2 font-bold text-white">
-              <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono">3</span>
-              <span>Server işə düşdümü?</span>
-            </div>
-            <button type="button" onclick="switchSelfTab('connect')" class="py-1.5 px-3 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/30 transition">
-              Tab 1-ə Keçib Bağlantını Yoxlayın →
+            <button type="button" onclick="confirmSelfHostedConnection()" id="self-connect-confirm-btn" class="min-h-[44px] w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2">
+              <span>Bu Serverə Qoşul və İdarəetmə Panelinə Keç →</span>
             </button>
           </div>
-        </div>
 
+          <!-- TAB 2: SETUP GUIDE (1-CLICK DOCKER / SCRIPT) -->
+          <div id="self-tab-guide" class="hidden space-y-4 text-xs text-slate-300">
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+              <div class="font-bold text-white flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono text-xs font-bold">1</span>
+                <span>1-Kliklə Avtomatik Quraşdırma Əmri (Linux / macOS / VPS)</span>
+              </div>
+              <div class="relative bg-black/60 p-3.5 rounded-xl font-mono text-[11px] text-emerald-300 overflow-x-auto flex items-center justify-between gap-3">
+                <code class="break-all">curl -sSL https://raw.githubusercontent.com/VaskaMc/kargopilot/main/install_sovereign.sh | bash</code>
+                <button type="button" onclick="copySnippet('curl -sSL https://raw.githubusercontent.com/VaskaMc/kargopilot/main/install_sovereign.sh | bash', this)" class="min-h-[44px] min-w-[44px] px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs shrink-0 font-sans font-bold flex items-center justify-center transition border border-slate-700">Kopyala</button>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+              <div class="font-bold text-white flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono text-xs font-bold">2</span>
+                <span>Və ya Docker Compose ilə birbaşa işə salın:</span>
+              </div>
+              <div class="relative bg-black/60 p-3.5 rounded-xl font-mono text-[11px] text-emerald-300 overflow-x-auto flex items-center justify-between gap-3">
+                <code class="break-all">docker-compose -f docker-compose.sovereign.yml up -d</code>
+                <button type="button" onclick="copySnippet('docker-compose -f docker-compose.sovereign.yml up -d', this)" class="min-h-[44px] min-w-[44px] px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs shrink-0 font-sans font-bold flex items-center justify-center transition border border-slate-700">Kopyala</button>
+              </div>
+              <p class="text-[11px] text-slate-400">
+                Quraşdırma bitdikdən sonra KargoPilot avtomatik olaraq <code>http://127.0.0.1:48481</code> ünvanında fəaliyyətə başlayır.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2 font-bold text-white">
+                <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono text-xs font-bold">3</span>
+                <span>Server işə düşdümü?</span>
+              </div>
+              <button type="button" onclick="switchSelfTab('connect')" class="min-h-[44px] py-2.5 px-4 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/30 transition inline-flex items-center justify-center">
+                Tab 1-ə Keçib Bağlantını Yoxlayın →
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
+
     </div>
 
     <!-- Active Server Controls Footer (Data Export & Settings) -->
-    <div class="px-6 py-4 bg-slate-950 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+    <div class="px-5 sm:px-6 py-4 bg-slate-950 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
       <div class="flex items-center gap-2 text-slate-400">
         <span>Cari Aktiv Rejim:</span>
         <span id="modal-current-mode-badge" class="font-bold text-white">Yüklənir...</span>
       </div>
-      <div class="flex items-center gap-2">
-        <button type="button" onclick="triggerDataExport()" id="modal-export-btn" class="py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold transition flex items-center gap-1.5">
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" onclick="triggerDataExport()" id="modal-export-btn" class="min-h-[44px] py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold transition flex items-center justify-center gap-2">
           <span>📥 Məlumatları Endir (Export JSON)</span>
         </button>
-        <button type="button" onclick="closeDualHostingModal()" class="py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition">
+        <button type="button" onclick="closeDualHostingModal()" class="min-h-[44px] py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition flex items-center justify-center">
           Bağla
         </button>
       </div>
@@ -2742,6 +2769,18 @@
     if (!modal) return;
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+  }
+
+  function togglePasswordVisibility(id, btn) {
+    var input = document.getElementById(id);
+    if (!input) return;
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🔒';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁️';
+    }
   }
 
   function refreshModalModeBadge() {
@@ -2778,30 +2817,30 @@
 
     if (type === 'tech') {
       if (value) {
-        btnTechYes.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-        btnTechNo.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700';
+        btnTechYes.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center justify-center text-center transition';
+        btnTechNo.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center justify-center text-center transition';
       } else {
-        btnTechNo.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30';
-        btnTechYes.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700';
+        btnTechNo.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center justify-center text-center transition';
+        btnTechYes.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center justify-center text-center transition';
       }
     } else if (type === 'storage') {
       if (value === 'self') {
-        btnStoreSelf.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-        btnStoreCloud.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700';
+        btnStoreSelf.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center justify-center text-center transition';
+        btnStoreCloud.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center justify-center text-center transition';
       } else {
-        btnStoreCloud.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30';
-        btnStoreSelf.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700';
+        btnStoreCloud.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center justify-center text-center transition';
+        btnStoreSelf.className = 'flex-1 min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center justify-center text-center transition';
       }
     }
 
     var isSelf = (btnTechYes && btnTechYes.classList.contains('border-emerald-500/30')) || (btnStoreSelf && btnStoreSelf.classList.contains('border-emerald-500/30'));
     if (rec) {
       if (isSelf) {
-        rec.className = 'md:col-span-2 p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200 flex items-center justify-between';
-        rec.innerHTML = '<span>🛡️ <b>Tövsiyə:</b> Sizə <b>Öz Serverində İşlət (Self-Hosted)</b> uyğundur. Məlumatlar 100% sizin serverinizdə qalacaq.</span><span class="text-[11px] underline font-bold cursor-pointer" onclick="selectCardB()">Kart B-ni Seç →</span>';
+        rec.className = 'md:col-span-2 p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200 flex flex-wrap items-center justify-between gap-2';
+        rec.innerHTML = '<span>🛡️ <b>Tövsiyə:</b> Sizə <b>Öz Serverində İşlət (Self-Hosted)</b> uyğundur. Məlumatlar 100% sizin serverinizdə qalacaq.</span><span class="text-xs underline font-bold cursor-pointer text-emerald-300 hover:text-white py-1" onclick="selectCardB()">Kart B-ni Seç →</span>';
       } else {
-        rec.className = 'md:col-span-2 p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-200 flex items-center justify-between';
-        rec.innerHTML = '<span>✨ <b>Tövsiyə:</b> Sizin üçün <b>Bulud Xidməti (Managed Cloud)</b> ən rahat seçimdir. Heç bir quraşdırma tələb olunmur.</span><span class="text-[11px] underline font-bold cursor-pointer" onclick="selectCardA()">Kart A-nı Seç →</span>';
+        rec.className = 'md:col-span-2 p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-200 flex flex-wrap items-center justify-between gap-2';
+        rec.innerHTML = '<span>✨ <b>Tövsiyə:</b> Sizin üçün <b>Bulud Xidməti (Managed Cloud)</b> ən rahat seçimdir. Heç bir quraşdırma tələb olunmur.</span><span class="text-xs underline font-bold cursor-pointer text-cyan-300 hover:text-white py-1" onclick="selectCardA()">Kart A-nı Seç →</span>';
       }
     }
   }
@@ -2841,13 +2880,13 @@
     if (tab === 'connect') {
       if (cTab) cTab.classList.remove('hidden');
       if (gTab) gTab.classList.add('hidden');
-      if (cBtn) cBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-      if (gBtn) gBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700';
+      if (cBtn) cBtn.className = 'min-h-[44px] py-2.5 px-4 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 inline-flex items-center justify-center transition';
+      if (gBtn) gBtn.className = 'min-h-[44px] py-2.5 px-4 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 inline-flex items-center justify-center transition';
     } else {
       if (gTab) gTab.classList.remove('hidden');
       if (cTab) cTab.classList.add('hidden');
-      if (gBtn) gBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-      if (cBtn) cBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700';
+      if (gBtn) gBtn.className = 'min-h-[44px] py-2.5 px-4 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 inline-flex items-center justify-center transition';
+      if (cBtn) cBtn.className = 'min-h-[44px] py-2.5 px-4 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 inline-flex items-center justify-center transition';
     }
   }
 
@@ -2855,26 +2894,30 @@
     var urlInput = document.getElementById('self-server-url');
     var resBox = document.getElementById('self-health-result');
     var spinner = document.getElementById('test-spinner');
+    var testBtn = document.getElementById('self-test-btn');
     if (!urlInput || !resBox) return;
 
     if (spinner) spinner.classList.remove('hidden');
+    if (testBtn) testBtn.disabled = true;
     resBox.classList.remove('hidden');
-    resBox.className = 'p-3.5 rounded-xl border border-cyan-500/30 bg-cyan-950/30 text-cyan-200 text-xs';
-    resBox.innerHTML = 'Bağlantı yoxlanılır... Endpoint-ə sorğu göndərilir.';
+    resBox.className = 'p-4 rounded-xl border border-cyan-500/30 bg-cyan-950/30 text-cyan-200 text-xs';
+    resBox.innerHTML = '<div class="flex items-center gap-2"><span>Bağlantı yoxlanılır... Endpoint-ə sorğu göndərilir.</span></div>';
 
     var result = await window.KargoPilotConnection.testConnection(urlInput.value);
     if (spinner) spinner.classList.add('hidden');
+    if (testBtn) testBtn.disabled = false;
 
     if (result.ok) {
-      resBox.className = 'p-3.5 rounded-xl border border-emerald-500/40 bg-emerald-950/40 text-emerald-200 text-xs space-y-1';
+      resBox.className = 'p-4 rounded-xl border border-emerald-500/40 bg-emerald-950/40 text-emerald-200 text-xs space-y-1.5';
       resBox.innerHTML =
-        '<div class="font-bold flex items-center gap-1.5"><span>✅</span> <span>' + result.message + '</span></div>' +
-        '<div>Versiya: <b>' + result.version + '</b> · Rejim: <b>' + result.edition + '</b> · Latency: <b>' + result.latencyMs + ' ms</b></div>';
+        '<div class="font-bold flex items-center gap-2 text-sm"><span>✅</span> <span>' + result.message + '</span></div>' +
+        '<div class="text-slate-300 font-mono">Versiya: <b>' + result.version + '</b> · Rejim: <b>' + result.edition + '</b> · Gecikmə: <b>' + result.latencyMs + ' ms</b></div>';
     } else {
-      resBox.className = 'p-3.5 rounded-xl border border-amber-500/40 bg-amber-950/40 text-amber-200 text-xs space-y-1';
+      resBox.className = 'p-4 rounded-xl border border-amber-500/40 bg-amber-950/40 text-amber-200 text-xs space-y-1.5';
       resBox.innerHTML =
-        '<div class="font-bold flex items-center gap-1.5"><span>⚠️</span> <span>Bağlantı Uğursuz Oldu</span></div>' +
-        '<p class="text-slate-300">' + result.message + '</p>';
+        '<div class="font-bold flex items-center gap-2 text-sm"><span>⚠️</span> <span>Bağlantı Uğursuz Oldu</span></div>' +
+        '<p class="text-slate-300 leading-relaxed">' + result.message + '</p>' +
+        '<div class="text-[11px] text-slate-400 pt-1 border-t border-amber-500/20">💡 Məsləhət: Serverinizin <code>http://127.0.0.1:48481/health</code> ünvanında aktiv olduğunu və CORS icazələrini yoxlayın.</div>';
     }
   }
 
@@ -2895,12 +2938,16 @@
     var consent = document.getElementById('cloud-consent').checked;
     var alertBox = document.getElementById('cloud-auth-alert');
     var btn = document.getElementById('cloud-submit-btn');
+    var spinner = document.getElementById('cloud-submit-spinner');
+    var btnText = document.getElementById('cloud-submit-text');
 
     if (btn) btn.disabled = true;
+    if (spinner) spinner.classList.remove('hidden');
+    if (btnText) btnText.textContent = 'Bulud Hesabı Təsdiqlənir...';
     if (alertBox) {
       alertBox.classList.remove('hidden');
-      alertBox.className = 'p-3 rounded-lg bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-xs';
-      alertBox.textContent = 'Bulud hesabı təsdiqlənir...';
+      alertBox.className = 'p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-xs';
+      alertBox.textContent = 'Bulud hesabı təsdiqlənir və şifrələmə açarı təyin edilir...';
     }
 
     try {
@@ -2919,16 +2966,18 @@
         var errData = await res.json().catch(function () { return {}; });
         var msg = errData.detail || 'Qeydiyyat zamanı xəta baş verdi. Zəhmət olmasa məlumatları yoxlayın.';
         if (alertBox) {
-          alertBox.className = 'p-3 rounded-lg bg-amber-950/40 border border-amber-500/30 text-amber-200 text-xs';
+          alertBox.className = 'p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-200 text-xs';
           alertBox.textContent = msg;
         }
         if (btn) btn.disabled = false;
+        if (spinner) spinner.classList.add('hidden');
+        if (btnText) btnText.textContent = 'Bulud Hesabı Yarat və Paneli Aç →';
         return;
       }
 
       window.KargoPilotConnection.setMode('cloud', null, consent);
       if (alertBox) {
-        alertBox.className = 'p-3 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-emerald-200 text-xs font-bold';
+        alertBox.className = 'p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-200 text-xs font-bold';
         alertBox.textContent = 'Hesab uğurla yaradıldı! İdarəetmə panelinə yönləndirilirsiniz...';
       }
       setTimeout(function () {
@@ -2937,10 +2986,12 @@
       }, 1000);
     } catch (err) {
       if (alertBox) {
-        alertBox.className = 'p-3 rounded-lg bg-amber-950/40 border border-amber-500/30 text-amber-200 text-xs';
+        alertBox.className = 'p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-200 text-xs';
         alertBox.textContent = 'Şəbəkə xətası baş verdi: ' + err.message;
       }
       if (btn) btn.disabled = false;
+      if (spinner) spinner.classList.add('hidden');
+      if (btnText) btnText.textContent = 'Bulud Hesabı Yarat və Paneli Aç →';
     }
   }
 
@@ -2949,7 +3000,7 @@
       navigator.clipboard.writeText(text);
       if (btn) {
         var orig = btn.textContent;
-        btn.textContent = 'Kopyalandı!';
+        btn.textContent = 'Kopyalandı! ✓';
         setTimeout(function () { btn.textContent = orig; }, 2000);
       }
     }
@@ -2957,11 +3008,23 @@
 
   async function triggerDataExport() {
     var btn = document.getElementById('modal-export-btn');
-    if (btn) btn.textContent = 'Arxivlənir...';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="animate-spin w-4 h-4 text-slate-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Arxivlənir...</span>
+      `;
+    }
     var res = await window.KargoPilotConnection.exportData();
     if (btn) {
-      btn.textContent = res.ok ? 'Endirildi! ✓' : 'Xəta baş verdi';
-      setTimeout(function () { btn.textContent = '📥 Məlumatları Endir (Export JSON)'; }, 2500);
+      btn.disabled = false;
+      btn.innerHTML = res.ok ? '<span>Endirildi! ✓</span>' : '<span>Xəta baş verdi</span>';
+      setTimeout(function () {
+        btn.innerHTML = '<span>📥 Məlumatları Endir (Export JSON)</span>';
+      }, 2500);
     }
   }
 </script>

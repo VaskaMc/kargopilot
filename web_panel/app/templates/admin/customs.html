@@ -16,7 +16,7 @@
       <button onclick="approveAllCompliant()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-1.5">
         <span>✓</span> Standartları Toplu Təsdiqlə
       </button>
-      <button onclick="location.reload()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 text-xs">
+      <button onclick="location.reload()" aria-label="Səhifəni yenilə" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 text-xs">
         🔄
       </button>
     </div>
@@ -46,7 +46,7 @@
                 <span class="font-mono font-bold text-white text-xs tracking-wider">{{ it.tracking }}</span>
                 <div class="flex items-center gap-1.5">
                   <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-slate-300 font-semibold">{{ it.carrier }}</span>
-                  <span class="text-[10px] text-slate-500 font-mono">({{ it.origin }})</span>
+                  <span class="text-[10px] text-slate-400 font-mono">({{ it.origin }})</span>
                 </div>
               </div>
             </td>
