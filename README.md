@@ -1,4 +1,6 @@
 <div align="center">
+  <img src="assets/logo_concept_6_infinity_loop.jpg" alt="KargoPilot Official Brand Emblem" width="420" style="border-radius: 20px; box-shadow: 0 16px 40px rgba(0,0,0,0.8);" />
+  <br/><br/>
   <h1>⚡ KargoPilot v4.5 Enterprise</h1>
   <p><b>Dual-Architecture AI Copilot for Cross-Border Logistics, Multi-Tenant Auth & DGK SmartCustoms Automation</b></p>
   <p><i>Available in two editions: <b>Variant 1 (Sovereign Self-Hosted)</b> for 100% on-prem data privacy & <b>Variant 2 (Managed Cloud 7/24)</b> for zero-touch enterprise autopilot.</i></p>
@@ -12,6 +14,18 @@
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge" alt="License: MIT"></a>
   </p>
 </div>
+
+---
+
+## 🎨 Dual-Tier Official Brand Identity System
+
+KargoPilot implements a synchronized dual-tier brand architecture tailored for cross-border logistics and autonomous intelligence:
+
+| Corporate Primary Brand (Concept 6) | AI Engine & Loyd Copilot (Concept 5) |
+| :---: | :---: |
+| <img src="assets/logo_concept_6_infinity_loop.jpg" width="260" alt="Primary Corporate Brand - Infinity Loop" style="border-radius:14px;" /> | <img src="assets/logo_concept_5_quantum_node.jpg" width="260" alt="AI & Loyd Copilot - Quantum Node" style="border-radius:14px;" /> |
+| **Infinity Parcel & Jet Loop** | **Silk Road Quantum 'K' Node** |
+| Official brand identity across Web Header, Admin Cockpit, Invoices, and Legal Documents | Dedicated avatar for WhatsApp Loyd AI, Telegram Bot, Chrome Extension, and Neural Engine |
 
 ---
 
