@@ -1,6 +1,6 @@
 # KargoPilot v4.0 · 20-Subagent Master Sertifikatlaşdırma Hesabatı
 **Test Bazasının Mənbəyi:** `https://github.com/msitarzewski/agency-agents`  
-**Test Edilən Sistem:** KargoPilot v4.0 Mərkəzi İdarəetmə Paneli (`http://127.0.0.1:48481`) və VPS İstehsal Serveri (`root@5.191.246.134:1999`)  
+**Test Edilən Sistem:** KargoPilot v4.0 Mərkəzi İdarəetmə Paneli (`http://127.0.0.1:48481`) və İstehsal Serveri (`production-vps:1999`)  
 **Tarix:** 16 Oktyabr 2026  
 **Status:** **100% BÜTÜN TESTLƏR UĞURLA TAMAMLANDI (ALL 20 SUBAGENTS CERTIFIED)**
 

@@ -12,8 +12,10 @@ from __future__ import annotations
 
 import logging
 import os
+import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
 import jwt
@@ -23,7 +25,27 @@ from app.security.crypto import generate_secure_token, hash_token, constant_time
 logger = logging.getLogger("kargopilot.security.tokens")
 
 # Configuration Defaults (overridable via environment)
-JWT_SECRET_KEY = os.getenv("KP_JWT_SECRET_KEY", "kargopilot-v45-insecure-default-change-in-prod-77947abc")
+_DEFAULT_INSECURE_KEY = "kargopilot-v45-insecure-default-change-in-prod-77947abc"
+_env_key = os.getenv("KP_JWT_SECRET_KEY")
+if _env_key and _env_key != _DEFAULT_INSECURE_KEY:
+    JWT_SECRET_KEY = _env_key
+elif os.getenv("PYTEST_CURRENT_TEST"):
+    JWT_SECRET_KEY = _DEFAULT_INSECURE_KEY
+else:
+    _secret_file = Path("/data/pcs/.jwt_secret")
+    if _secret_file.exists():
+        try:
+            JWT_SECRET_KEY = _secret_file.read_text(encoding="utf-8").strip()
+        except Exception:
+            JWT_SECRET_KEY = secrets.token_hex(32)
+    else:
+        JWT_SECRET_KEY = secrets.token_hex(32)
+        try:
+            if _secret_file.parent.exists():
+                _secret_file.write_text(JWT_SECRET_KEY, encoding="utf-8")
+        except Exception:
+            pass
+
 JWT_ALGORITHM = "HS256"
 JWT_ISSUER = "kargopilot.internal"
 JWT_AUDIENCE = "kargopilot-platform"

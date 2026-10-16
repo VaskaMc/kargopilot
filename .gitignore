@@ -77,4 +77,6 @@ Thumbs.db
 .agent/
 .agents/
 .taste-skill/
+*audit_results*
+.jwt_secret
 
