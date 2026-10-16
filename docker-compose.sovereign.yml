@@ -1,0 +1,54 @@
+# ==============================================================================
+# KargoPilot v4.5 Sovereign Self-Hosted Docker Compose Specification
+# Zero-telemetry, single-tenant, full data sovereignty.
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  kargopilot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kargopilot:v4.5-sovereign
+    container_name: kargopilot_sovereign_app
+    restart: unless-stopped
+    env_file:
+      - .env.sovereign
+    environment:
+      - DEPLOYMENT_MODE=sovereign
+      - TELEMETRY_ENABLED=false
+      - ALLOW_EXTERNAL_REPORTING=false
+      - WA_SIDECAR_URL=http://kargopilot-wa-sidecar:3100
+    ports:
+      - "127.0.0.1:48481:48481"
+    volumes:
+      - kargopilot_data:/data/kargopilot
+    networks:
+      - kargopilot-internal
+    depends_on:
+      - kargopilot-wa-sidecar
+
+  kargopilot-wa-sidecar:
+    image: node:20-alpine
+    container_name: kargopilot_wa_sidecar
+    restart: unless-stopped
+    working_dir: /opt/sidecar
+    volumes:
+      - kargopilot_data:/data/kargopilot
+      - ./extension_v4:/opt/sidecar:ro
+    environment:
+      - PORT=3100
+      - SESSION_DIR=/data/kargopilot/wa_sessions
+    command: ["sh", "-c", "if [ -f server.js ]; then node server.js; else echo 'WhatsApp sidecar standby'; sleep infinity; fi"]
+    networks:
+      - kargopilot-internal
+
+volumes:
+  kargopilot_data:
+    name: kargopilot_sovereign_data
+
+networks:
+  kargopilot-internal:
+    driver: bridge
+    internal: false

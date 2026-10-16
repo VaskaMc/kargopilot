@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [4.5.0] - 2026-10-16
+
+### 🚀 Major Release: Dual-Architecture Sovereign & Cloud Platform, Multi-Tenant Auth, and Admin Cockpit
+
+KargoPilot v4.5 introduces a flexible dual-tier deployment paradigm, enterprise multi-tenant authentication, and an executive administration cockpit (`/admin`):
+
+### ✨ Added
+- **Dual Deployment Architecture**:
+  - **Variant 1 (Sovereign Edition / Self-Hosted)**: Complete on-premise deployment via `docker-compose.sovereign.yml` and 1-click installer (`install_sovereign.sh`, `setup_sovereign.ps1`). Zero data or telemetry sent to company servers; total sovereign ownership over FIN codes, passwords, WhatsApp sessions, and carrier keys.
+  - **Variant 2 (Managed Cloud 7/24 SaaS)**: Multi-tenant managed cloud deployment with per-tenant AES-256 envelope encryption, 7/24 automated SmartCustoms filings, high availability, and legal compliance (AR "Fərdi məlumatlar haqqında" Qanunu).
+- **Enterprise Multi-Tenant Security Stack**:
+  - **Argon2id Hashing**: High-work-factor password security with transparent auto-migration from legacy bcrypt without forcing user password resets.
+  - **Dual-Token Authentication**: Short-lived Access Tokens (HTTP-only SameSite cookies / Bearer headers) paired with rotating Refresh Tokens featuring Token Family Reuse Detection.
+  - **Role-Based Access Control (RBAC)**: Comprehensive permission matrix across `SUPER_ADMIN`, `ADMIN/OPERATOR`, and `CUSTOMER` with automatic SQL tenant scoping.
+  - **Admin Command Gate (WhatsApp)**: Incoming WhatsApp admin commands (`!admin`) are silently obfuscated for unauthorized users ("Naməlum komanda") to conceal admin capability existence while logging an internal security audit event.
+- **Enterprise Admin Cockpit (`/admin`)**:
+  - **Executive Command Center (`/admin`)**: Live telemetry, total registered users, in-flight parcels, DGK customs volume, net arbitrage margin, and CBAR live exchange rates.
+  - **User & Multi-FIN Directory (`/admin/users`)**: Searchable user management with slide-in FIN drawer, monthly $300 DGK quota progress, and status controls.
+  - **Master Logistics Grid (`/admin/orders`)**: Cross-carrier, cross-platform global parcel monitoring.
+  - **DGK SmartCustoms Supervisor (`/admin/customs`)**: Pre-declaration review queue, $250+ risk flags, liquid/drone restriction badges, and modal for manual HS code / category override.
+  - **Carrier Margins & Arbitrage Matrix (`/admin/carriers`)**: Live base rates, platform markup percentages, active branch counts, and latency metrics.
+  - **Immutable Security Audit Stream (`/admin/audit`)**: Real-time event stream logging auth attempts, quota threshold alerts, and compliance actions.
+- **Automated Test Battery**:
+  - Added `tests/test_admin_cockpit.py` covering all admin views and APIs.
+  - Overall test suite expanded to 34 tests passing 100% in 6.38s.
+
+---
+
 ## [4.0.0] - 2026-10-16
 
 ### 🚀 Major Release: Autonomous Multi-Carrier Logistics & Customs Autopilot

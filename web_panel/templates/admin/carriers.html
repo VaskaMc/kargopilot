@@ -1,0 +1,103 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-extrabold text-white tracking-tight">Daşıyıcı Marjaları & Şəbəkə İdarəetməsi</h2>
+        <span class="text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">CANLI ARBİTRAJ</span>
+      </div>
+      <p class="text-xs text-slate-400">Daşıma tarifləri, B2B/B2C marja faizləri və API əlaqə dərəcələri</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="saveAllMargins()" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs shadow-lg shadow-cyan-500/20 transition">
+        💾 Marjaları Tətbiq Et
+      </button>
+    </div>
+  </div>
+
+  <!-- Carrier Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+    {% for c in carriers %}
+    <div class="glass-card p-5 rounded-2xl relative overflow-hidden group hover:border-cyan-500/40 transition flex flex-col justify-between space-y-4">
+      <div>
+        <div class="flex items-center justify-between border-b border-white/5 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center font-mono font-bold text-cyan-400 text-xs">
+              {{ c.code[:2] }}
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-white">{{ c.name }}</h3>
+              <span class="text-[10px] text-slate-500 font-mono">{{ c.code }}</span>
+            </div>
+          </div>
+          <span class="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            {{ c.status }}
+          </span>
+        </div>
+
+        <div class="mt-4 space-y-3 text-xs">
+          <div class="flex justify-between items-center text-slate-400">
+            <span>Baza Qiyməti (Türkiyə/kq):</span>
+            <span class="font-mono font-bold text-white">${{ "%.2f"|format(c.base_rate_tr) }}</span>
+          </div>
+
+          <div class="flex justify-between items-center text-slate-400">
+            <span>Platforma Marjası (%):</span>
+            <div class="flex items-center gap-1">
+              <input type="number" step="0.5" value="{{ c.markup_pct }}" class="w-16 px-2 py-1 bg-black/50 border border-white/10 rounded-lg text-cyan-300 font-mono text-right focus:outline-none focus:border-cyan-500 text-xs">
+              <span class="text-slate-500 font-mono">%</span>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center text-slate-400">
+            <span>Aktiv Filial Sayı:</span>
+            <span class="font-mono text-slate-200">{{ c.branches_active }} filial</span>
+          </div>
+
+          <div class="flex justify-between items-center text-slate-400">
+            <span>API Latency:</span>
+            <span class="font-mono text-emerald-400">{{ c.latency_ms }} ms</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-white/5 flex items-center justify-between">
+        <a href="/carriers#{{ c.code|lower }}" class="text-[11px] font-mono text-cyan-400 hover:underline">Filialları Göstər →</a>
+        <button class="p-1 text-slate-500 hover:text-white transition">⚙️</button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Arbitrage Logic Explained (Investor / Operator Insight) -->
+  <div class="glass-card p-6 rounded-2xl border border-white/5 space-y-4">
+    <h3 class="text-base font-bold text-white tracking-tight flex items-center gap-2">
+      <span>💡</span> KargoPilot Arbitraj & Marja Mexanizmi
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-300">
+      <div class="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1.5">
+        <div class="font-bold text-white">1. Real-Time Rate Ingestion</div>
+        <p class="text-slate-400">Sistem hər 15 dəqiqədən bir Starex, Camex, Limak və Dynamex daşıyıcılarının rəsmi tariflərini və çəki pillələrini avtomatik oxuyur.</p>
+      </div>
+      <div class="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1.5">
+        <div class="font-bold text-white">2. Dinamik Marja Əlavəsi</div>
+        <p class="text-slate-400">B2C müştərilərə ən ucuz daşıyıcı tövsiyə olunur; B2B dropshipper və tərəfdaşlar üçün isə +%4 - +%6 platforma marjası hesablanır.</p>
+      </div>
+      <div class="p-4 rounded-xl bg-black/30 border border-white/5 space-y-1.5">
+        <div class="font-bold text-white">3. Təhlükəsiz Ödəniş və Hesabat</div>
+        <p class="text-slate-400">CBAR rəsmi məzənnəsi ilə AZN/USD/TRY konvertasiyası aparılır, daşıyıcıya xalis qiymət, şirkətə isə marja dərhal hesaba oturur.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function saveAllMargins() {
+  alert('Daşıyıcı marjaları uğurla yadda saxlanıldı və canlı kalkulyatora tətbiq edildi.');
+}
+</script>
+{% endblock %}

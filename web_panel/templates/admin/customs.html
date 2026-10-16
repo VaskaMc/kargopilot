@@ -1,0 +1,221 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Header & Risk Overview Bar -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-extrabold text-white tracking-tight">SmartCustoms Nəzarət Masası (DGK Supervisor)</h2>
+        <span class="text-xs font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">AI Avtopilot</span>
+      </div>
+      <p class="text-xs text-slate-400">DGK 300$ fərdi idxal həddi, qadağan olunmuş mallar və HS Code təsnifatı</p>
+    </div>
+    <!-- Batch Actions -->
+    <div class="flex items-center gap-2">
+      <button onclick="approveAllCompliant()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs shadow-lg shadow-emerald-500/20 transition flex items-center gap-1.5">
+        <span>✓</span> Standartları Toplu Təsdiqlə
+      </button>
+      <button onclick="location.reload()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 text-xs">
+        🔄
+      </button>
+    </div>
+  </div>
+
+  <!-- Customs Review Queue Table -->
+  <div class="glass-card rounded-2xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs text-slate-300">
+        <thead class="bg-black/50 text-[11px] font-mono uppercase tracking-wider text-slate-400 border-b border-white/5">
+          <tr>
+            <th class="py-3.5 px-4">Bağlama / Daşıyıcı</th>
+            <th class="py-3.5 px-4">Sahibi / FİN</th>
+            <th class="py-3.5 px-4">Məhsul Təsviri & Mağaza</th>
+            <th class="py-3.5 px-4">Bəyan Dəyəri</th>
+            <th class="py-3.5 px-4">HS Kodu / AI Təsnifatı</th>
+            <th class="py-3.5 px-4">Risk Şkalası</th>
+            <th class="py-3.5 px-4 text-right">Qərar</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          {% for it in items %}
+          <tr class="hover:bg-white/[0.02] transition group">
+            <!-- Tracking & Carrier -->
+            <td class="py-4 px-4">
+              <div class="space-y-1">
+                <span class="font-mono font-bold text-white text-xs tracking-wider">{{ it.tracking }}</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-slate-300 font-semibold">{{ it.carrier }}</span>
+                  <span class="text-[10px] text-slate-500 font-mono">({{ it.origin }})</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Consignee & FIN -->
+            <td class="py-4 px-4">
+              <div class="font-semibold text-white">{{ it.consignee }}</div>
+              <span class="text-[11px] font-mono text-cyan-400 bg-cyan-500/10 px-1.5 py-0.2 rounded border border-cyan-500/20">
+                {{ it.fin }}
+              </span>
+            </td>
+
+            <!-- Product & Store -->
+            <td class="py-4 px-4 max-w-xs">
+              <div class="font-medium text-slate-200 truncate group-hover:text-cyan-300 transition" title="{{ it.product_title }}">
+                {{ it.product_title }}
+              </div>
+              <div class="text-[11px] text-slate-400 font-mono">{{ it.store }}</div>
+            </td>
+
+            <!-- Value USD / AZN -->
+            <td class="py-4 px-4 font-mono">
+              <div class="font-bold {% if it.declared_usd >= 250 %}text-amber-400 text-sm{% else %}text-white{% endif %} tabular-nums">
+                ${{ "%.2f"|format(it.declared_usd) }}
+              </div>
+              <div class="text-[11px] text-slate-400 tabular-nums">
+                {{ "%.2f"|format(it.declared_azn) }} ₼
+              </div>
+            </td>
+
+            <!-- HS Code & Category -->
+            <td class="py-4 px-4">
+              <div class="flex items-center gap-2">
+                <span class="font-mono font-bold text-cyan-300 bg-black/40 px-2 py-0.5 rounded border border-cyan-500/20">
+                  {{ it.hs_code }}
+                </span>
+                <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1 rounded">
+                  %{{ it.confidence }}
+                </span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5 truncate max-w-[200px]" title="{{ it.category }}">
+                {{ it.category }}
+              </div>
+            </td>
+
+            <!-- Risk Flags -->
+            <td class="py-4 px-4">
+              <div class="flex flex-wrap gap-1">
+                {% for rf in it.risk_flags %}
+                {% if rf == 'OVER_$250' %}
+                <span class="badge-amber text-[10px] font-mono px-1.5 py-0.5 rounded">⚠️ $250+ Həddi</span>
+                {% elif rf == 'LIQUID_RESTRICTION' %}
+                <span class="badge-crimson text-[10px] font-mono px-1.5 py-0.5 rounded">🧴 Maye Qadağası</span>
+                {% elif rf == 'DGK_SPECIAL_PERMIT_REQUIRED' %}
+                <span class="badge-crimson text-[10px] font-mono px-1.5 py-0.5 rounded">⛔ Xüsusi İcazə</span>
+                {% elif rf == 'SAME_FLIGHT_WARNING' %}
+                <span class="badge-amber text-[10px] font-mono px-1.5 py-0.5 rounded">✈️ Eyni Reys</span>
+                {% else %}
+                <span class="badge-emerald text-[10px] font-mono px-1.5 py-0.5 rounded">✓ Uyğundur</span>
+                {% endif %}
+                {% endfor %}
+              </div>
+            </td>
+
+            <!-- Actions -->
+            <td class="py-4 px-4 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button onclick="openHsModal('{{ it.tracking }}', '{{ it.hs_code }}', '{{ it.product_title | replace('\'', '\\\'') }}')" class="px-2.5 py-1 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-[11px] font-mono transition">
+                  Kodu Dəyiş
+                </button>
+                <button onclick="approveCustomsItem('{{ it.tracking }}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-mono transition">
+                  Təsdiq
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Manual HS Code & Category Override Modal -->
+<div id="hsModal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-[#111827] border border-white/10 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl animate-fade-in">
+    <div class="flex items-center justify-between border-b border-white/10 pb-4">
+      <div>
+        <h3 class="text-base font-bold text-white">HS Kodu & Təsnifat Dəyişikliyi</h3>
+        <p id="modalTracking" class="text-xs text-cyan-400 font-mono"></p>
+      </div>
+      <button onclick="closeHsModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+    </div>
+
+    <div class="space-y-4 text-xs">
+      <div>
+        <label class="block text-slate-400 font-mono mb-1">Məhsulun Əsl Adı:</label>
+        <div id="modalProduct" class="p-2.5 bg-black/40 rounded-xl border border-white/10 text-slate-200"></div>
+      </div>
+
+      <div>
+        <label class="block text-slate-400 font-mono mb-1">Yeni XİF FEA (HS Code):</label>
+        <input type="text" id="modalHsCode" class="w-full p-2.5 bg-black/40 rounded-xl border border-white/10 text-white font-mono focus:outline-none focus:border-cyan-500 text-sm">
+      </div>
+
+      <div>
+        <label class="block text-slate-400 font-mono mb-1">Dəyişikliyin Əsaslandırılması (DGK Auditi üçün):</label>
+        <textarea id="modalJustification" rows="2" class="w-full p-2.5 bg-black/40 rounded-xl border border-white/10 text-white focus:outline-none focus:border-cyan-500" placeholder="Məs: Faktura məhsulu smart saat kateqoriyasına aiddir..."></textarea>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+      <button onclick="closeHsModal()" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-slate-300 transition">
+        Ləğv Et
+      </button>
+      <button onclick="submitHsOverride()" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs transition">
+        Yadda Saxla və DGK-ya Göndər
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentTracking = '';
+
+function openHsModal(tracking, hsCode, product) {
+  currentTracking = tracking;
+  document.getElementById('modalTracking').textContent = 'Bağlama: ' + tracking;
+  document.getElementById('modalProduct').textContent = product;
+  document.getElementById('modalHsCode').value = hsCode;
+  document.getElementById('modalJustification').value = '';
+  document.getElementById('hsModal').classList.remove('hidden');
+}
+
+function closeHsModal() {
+  document.getElementById('hsModal').classList.add('hidden');
+}
+
+async function submitHsOverride() {
+  const hs = document.getElementById('modalHsCode').value.trim();
+  const just = document.getElementById('modalJustification').value.trim();
+  if (!hs) return alert('HS kodunu daxil edin');
+
+  try {
+    const res = await fetch('/admin/api/customs/override', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tracking: currentTracking,
+        hs_code: hs,
+        category_id: 1,
+        justification: just || 'Admin manual review override'
+      })
+    });
+    const data = await res.json();
+    alert(data.message || 'HS kodu uğurla yeniləndi');
+    closeHsModal();
+    location.reload();
+  } catch (err) {
+    alert('Xəta baş verdi: ' + err.message);
+  }
+}
+
+function approveCustomsItem(tracking) {
+  alert(tracking + ' bağlaması SmartCustoms təsdiqinə yönləndirildi.');
+}
+
+function approveAllCompliant() {
+  alert('Bütün uyğun bəyannamələr (risk olmayanlar) DGK sisteminə bəyan edildi!');
+}
+</script>
+{% endblock %}

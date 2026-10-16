@@ -1,0 +1,56 @@
+# ==============================================================================
+# KargoPilot v4.5 Managed Cloud Production Docker Compose Specification
+# Multi-tenant, 7/24 high availability, encrypted credentials vault.
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  kargopilot-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kargopilot:v4.5-cloud
+    container_name: kargopilot_cloud_web
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - DEPLOYMENT_MODE=managed_cloud
+      - TELEMETRY_ENABLED=true
+    ports:
+      - "127.0.0.1:48481:48481"
+    volumes:
+      - kargopilot_cloud_data:/data/kargopilot
+    networks:
+      - kargopilot-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:48481/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  kargopilot-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kargopilot:v4.5-cloud
+    container_name: kargopilot_cloud_worker
+    restart: always
+    env_file:
+      - .env
+    command: ["python", "pcs_v4_engines.py"]
+    volumes:
+      - kargopilot_cloud_data:/data/kargopilot
+    networks:
+      - kargopilot-net
+    depends_on:
+      - kargopilot-web
+
+volumes:
+  kargopilot_cloud_data:
+    name: kargopilot_cloud_data
+
+networks:
+  kargopilot-net:
+    driver: bridge
