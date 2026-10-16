@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="az" class="h-full bg-[#0b0f19]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Şəxsi Kabinet — KargoPilot Bulud İdarəetmə Paneli</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="min-h-full bg-[#0b0f19] text-slate-100 flex flex-col">
+  
+  <!-- Top Navigation Header -->
+  <header class="border-b border-white/10 bg-slate-900/70 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <a href="/user/dashboard" class="flex items-center gap-2.5">
+          <img src="/assets/logo_concept_6_infinity_loop.jpg" alt="KargoPilot Loqo" class="w-9 h-9 rounded-xl object-cover border border-white/10 shadow-md">
+          <div class="leading-tight">
+            <div class="text-base font-extrabold text-white tracking-tight flex items-center gap-1.5">
+              <span>KargoPilot</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">Bulud</span>
+            </div>
+            <div class="text-[11px] text-slate-400">Şəxsi İdarəetmə Paneli</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- User Profile & Action Bar -->
+      <div class="flex items-center gap-3 sm:gap-4">
+        <div class="hidden sm:flex flex-col text-right">
+          <span class="text-xs font-bold text-white">{{ user.full_name if user else 'İstifadəçi' }}</span>
+          <span class="text-[11px] font-mono text-cyan-400">{{ user.email if user else 'bulud@kargopilot.az' }}</span>
+        </div>
+
+        <!-- Tier Chip -->
+        <span class="hidden md:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>Aktiv Otopilot</span>
+        </span>
+
+        <!-- Logout Button -->
+        <a href="/logout" class="min-h-[40px] px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold border border-slate-700 transition flex items-center gap-1.5">
+          <span>Çıxış</span>
+          <span>↳</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+    
+    <!-- Welcome Banner with Mode Badge -->
+    <div class="p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-900/90 to-cyan-950/40 border border-white/10 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Salam, {{ (user.full_name.split()[0]) if user else 'Müştəri' }}! 👋</h1>
+          <span class="text-xs px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium">Bizim Server (Cloud)</span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-400">Bütün xarici sifarişləriniz və gömrük kvotanız 7/24 avtomatik otopilot nəzarətindədir.</p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2.5">
+        <a href="#quick-order" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold shadow-lg shadow-cyan-500/20 transition flex items-center gap-2">
+          <span>+ Yeni Sifariş Əlavə Et</span>
+        </a>
+        <button type="button" onclick="openLoydAssistant()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition flex items-center gap-2">
+          <img src="/assets/loyd-avatar-128.png" alt="Loyd AI" class="w-5 h-5 rounded-full object-cover">
+          <span>Loyd AI-yə Sual Ver</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 Key Stat Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- Card 1: Monthly DGK 300$ Quota -->
+      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
+            <span>DGK 300$ İdxal Limiti</span>
+            <span class="text-emerald-400 font-bold font-mono">Təhlükəsiz</span>
+          </div>
+          <div class="text-2xl font-extrabold text-white font-mono tabular-nums">
+            ${{ quota.used_usd if quota else '142.50' }} <span class="text-xs text-slate-400 font-sans font-normal">/ 300.00 USD</span>
+          </div>
+          
+          <!-- Progress Track -->
+          <div class="w-full h-2 bg-slate-800 rounded-full mt-3 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full" style="width: 47.5%;"></div>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+          <span>Qalan ehtiyat:</span>
+          <span class="font-bold text-slate-200 font-mono">${{ quota.remaining_usd if quota else '157.50' }} USD</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Active Packages -->
+      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
+            <span>Yoldakı Bağlamalar</span>
+            <span class="text-cyan-400 font-bold">Aktiv</span>
+          </div>
+          <div class="text-2xl font-extrabold text-white font-mono tabular-nums">
+            {{ active_orders_count if active_orders_count is defined else '3' }} <span class="text-xs text-slate-400 font-sans font-normal">bağlama</span>
+          </div>
+          <div class="text-xs text-slate-400 mt-2">
+            1 Filialda, 2 Gömrükdə yoxlanışda
+          </div>
+        </div>
+
+        <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+          <span>Son çatdırılma:</span>
+          <span class="font-bold text-slate-200">Dünən, 18:30</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Connected Carriers -->
+      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
+            <span>Qoşulmuş Daşıyıcılar</span>
+            <span class="text-indigo-400 font-bold">4 Aktiv</span>
+          </div>
+          <div class="flex items-center gap-1.5 mt-1">
+            <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold text-cyan-300">STAREX</span>
+            <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold text-emerald-300">CAMEX</span>
+            <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold text-amber-300">LIMAK</span>
+          </div>
+          <div class="text-xs text-slate-400 mt-2.5">
+            Əsas təhvil filialı: <b class="text-slate-200">28 May</b>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+          <span>Sinxronizasiya:</span>
+          <span class="font-bold text-emerald-400">Avtomatik ✓</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Loyd AI Copilot -->
+      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
+            <span>Loyd AI Köməkçi</span>
+            <span class="text-cyan-400 font-bold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+              <span>Online</span>
+            </span>
+          </div>
+          <div class="flex items-center gap-2.5 mt-1">
+            <img src="/assets/loyd-avatar-128.png" alt="Loyd Avatar" class="w-8 h-8 rounded-xl object-cover border border-cyan-500/30">
+            <div>
+              <div class="text-xs font-bold text-white">Smart Bəyannaməçi</div>
+              <div class="text-[11px] text-slate-400">37 kateqoriyaya tam hakim</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+          <span>Otopilot statusu:</span>
+          <span class="font-bold text-cyan-300">Aktiv nəzarətdə</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Legal Reassurance Shield Card (Customs Anxiety Reduction) -->
+    <div class="p-4 sm:p-5 rounded-2xl bg-cyan-950/25 border border-cyan-500/25 flex items-start gap-3.5">
+      <span class="text-xl sm:text-2xl shrink-0">🛡️</span>
+      <div class="text-xs leading-relaxed text-slate-300">
+        <b class="text-cyan-300">Hüquqi Təminat: Bağlamanız müsadirə olunmur.</b>  
+        300 USD fərdi idxal limiti aşıldıqda bağlamanız gömrükdə saxlanılmır və bütün məhsullar vergiyə cəlb edilmir. Azərbaycan Respublikasının qanunvericiliyinə əsasən, rüsum <b>yalnız 300 USD-dən artıq qalan fərq hissəsinə</b> (36% rüsum və 15 AZN gömrük rəsmiləşdirmə haqqı) tətbiq edilir. Ailə üzvlərinin FİN kodlarını əlavə edərək limitinizi qanuni şəkildə genişləndirə bilərsiniz.
+      </div>
+    </div>
+
+    <!-- Main 2-Column Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Left Column: Active Tracking Feed (2 cols wide) -->
+      <div class="lg:col-span-2 space-y-4">
+        
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+            <span>📦 Son Bağlamalar və İzləmə</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">Canlı</span>
+          </h2>
+          <span class="text-xs text-slate-400">Avtomatik sinxron olunur</span>
+        </div>
+
+        <!-- Orders Table / Card List -->
+        <div class="bg-slate-900/80 border border-white/10 rounded-2xl overflow-hidden divide-y divide-slate-800/80">
+          
+          <!-- Sample Order 1 -->
+          <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-800/30 transition">
+            <div class="flex items-start gap-3">
+              <span class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-cyan-400 shrink-0">
+                TEMU
+              </span>
+              <div>
+                <div class="text-xs sm:text-sm font-bold text-white">PO-014-10523162 · 4 Məhsul</div>
+                <div class="text-[11px] text-slate-400 mt-0.5 flex flex-wrap items-center gap-2">
+                  <span>İzləmə: <code class="text-slate-300 font-mono">DW5341635</code></span>
+                  <span>•</span>
+                  <span>Daşıyıcı: <b class="text-slate-300">STAREX</b></span>
+                  <span>•</span>
+                  <span>04 Oktyabr 2026</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
+              <div class="text-right">
+                <div class="text-xs font-bold text-white font-mono tabular-nums">48.75 AZN</div>
+                <div class="text-[10px] text-slate-400 font-mono">≈ $28.68 USD</div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                Bəyan edilib ✓
+              </span>
+            </div>
+          </div>
+
+          <!-- Sample Order 2 -->
+          <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-800/30 transition">
+            <div class="flex items-start gap-3">
+              <span class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-amber-400 shrink-0">
+                TY
+              </span>
+              <div>
+                <div class="text-xs sm:text-sm font-bold text-white">TY-98410234 · Geyim və Ayaqqabı</div>
+                <div class="text-[11px] text-slate-400 mt-0.5 flex flex-wrap items-center gap-2">
+                  <span>İzləmə: <code class="text-slate-300 font-mono">TRK-992014</code></span>
+                  <span>•</span>
+                  <span>Daşıyıcı: <b class="text-slate-300">CAMEX</b></span>
+                  <span>•</span>
+                  <span>08 Oktyabr 2026</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
+              <div class="text-right">
+                <div class="text-xs font-bold text-white font-mono tabular-nums">76.16 AZN</div>
+                <div class="text-[10px] text-slate-400 font-mono">≈ $44.80 USD</div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                Bəyan edilib ✓
+              </span>
+            </div>
+          </div>
+
+          <!-- Sample Order 3 -->
+          <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-800/30 transition">
+            <div class="flex items-start gap-3">
+              <span class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-indigo-400 shrink-0">
+                AMZN
+              </span>
+              <div>
+                <div class="text-xs sm:text-sm font-bold text-white">AZ-2026-4410 · Elektronika Kabeli</div>
+                <div class="text-[11px] text-slate-400 mt-0.5 flex flex-wrap items-center gap-2">
+                  <span>İzləmə: <code class="text-slate-300 font-mono">1Z9999999</code></span>
+                  <span>•</span>
+                  <span>Daşıyıcı: <b class="text-slate-300">LIMAK</b></span>
+                  <span>•</span>
+                  <span>12 Oktyabr 2026</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
+              <div class="text-right">
+                <div class="text-xs font-bold text-white font-mono tabular-nums">35.70 AZN</div>
+                <div class="text-[10px] text-slate-400 font-mono">≈ $21.00 USD</div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+                Yoldadır ✈️
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Right Column: Multi-FIN Mesh & Loyd AI (1 col wide) -->
+      <div class="space-y-6">
+        
+        <!-- Multi-FIN Family Quota Mesh -->
+        <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-extrabold text-white tracking-tight uppercase tracking-wider">FİN & Ailə Limiti</h3>
+            <span class="text-[10px] font-mono text-cyan-400 font-semibold">Smart Mesh</span>
+          </div>
+
+          <div class="space-y-2.5">
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+              <div>
+                <div class="text-xs font-bold text-white">{{ user.full_name if user else 'Vasif Məcidli' }} (Siz)</div>
+                <div class="text-[10px] font-mono text-slate-400">FİN: 814CRM4 · Əsas</div>
+              </div>
+              <span class="text-xs font-mono font-bold text-emerald-400">$142.50 / $300</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-950/60 border border-dashed border-slate-800 flex items-center justify-between text-xs text-slate-400">
+              <span>Ailə FİN-i əlavə edərək limiti artırın</span>
+              <button type="button" onclick="alert('Tezliklə: Ailə üzvlərinin FİN kodunu əlavə edərək hər birinə 300$ rüsumsuz limit qazanmaq imkanı!')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">
+                + Əlavə et
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loyd AI Assistant Widget -->
+        <div class="p-5 rounded-2xl bg-gradient-to-b from-slate-900 to-cyan-950/30 border border-cyan-500/30 space-y-4">
+          <div class="flex items-center gap-3">
+            <img src="/assets/loyd-avatar-128.png" alt="Loyd AI" class="w-10 h-10 rounded-2xl object-cover border border-cyan-500/40 shadow-lg shadow-cyan-500/10">
+            <div>
+              <div class="text-xs font-extrabold text-white">Loyd AI Otopilot</div>
+              <div class="text-[11px] text-cyan-300">24/7 Gömrük & Kargo Məsləhətçiniz</div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 leading-relaxed">
+            "Salam! Bu ay üçün qalan <b>$157.50 USD</b> limitiniz var. Yeni sifariş verərkən invoysunuzu buraya göndərə bilərsiniz, mən kateqoriyasını avtomatik təyin edəcəyəm."
+          </div>
+
+          <div class="space-y-1.5">
+            <button type="button" onclick="askLoyd('Bu ay nə qədər limitim qalıb?')" class="w-full text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-[11px] text-slate-300 transition">
+              💬 "Bu ay nə qədər limitim qalıb?"
+            </button>
+            <button type="button" onclick="askLoyd('Bəyannaməmi necə təsdiqləyim?')" class="w-full text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-[11px] text-slate-300 transition">
+              💬 "Bəyannaməmi necə təsdiqləyim?"
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    function openLoydAssistant() {
+      alert('Loyd AI Canlı Köməkçi: SmartCustoms və daşıyıcı suallarınız üçün 7/24 xidmətinizdədir!');
+    }
+
+    function askLoyd(prompt) {
+      alert('Loyd AI cavabı: ' + prompt + '\n\nOtopilotunuz hazırda aktivdir və bütün bağlamalarınızı izləyir.');
+    }
+  </script>
+</body>
+</html>

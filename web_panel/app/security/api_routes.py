@@ -66,9 +66,18 @@ admin_gate = AdminCommandGate(wa_bridge)
 # ==============================================================================
 
 class LoginRequest(BaseModel):
-    email: str = Field(..., example="admin@kargopilot.az")
-    password: str = Field(..., min_length=8, example="StrongP@ssw0rd2026")
-    device_fingerprint: Optional[str] = Field(None, example="Chrome-Win11-x86_64")
+    email: str = Field(..., json_schema_extra={"example": "admin@kargopilot.az"})
+    password: str = Field(..., min_length=8, json_schema_extra={"example": "StrongP@ssw0rd2026"})
+    device_fingerprint: Optional[str] = Field(None, json_schema_extra={"example": "Chrome-Win11-x86_64"})
+
+
+class RegisterRequest(BaseModel):
+    email: str = Field(..., min_length=5, max_length=255, json_schema_extra={"example": "user@kargopilot.az"})
+    password: str = Field(..., min_length=8, max_length=128, json_schema_extra={"example": "StrongPass2026!"})
+    full_name: str = Field(..., min_length=2, max_length=120, json_schema_extra={"example": "Vasif Məcidli"})
+    phone: Optional[str] = Field(None, json_schema_extra={"example": "+994776346310"})
+    hosting_preference: str = Field("cloud", json_schema_extra={"example": "cloud"})
+    device_fingerprint: Optional[str] = Field(None, json_schema_extra={"example": "Chrome-Win11-x86_64"})
 
 
 class LoginResponse(BaseModel):
@@ -272,6 +281,122 @@ async def login(
             email=user_row["email"],
             full_name=user_row["full_name"],
             role=user_row["role"],
+            csrf_token=csrf_token,
+        )
+
+
+@router.post("/auth/register", response_model=LoginResponse, status_code=status.HTTP_201_CREATED)
+async def register(
+    req: RegisterRequest,
+    request: Request,
+    response: Response,
+) -> LoginResponse:
+    """Registers a new user, creates credentials & session, and issues dual tokens."""
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    user_agent = request.headers.get("user-agent", "Unknown")
+
+    # 1. IP rate limit check
+    is_limited, retry_after = rate_limiter.is_ip_rate_limited(client_ip)
+    if is_limited:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Çox sayda cəhd. Zəhmət olmasa {retry_after} saniyə sonra yenidən cəhd edin.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
+    clean_email = req.email.strip().lower()
+    if "@" not in clean_email or "." not in clean_email.split("@")[-1]:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Düzgün e-poçt ünvanı daxil edin.")
+
+    if len(req.password) < 8:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Şifrə ən azı 8 simvol olmalıdır.")
+
+    clean_phone = normalize_phone_e164(req.phone) if req.phone and req.phone.strip() else None
+
+    with get_db() as conn:
+        # Check if email already registered
+        existing_email = conn.execute("SELECT id FROM users WHERE LOWER(email) = ?", (clean_email,)).fetchone()
+        if existing_email:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Bu e-poçt ünvanı ilə artıq qeydiyyatdan keçilib. Daxil olun və ya şifrəni bərpa edin.",
+            )
+
+        if clean_phone:
+            existing_phone = conn.execute("SELECT id FROM users WHERE phone = ?", (clean_phone,)).fetchone()
+            if existing_phone:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Bu telefon nömrəsi ilə artıq qeydiyyatdan keçilib.",
+                )
+
+        # Hash password with Argon2id
+        hashed_password = password_manager.hash_password(req.password)
+        user_id = str(uuid.uuid4())
+        now_dt = datetime.now(timezone.utc)
+        now_str = now_dt.isoformat()
+
+        role = UserRole.CUSTOMER.value
+        tier = "cloud_managed" if req.hosting_preference == "cloud" else "self_hosted"
+
+        conn.execute(
+            """INSERT INTO users 
+               (id, email, password_hash, full_name, phone, role, status, tier, is_active, is_verified, failed_login_attempts, created_at, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, 'active', ?, 1, 1, 0, ?, ?)""",
+            (user_id, clean_email, hashed_password, req.full_name.strip(), clean_phone, role, tier, now_str, now_str),
+        )
+
+        # Issue Session and Tokens
+        session_id = str(uuid.uuid4())
+        family_id = str(uuid.uuid4())
+        raw_refresh, hashed_refresh, refresh_exp = TokenService.create_refresh_token()
+        raw_access, jti, access_exp = TokenService.create_access_token(
+            user_id=user_id,
+            email=clean_email,
+            role=role,
+            session_id=session_id,
+            family_id=family_id,
+        )
+        csrf_token = TokenService.create_csrf_token()
+        exp_str = refresh_exp.isoformat()
+
+        conn.execute(
+            """INSERT INTO user_sessions 
+               (id, user_id, family_id, current_refresh_token_hash, device_fingerprint, ip_address, user_agent, created_at, last_active_at, expires_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (session_id, user_id, family_id, hashed_refresh, req.device_fingerprint, client_ip, user_agent, now_str, now_str, exp_str),
+        )
+        refresh_id = str(uuid.uuid4())
+        conn.execute(
+            """INSERT INTO refresh_token_records 
+               (id, session_id, family_id, token_hash, is_revoked, expires_at, created_at)
+               VALUES (?, ?, ?, ?, 0, ?, ?)""",
+            (refresh_id, session_id, family_id, hashed_refresh, exp_str, now_str),
+        )
+        conn.commit()
+
+        # Set cookies
+        set_auth_cookies(response, raw_access, raw_refresh, csrf_token=csrf_token)
+
+        audit_logger.log(
+            event_type=AuditEventType.LOGIN_SUCCESS,
+            status="SUCCESS",
+            user_id=user_id,
+            actor_role=role,
+            ip_address=client_ip,
+            user_agent=user_agent,
+            reason="User registered successfully.",
+            metadata={"session_id": session_id, "tier": tier, "hosting_preference": req.hosting_preference},
+        )
+
+        return LoginResponse(
+            access_token=raw_access,
+            token_type="Bearer",
+            expires_in_seconds=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            user_id=user_id,
+            email=clean_email,
+            full_name=req.full_name.strip(),
+            role=role,
             csrf_token=csrf_token,
         )
 

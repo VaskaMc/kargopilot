@@ -1281,7 +1281,8 @@
         <button type="button" onclick="openDualHostingModal()" data-kp-connection-badge class="btn-secondary" style="padding:7px 12px; font-size:11px; cursor:pointer;" title="Server və Bağlantı Rejimini Dəyişin">
           <span>☁️ Bulud Serveri</span>
         </button>
-        <a href="#dual-hosting" class="btn-primary">Başla (Get Started)</a>
+        <a href="/login" class="btn-secondary" style="padding:7px 14px; font-size:12px; font-weight:700;">Daxil Ol</a>
+        <a href="/register" class="btn-primary" style="background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; padding:8px 16px; font-size:12px; font-weight:800; box-shadow:0 4px 16px rgba(0,210,255,0.25);">Qeydiyyat →</a>
       </div>
     </div>
   </header>
@@ -1296,8 +1297,8 @@
             Trendyol, Taobao, Temu və Amazon bağlamalarını avtomatik izləyən, Starex, Limak, Camex və Dynamex tariflərini saniyəlik müqayisə edən və SmartCustoms 300 USD aylıq kvotasını qoruyan müstəqil sistem.
           </p>
           <div class="hero-actions" data-reveal>
-            <a href="#dual-hosting" class="btn-primary" style="background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; box-shadow:0 8px 24px rgba(0,210,255,0.3);">İstifadə Modelini Seçin (Bulud və ya Öz Serverin) →</a>
-            <a href="#kalkulyator" class="btn-secondary">Canlı Tarif Hesabla</a>
+            <a href="/register" class="btn-primary" style="background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; box-shadow:0 8px 24px rgba(0,210,255,0.3); font-weight:800;">Bizim Serverdə Başla (30 Saniyəlik Qeydiyyat) →</a>
+            <a href="#dual-hosting" class="btn-secondary">Seçimləri Müqayisə Et (Bulud vs Self-Hosted)</a>
           </div>
           <div class="hero-facts" data-reveal>
             <div class="fact-tile" data-reveal>
@@ -1415,25 +1416,28 @@
               </div>
             </div>
 
-            <div style="margin-top:32px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
-              <button type="button" onclick="openDualHostingModal(); showCloudFlow();" class="btn-primary" style="width:100%; text-align:center; padding:14px; font-weight:800; font-size:14px; background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; box-shadow:0 8px 24px rgba(0,210,255,0.25); cursor:pointer;">
+            <div style="margin-top:32px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1); display:flex; flex-direction:column; gap:10px;">
+              <a href="/register?plan=cloud" class="btn-primary" style="width:100%; text-align:center; padding:14px; font-weight:800; font-size:14px; background:linear-gradient(135deg,#00d2ff,#6366f1); border:none; box-shadow:0 8px 24px rgba(0,210,255,0.25); text-decoration:none; display:block;">
                 Hesab Yarat və Buludda Başla →
-              </button>
+              </a>
+              <a href="/login" class="btn-secondary" style="width:100%; text-align:center; padding:10px; font-weight:700; font-size:12px; text-decoration:none; display:block;">
+                Artıq hesabınız var? Daxil Olun
+              </a>
             </div>
           </div>
 
           <!-- Card B: Self-Hosted -->
           <div class="identity-panel" style="flex-direction:column; align-items:stretch; border:2px solid rgba(255,255,255,0.1); background:linear-gradient(180deg, rgba(11,15,25,0.8), rgba(6,10,18,0.95)); border-radius:24px; padding:32px; box-shadow:0 12px 32px rgba(0,0,0,0.3); transition:border 0.2s;" data-reveal>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-              <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; background:rgba(16,185,129,0.15); color:var(--accent-lime); font-size:12px; font-weight:700; border:1px solid rgba(16,185,129,0.3);">
-                🖥️ Açıq Qaynaq · Tam Müstəqil
+              <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; background:rgba(245,158,11,0.15); color:#f59e0b; font-size:12px; font-weight:700; border:1px solid rgba(245,158,11,0.3);">
+                🖥️ Mərhələli Aktivləşdirmə · Qapalı Beta
               </span>
-              <span class="meta-copy" style="color:var(--ink-light); font-weight:700;">Sovereign Edition</span>
+              <span class="meta-copy" style="color:var(--ink-light); font-weight:700;">On-Premise Edition</span>
             </div>
 
             <div class="block-title" style="font-size:22px; font-weight:800; color:#fff;">Öz Serverində İşlət (Self-Hosted)</div>
             <p class="body-copy" style="margin-top:10px; font-size:14px; line-height:1.6;">
-              Tətbiqi öz serverinizdə (və ya lokal Docker mühitində) qurun və ya tətbiqi öz server ünvanınıza qoşun. Bütün məlumatlar 100% sizin infrastrukturunuzda saxlanılır.
+              Məlumatlarını öz serverində saxlamaq istəyən korporativ şirkətlər üçün nəzərdə tutulub (bu rejimə mərhələli şəkildə keçilir). İlkin mərhələdə sistemin bütün funksiyalarından "Bizim Serverimizdə" dərhal istifadə etmək tövsiyə olunur.
             </p>
 
             <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px; font-size:13px; color:var(--ink-light);">

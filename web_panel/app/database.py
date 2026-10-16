@@ -170,12 +170,95 @@ def init_db() -> None:
         logger.info("Populating rich PCS production orders with full item catalog...")
         _seed_data(conn)
 
-    # Ensure platform sessions and fin profiles exist
+    # Ensure platform sessions, fin profiles, and multi-tenant auth tables exist
     _ensure_platform_sessions(conn)
     _ensure_fin_profiles(conn)
+    _ensure_users_and_auth_tables(conn)
 
     conn.commit()
     conn.close()
+
+
+def _ensure_users_and_auth_tables(conn: sqlite3.Connection) -> None:
+    cur = conn.cursor()
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id VARCHAR(36) PRIMARY KEY,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        password_hash VARCHAR(255) NOT NULL,
+        full_name VARCHAR(120) NOT NULL,
+        phone VARCHAR(32),
+        role VARCHAR(32) NOT NULL DEFAULT 'CUSTOMER',
+        status VARCHAR(32) NOT NULL DEFAULT 'active',
+        tier VARCHAR(32) NOT NULL DEFAULT 'free',
+        is_active BOOLEAN NOT NULL DEFAULT 1,
+        is_verified BOOLEAN NOT NULL DEFAULT 1,
+        failed_login_attempts INTEGER NOT NULL DEFAULT 0,
+        locked_until DATETIME,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        last_login DATETIME
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS user_sessions (
+        id VARCHAR(36) PRIMARY KEY,
+        user_id VARCHAR(36) NOT NULL,
+        family_id VARCHAR(36) NOT NULL,
+        current_refresh_token_hash VARCHAR(64) NOT NULL,
+        device_fingerprint VARCHAR(128),
+        ip_address VARCHAR(45),
+        user_agent TEXT,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        last_active_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        expires_at DATETIME NOT NULL,
+        revoked_at DATETIME,
+        revocation_reason VARCHAR(64),
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS refresh_token_records (
+        id VARCHAR(36) PRIMARY KEY,
+        session_id VARCHAR(36) NOT NULL,
+        family_id VARCHAR(36) NOT NULL,
+        token_hash VARCHAR(64) UNIQUE NOT NULL,
+        is_revoked BOOLEAN NOT NULL DEFAULT 0,
+        expires_at DATETIME NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(session_id) REFERENCES user_sessions(id) ON DELETE CASCADE
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS auth_audit_logs (
+        id VARCHAR(36) PRIMARY KEY,
+        timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        event_type VARCHAR(64) NOT NULL,
+        status VARCHAR(32) NOT NULL,
+        user_id VARCHAR(36),
+        actor_role VARCHAR(32),
+        ip_address VARCHAR(45),
+        user_agent TEXT,
+        channel VARCHAR(32) DEFAULT 'WEB',
+        reason TEXT,
+        metadata JSON DEFAULT '{}'
+    );
+    """)
+
+    # Seed Superadmin if not exists
+    superadmin_id = "00000000-0000-4000-8000-000000000001"
+    cur.execute("""
+    INSERT OR IGNORE INTO users (
+        id, email, password_hash, full_name, phone, role, status, tier, created_at
+    ) VALUES (
+        ?, 'vasif@kargopilot.az',
+        '$argon2id$v=19$m=65536,t=3,p=4$c29tZXNhbHRzdHJpbmc$5V2g+qX8zXp5w8e9s1Q2u3V4w5x6y7z8A9b0C1d2E3f',
+        'Vasif Məcidli', '+994776346310', 'SUPER_ADMIN', 'active', 'enterprise', CURRENT_TIMESTAMP
+    );
+    """, (superadmin_id,))
 
 
 def _ensure_platform_sessions(conn: sqlite3.Connection) -> None:

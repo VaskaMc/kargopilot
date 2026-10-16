@@ -46,6 +46,8 @@ HTML_ROUTE_ALIASES = {
     "/screencast.html": "/screencast",
     "/system.html": "/system",
     "/showcase.html": "/showcase",
+    "/login.html": "/login",
+    "/register.html": "/register",
 }
 
 
@@ -173,6 +175,18 @@ def create_app() -> FastAPI:
         logger.info("Mounted /api/v1/auth multi-tenant authentication & WhatsApp security router")
     except Exception as exc:
         logger.warning("Could not mount auth router: %s", exc)
+
+    try:
+        from app.routers import auth_web as auth_web_router
+        app.include_router(auth_web_router.router)
+        logger.info("Mounted /login, /register, /user/dashboard web router")
+    except Exception:
+        try:
+            from routers import auth_web as auth_web_router
+            app.include_router(auth_web_router.router)
+            logger.info("Mounted /login, /register, /user/dashboard web router via fallback")
+        except Exception as exc:
+            logger.warning("Could not mount auth_web router: %s", exc)
 
     @app.get("/showcase", response_class=HTMLResponse)
     async def showcase_page():
