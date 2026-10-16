@@ -70,3 +70,9 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Local Design & Agent Toolkits
+.agent/
+.agents/
+.taste-skill/
+
