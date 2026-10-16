@@ -19,14 +19,24 @@ from urllib.parse import urlparse
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field
+
+_bearer_scheme = HTTPBearer(auto_error=False)
 
 try:
     from app.database import get_connection
     from app.security.rbac import AuthenticatedUser, get_current_user
+    from app.services.ai_copilot import generate_copilot_response
 except ImportError:
-    from database import get_connection
-    from security.rbac import AuthenticatedUser, get_current_user
+    try:
+        from database import get_connection
+        from security.rbac import AuthenticatedUser, get_current_user
+        from services.ai_copilot import generate_copilot_response
+    except ImportError:
+        from web_panel.app.database import get_connection
+        from web_panel.app.security.rbac import AuthenticatedUser, get_current_user
+        from web_panel.app.services.ai_copilot import generate_copilot_response
 
 logger = logging.getLogger("kargopilot.user.api")
 
@@ -48,8 +58,12 @@ class UserProfileDetailResponse(BaseModel):
     tier: str
     fin: str
     default_branch: str
+    default_carrier: str = "STAREX"
+    currency_preference: str = "AZN"
     notification_whatsapp: bool
     notification_email: bool
+    notification_sms: bool = True
+    notification_telegram: bool = False
     created_at: str
 
 
@@ -58,8 +72,117 @@ class UpdateProfileRequest(BaseModel):
     phone: Optional[str] = Field(None, max_length=32)
     fin: Optional[str] = Field(None, min_length=7, max_length=7)
     default_branch: Optional[str] = Field(None, max_length=64)
+    default_carrier: Optional[str] = Field(None, max_length=64)
+    currency_preference: Optional[str] = Field(None, max_length=10)
     notification_whatsapp: Optional[bool] = None
     notification_email: Optional[bool] = None
+    notification_sms: Optional[bool] = None
+    notification_telegram: Optional[bool] = None
+
+
+class UpdatePasswordRequest(BaseModel):
+    current_password: str = Field(..., min_length=8)
+    new_password: str = Field(..., min_length=8, max_length=128)
+
+
+class StoreResponse(BaseModel):
+    id: str
+    user_id: Optional[str]
+    name: str
+    domain_url: str
+    country_code: str
+    default_currency: str
+    category: str
+    icon_badge: Optional[str]
+    is_standard: bool
+    created_at: str
+
+
+class CreateStoreRequest(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    domain_url: str = Field(..., min_length=4, max_length=255)
+    country_code: str = Field("TR", max_length=10)
+    default_currency: str = Field("TRY", max_length=10)
+    category: str = Field("Ümumi", max_length=50)
+    icon_badge: Optional[str] = Field("🛍️", max_length=50)
+
+
+class CarrierResponse(BaseModel):
+    id: str
+    user_id: Optional[str]
+    name: str
+    website_url: Optional[str]
+    tracking_url_template: Optional[str]
+    origin_country: str
+    rate_per_kg_usd: float
+    liquid_surcharge_usd: float
+    electronics_surcharge_usd: float
+    delivery_days_min: int
+    delivery_days_max: int
+    branch_address: Optional[str]
+    is_standard: bool
+    created_at: str
+
+
+class CreateCarrierRequest(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    website_url: Optional[str] = Field(None, max_length=255)
+    tracking_url_template: Optional[str] = Field(None, max_length=255)
+    origin_country: str = Field("TR", max_length=10)
+    rate_per_kg_usd: float = Field(..., gt=0.0)
+    liquid_surcharge_usd: float = Field(0.0, ge=0.0)
+    electronics_surcharge_usd: float = Field(0.0, ge=0.0)
+    delivery_days_min: int = Field(3, ge=1)
+    delivery_days_max: int = Field(6, ge=1)
+    branch_address: Optional[str] = Field(None, max_length=255)
+
+
+class UpdateCarrierRequest(BaseModel):
+    name: Optional[str] = Field(None, min_length=2, max_length=100)
+    website_url: Optional[str] = Field(None, max_length=255)
+    tracking_url_template: Optional[str] = Field(None, max_length=255)
+    origin_country: Optional[str] = Field(None, max_length=10)
+    rate_per_kg_usd: Optional[float] = Field(None, gt=0.0)
+    liquid_surcharge_usd: Optional[float] = Field(None, ge=0.0)
+    electronics_surcharge_usd: Optional[float] = Field(None, ge=0.0)
+    delivery_days_min: Optional[int] = Field(None, ge=1)
+    delivery_days_max: Optional[int] = Field(None, ge=1)
+    branch_address: Optional[str] = Field(None, max_length=255)
+
+
+class AIChatRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=2000)
+
+
+class AIChatResponse(BaseModel):
+    reply: str
+    timestamp: str
+    context_used: Optional[Dict[str, Any]] = None
+
+
+class AIChatMessageResponse(BaseModel):
+    id: str
+    role: str
+    content: str
+    created_at: str
+
+
+class FamilyFinResponse(BaseModel):
+    id: str
+    user_id: str
+    name_relation: str
+    fin: str
+    monthly_limit_usd: float
+    spent_usd: float
+    remaining_usd: float
+    created_at: str
+
+
+class CreateFamilyFinRequest(BaseModel):
+    name_relation: str = Field(..., min_length=2, max_length=100)
+    fin: str = Field(..., min_length=7, max_length=7)
+    monthly_limit_usd: float = Field(300.0, gt=0.0)
+    spent_usd: float = Field(0.0, ge=0.0)
 
 
 class CreateParcelRequest(BaseModel):
@@ -129,19 +252,25 @@ class ExportedParcel(BaseModel):
 
 
 class DataExportBundle(BaseModel):
-    schema_version: str = "4.5.0"
+    schema_version: str = "5.0.0"
     service: str = "kargopilot-core"
     exported_at: str
     user_profile: Dict[str, Any]
     parcels: List[ExportedParcel]
     quota_summary: Dict[str, Any]
+    custom_stores: List[Dict[str, Any]] = Field(default_factory=list)
+    custom_carriers: List[Dict[str, Any]] = Field(default_factory=list)
+    family_fins: List[Dict[str, Any]] = Field(default_factory=list)
 
 
 class ImportDataRequest(BaseModel):
-    schema_version: Optional[str] = "4.5.0"
+    schema_version: Optional[str] = "5.0.0"
     service: Optional[str] = "kargopilot-core"
     user_profile: Optional[Dict[str, Any]] = None
     parcels: List[ExportedParcel] = Field(default_factory=list)
+    custom_stores: List[Dict[str, Any]] = Field(default_factory=list)
+    custom_carriers: List[Dict[str, Any]] = Field(default_factory=list)
+    family_fins: List[Dict[str, Any]] = Field(default_factory=list)
 
 
 class ImportDataResponse(BaseModel):
@@ -151,6 +280,9 @@ class ImportDataResponse(BaseModel):
     skipped_count: int
     total_parcels: int
     updated_quota: QuotaResponse
+    imported_stores_count: int = 0
+    imported_carriers_count: int = 0
+    imported_family_fins_count: int = 0
 
 
 class WipeDataResponse(BaseModel):
@@ -158,6 +290,9 @@ class WipeDataResponse(BaseModel):
     message: str
     wiped_orders_count: int
     remaining_quota_usd: float
+    wiped_stores_count: int = 0
+    wiped_carriers_count: int = 0
+    wiped_family_fins_count: int = 0
 
 
 # --- Node Verification Schemas ---
@@ -266,8 +401,12 @@ async def get_user_profile(
             tier=user_data.get("tier", "cloud_managed"),
             fin=user_data.get("fin") or "814CRM4",
             default_branch=user_data.get("default_branch") or "28 May",
+            default_carrier=user_data.get("default_carrier") or "STAREX",
+            currency_preference=user_data.get("currency_preference") or "AZN",
             notification_whatsapp=bool(user_data.get("notification_whatsapp", 1)),
             notification_email=bool(user_data.get("notification_email", 1)),
+            notification_sms=bool(user_data.get("notification_sms", 1)),
+            notification_telegram=bool(user_data.get("notification_telegram", 0)),
             created_at=str(user_data.get("created_at")),
         )
 
@@ -277,7 +416,7 @@ async def update_user_profile(
     req: UpdateProfileRequest,
     current_user: AuthenticatedUser = Depends(get_current_user),
 ) -> UserProfileDetailResponse:
-    """Updates non-sensitive profile parameters (name, phone, FIN, branch, notifications)."""
+    """Updates non-sensitive profile parameters (name, phone, FIN, branch, carrier, notifications)."""
     with get_connection() as conn:
         row = conn.execute("SELECT * FROM users WHERE id = ?", (current_user.id,)).fetchone()
         if not row:
@@ -289,16 +428,21 @@ async def update_user_profile(
         phone = req.phone.strip() if req.phone is not None else user_data.get("phone")
         fin = req.fin.strip().upper() if req.fin is not None else (user_data.get("fin") or "814CRM4")
         branch = req.default_branch.strip() if req.default_branch is not None else (user_data.get("default_branch") or "28 May")
+        carrier = req.default_carrier.strip().upper() if req.default_carrier is not None else (user_data.get("default_carrier") or "STAREX")
+        curr = req.currency_preference.strip().upper() if req.currency_preference is not None else (user_data.get("currency_preference") or "AZN")
         notif_wa = int(req.notification_whatsapp) if req.notification_whatsapp is not None else user_data.get("notification_whatsapp", 1)
         notif_em = int(req.notification_email) if req.notification_email is not None else user_data.get("notification_email", 1)
+        notif_sms = int(req.notification_sms) if req.notification_sms is not None else user_data.get("notification_sms", 1)
+        notif_tg = int(req.notification_telegram) if req.notification_telegram is not None else user_data.get("notification_telegram", 0)
         now_str = datetime.now(timezone.utc).isoformat()
 
         conn.execute(
             """UPDATE users 
-               SET full_name = ?, phone = ?, fin = ?, default_branch = ?, 
-                   notification_whatsapp = ?, notification_email = ?, updated_at = ?
+               SET full_name = ?, phone = ?, fin = ?, default_branch = ?, default_carrier = ?,
+                   currency_preference = ?, notification_whatsapp = ?, notification_email = ?,
+                   notification_sms = ?, notification_telegram = ?, updated_at = ?
                WHERE id = ?""",
-            (full_name, phone, fin, branch, notif_wa, notif_em, now_str, current_user.id),
+            (full_name, phone, fin, branch, carrier, curr, notif_wa, notif_em, notif_sms, notif_tg, now_str, current_user.id),
         )
         conn.commit()
 
@@ -321,10 +465,549 @@ async def update_user_profile(
             tier=user_data.get("tier", "cloud_managed"),
             fin=fin,
             default_branch=branch,
+            default_carrier=carrier,
+            currency_preference=curr,
             notification_whatsapp=bool(notif_wa),
             notification_email=bool(notif_em),
+            notification_sms=bool(notif_sms),
+            notification_telegram=bool(notif_tg),
             created_at=str(user_data.get("created_at")),
         )
+
+
+@router.put("/profile/password")
+async def update_user_password(
+    req: UpdatePasswordRequest,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> Dict[str, str]:
+    """Updates user password after verifying current password."""
+    try:
+        from app.security.crypto import password_manager
+    except ImportError:
+        try:
+            from security.crypto import password_manager
+        except ImportError:
+            from web_panel.app.security.crypto import password_manager
+
+    with get_connection() as conn:
+        row = conn.execute("SELECT password_hash FROM users WHERE id = ?", (current_user.id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="İstifadəçi tapılmadı.")
+
+        is_valid, _ = password_manager.verify_password(req.current_password, row["password_hash"])
+        if not is_valid:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cari şifrə yanlışdır.")
+
+        new_hash = password_manager.hash_password(req.new_password)
+        now_str = datetime.now(timezone.utc).isoformat()
+        conn.execute("UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?", (new_hash, now_str, current_user.id))
+        conn.commit()
+
+        return {"status": "success", "message": "Şifrə uğurla yeniləndi."}
+
+
+# ==============================================================================
+# Modul 1: Stores / Marketplaces Hub
+# ==============================================================================
+
+@router.get("/stores", response_model=List[StoreResponse])
+async def get_user_stores(
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> List[StoreResponse]:
+    """Retrieves standard marketplaces merged with user's custom stores."""
+    with get_connection() as conn:
+        rows = conn.execute(
+            """SELECT * FROM user_stores 
+               WHERE user_id IS NULL OR user_id = ? 
+               ORDER BY is_standard DESC, name ASC""",
+            (current_user.id,),
+        ).fetchall()
+        return [
+            StoreResponse(
+                id=r["id"],
+                user_id=r["user_id"],
+                name=r["name"],
+                domain_url=r["domain_url"],
+                country_code=r["country_code"],
+                default_currency=r["default_currency"],
+                category=r["category"],
+                icon_badge=r["icon_badge"],
+                is_standard=bool(r["is_standard"]),
+                created_at=str(r["created_at"]),
+            )
+            for r in rows
+        ]
+
+
+@router.post("/stores", response_model=StoreResponse, status_code=status.HTTP_201_CREATED)
+async def create_user_store(
+    req: CreateStoreRequest,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> StoreResponse:
+    """Creates a custom user store/marketplace."""
+    clean_url = req.domain_url.strip()
+    if not (clean_url.startswith("http://") or clean_url.startswith("https://") or "." in clean_url):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Keçərli domen ünvanı daxil edin (məs: example.com və ya https://example.com).",
+        )
+
+    if not (clean_url.startswith("http://") or clean_url.startswith("https://")):
+        clean_url = f"https://{clean_url}"
+
+    store_id = str(uuid.uuid4())
+    now_str = datetime.now(timezone.utc).isoformat()
+
+    with get_connection() as conn:
+        conn.execute(
+            """INSERT INTO user_stores 
+               (id, user_id, name, domain_url, country_code, default_currency, category, icon_badge, is_standard, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?)""",
+            (
+                store_id,
+                current_user.id,
+                req.name.strip(),
+                clean_url,
+                req.country_code.upper().strip(),
+                req.default_currency.upper().strip(),
+                req.category.strip(),
+                req.icon_badge or "🛍️",
+                now_str,
+            ),
+        )
+        conn.commit()
+
+        return StoreResponse(
+            id=store_id,
+            user_id=current_user.id,
+            name=req.name.strip(),
+            domain_url=clean_url,
+            country_code=req.country_code.upper().strip(),
+            default_currency=req.default_currency.upper().strip(),
+            category=req.category.strip(),
+            icon_badge=req.icon_badge or "🛍️",
+            is_standard=False,
+            created_at=now_str,
+        )
+
+
+@router.delete("/stores/{store_id}")
+async def delete_user_store(
+    store_id: str,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> Dict[str, str]:
+    """Deletes a custom user store (IDOR protected, standard stores cannot be deleted)."""
+    with get_connection() as conn:
+        row = conn.execute(
+            "SELECT * FROM user_stores WHERE id = ? AND user_id = ? AND is_standard = 0",
+            (store_id, current_user.id),
+        ).fetchone()
+        if not row:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Satıcı saytı tapılmadı və ya silinməsinə icazə verilmir.",
+            )
+
+        conn.execute("DELETE FROM user_stores WHERE id = ?", (store_id,))
+        conn.commit()
+
+        return {"status": "success", "message": "Satıcı saytı uğurla silindi."}
+
+
+# ==============================================================================
+# Modul 2: Carriers Hub & Dynamic Management
+# ==============================================================================
+
+@router.get("/carriers", response_model=List[CarrierResponse])
+async def get_user_carriers(
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> List[CarrierResponse]:
+    """Retrieves standard carriers merged with user's custom carriers."""
+    with get_connection() as conn:
+        rows = conn.execute(
+            """SELECT * FROM user_carriers 
+               WHERE user_id IS NULL OR user_id = ? 
+               ORDER BY is_standard DESC, rate_per_kg_usd ASC""",
+            (current_user.id,),
+        ).fetchall()
+        return [
+            CarrierResponse(
+                id=r["id"],
+                user_id=r["user_id"],
+                name=r["name"],
+                website_url=r["website_url"],
+                tracking_url_template=r["tracking_url_template"],
+                origin_country=r["origin_country"],
+                rate_per_kg_usd=float(r["rate_per_kg_usd"]),
+                liquid_surcharge_usd=float(r["liquid_surcharge_usd"] or 0.0),
+                electronics_surcharge_usd=float(r["electronics_surcharge_usd"] or 0.0),
+                delivery_days_min=int(r["delivery_days_min"] or 3),
+                delivery_days_max=int(r["delivery_days_max"] or 6),
+                branch_address=r["branch_address"],
+                is_standard=bool(r["is_standard"]),
+                created_at=str(r["created_at"]),
+            )
+            for r in rows
+        ]
+
+
+@router.post("/carriers", response_model=CarrierResponse, status_code=status.HTTP_201_CREATED)
+async def create_user_carrier(
+    req: CreateCarrierRequest,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> CarrierResponse:
+    """Creates a custom user carrier with custom tariff and delivery rules."""
+    carrier_id = str(uuid.uuid4())
+    now_str = datetime.now(timezone.utc).isoformat()
+
+    with get_connection() as conn:
+        conn.execute(
+            """INSERT INTO user_carriers 
+               (id, user_id, name, website_url, tracking_url_template, origin_country, rate_per_kg_usd,
+                liquid_surcharge_usd, electronics_surcharge_usd, delivery_days_min, delivery_days_max,
+                branch_address, is_standard, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)""",
+            (
+                carrier_id,
+                current_user.id,
+                req.name.strip(),
+                req.website_url.strip() if req.website_url else None,
+                req.tracking_url_template.strip() if req.tracking_url_template else None,
+                req.origin_country.upper().strip(),
+                req.rate_per_kg_usd,
+                req.liquid_surcharge_usd,
+                req.electronics_surcharge_usd,
+                req.delivery_days_min,
+                req.delivery_days_max,
+                req.branch_address.strip() if req.branch_address else None,
+                now_str,
+            ),
+        )
+        conn.commit()
+
+        return CarrierResponse(
+            id=carrier_id,
+            user_id=current_user.id,
+            name=req.name.strip(),
+            website_url=req.website_url.strip() if req.website_url else None,
+            tracking_url_template=req.tracking_url_template.strip() if req.tracking_url_template else None,
+            origin_country=req.origin_country.upper().strip(),
+            rate_per_kg_usd=req.rate_per_kg_usd,
+            liquid_surcharge_usd=req.liquid_surcharge_usd,
+            electronics_surcharge_usd=req.electronics_surcharge_usd,
+            delivery_days_min=req.delivery_days_min,
+            delivery_days_max=req.delivery_days_max,
+            branch_address=req.branch_address.strip() if req.branch_address else None,
+            is_standard=False,
+            created_at=now_str,
+        )
+
+
+@router.put("/carriers/{carrier_id}", response_model=CarrierResponse)
+async def update_user_carrier(
+    carrier_id: str,
+    req: UpdateCarrierRequest,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> CarrierResponse:
+    """Updates an existing custom user carrier (IDOR protected)."""
+    with get_connection() as conn:
+        row = conn.execute(
+            "SELECT * FROM user_carriers WHERE id = ? AND user_id = ? AND is_standard = 0",
+            (carrier_id, current_user.id),
+        ).fetchone()
+        if not row:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Kargo şirkəti tapılmadı və ya yenilənməsinə icazə verilmir.",
+            )
+
+        c_data = dict(row)
+        name = req.name.strip() if req.name is not None else c_data["name"]
+        website_url = req.website_url.strip() if req.website_url is not None else c_data["website_url"]
+        tracking_url = req.tracking_url_template.strip() if req.tracking_url_template is not None else c_data["tracking_url_template"]
+        origin = req.origin_country.upper().strip() if req.origin_country is not None else c_data["origin_country"]
+        rate = req.rate_per_kg_usd if req.rate_per_kg_usd is not None else c_data["rate_per_kg_usd"]
+        liq = req.liquid_surcharge_usd if req.liquid_surcharge_usd is not None else c_data["liquid_surcharge_usd"]
+        elec = req.electronics_surcharge_usd if req.electronics_surcharge_usd is not None else c_data["electronics_surcharge_usd"]
+        d_min = req.delivery_days_min if req.delivery_days_min is not None else c_data["delivery_days_min"]
+        d_max = req.delivery_days_max if req.delivery_days_max is not None else c_data["delivery_days_max"]
+        branch = req.branch_address.strip() if req.branch_address is not None else c_data["branch_address"]
+
+        conn.execute(
+            """UPDATE user_carriers
+               SET name = ?, website_url = ?, tracking_url_template = ?, origin_country = ?,
+                   rate_per_kg_usd = ?, liquid_surcharge_usd = ?, electronics_surcharge_usd = ?,
+                   delivery_days_min = ?, delivery_days_max = ?, branch_address = ?
+               WHERE id = ?""",
+            (name, website_url, tracking_url, origin, rate, liq, elec, d_min, d_max, branch, carrier_id),
+        )
+        conn.commit()
+
+        return CarrierResponse(
+            id=carrier_id,
+            user_id=current_user.id,
+            name=name,
+            website_url=website_url,
+            tracking_url_template=tracking_url,
+            origin_country=origin,
+            rate_per_kg_usd=rate,
+            liquid_surcharge_usd=liq,
+            electronics_surcharge_usd=elec,
+            delivery_days_min=d_min,
+            delivery_days_max=d_max,
+            branch_address=branch,
+            is_standard=False,
+            created_at=str(c_data["created_at"]),
+        )
+
+
+@router.delete("/carriers/{carrier_id}")
+async def delete_user_carrier(
+    carrier_id: str,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> Dict[str, str]:
+    """Deletes a custom user carrier (IDOR protected, standard carriers cannot be deleted)."""
+    with get_connection() as conn:
+        row = conn.execute(
+            "SELECT * FROM user_carriers WHERE id = ? AND user_id = ? AND is_standard = 0",
+            (carrier_id, current_user.id),
+        ).fetchone()
+        if not row:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Kargo şirkəti tapılmadı və ya silinməsinə icazə verilmir.",
+            )
+
+        conn.execute("DELETE FROM user_carriers WHERE id = ?", (carrier_id,))
+        conn.commit()
+
+        return {"status": "success", "message": "Kargo şirkəti uğurla silindi."}
+
+
+# ==============================================================================
+# Modul 3: Sərbəst AI Söhbət Köməkçisi (KargoPilot AI Copilot)
+# ==============================================================================
+
+@router.post("/ai/chat", response_model=AIChatResponse)
+async def ai_chat_copilot(
+    req: AIChatRequest,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> AIChatResponse:
+    """Conversational AI Copilot with full user context and guaranteed hybrid fallback."""
+    user_msg = req.message.strip()
+    now_str = datetime.now(timezone.utc).isoformat()
+
+    with get_connection() as conn:
+        # 1. Fetch user context
+        user_row = conn.execute("SELECT * FROM users WHERE id = ?", (current_user.id,)).fetchone()
+        user_data = dict(user_row) if user_row else {}
+        full_name = user_data.get("full_name") or "Müştəri"
+        fin = user_data.get("fin") or "814CRM4"
+        branch = user_data.get("default_branch") or "28 May"
+        def_carrier = user_data.get("default_carrier") or "STAREX"
+
+        # Quota
+        q_row = conn.execute(
+            "SELECT COALESCE(SUM(invoice_amount_usd), 0.0) as total_spent FROM orders WHERE user_id = ?",
+            (current_user.id,),
+        ).fetchone()
+        spent_usd = round(float(q_row["total_spent"] if q_row else 0.0), 2)
+        remaining_usd = max(0.0, round(300.0 - spent_usd, 2))
+        status_q = "safe" if spent_usd < 250 else ("warning" if spent_usd <= 300 else "danger")
+
+        # Parcels
+        parcels_rows = conn.execute(
+            """SELECT o.id, o.platform, o.carrier, o.tracking_number, 
+                      COALESCE(i.title, 'Xarici bağlama') as title,
+                      COALESCE(o.invoice_amount_usd, 0.0) as invoice_amount_usd 
+               FROM orders o
+               LEFT JOIN order_items i ON o.id = i.order_id
+               WHERE o.user_id = ? 
+               GROUP BY o.id
+               ORDER BY o.created_at DESC LIMIT 5""",
+            (current_user.id,),
+        ).fetchall()
+        parcels = [dict(r) for r in parcels_rows]
+
+        # Carriers
+        carriers_rows = conn.execute(
+            "SELECT name, origin_country, rate_per_kg_usd, delivery_days_min, delivery_days_max FROM user_carriers WHERE user_id IS NULL OR user_id = ? ORDER BY rate_per_kg_usd ASC",
+            (current_user.id,),
+        ).fetchall()
+        carriers = [dict(r) for r in carriers_rows]
+
+        # Stores
+        stores_rows = conn.execute(
+            "SELECT name, country_code, category FROM user_stores WHERE user_id IS NULL OR user_id = ? ORDER BY name ASC",
+            (current_user.id,),
+        ).fetchall()
+        stores = [dict(r) for r in stores_rows]
+
+        # Family FINs
+        family_rows = conn.execute(
+            "SELECT name_relation, fin, monthly_limit_usd, spent_usd FROM family_fins WHERE user_id = ? ORDER BY created_at ASC",
+            (current_user.id,),
+        ).fetchall()
+        family_fins = [dict(r) for r in family_rows]
+
+    # Build context dictionary
+    context_data = {
+        "user_name": full_name,
+        "fin": fin,
+        "branch": branch,
+        "default_carrier": def_carrier,
+        "spent_usd": spent_usd,
+        "remaining_usd": remaining_usd,
+        "quota_status": status_q,
+        "active_parcels_count": len(parcels),
+        "parcels": parcels,
+        "carriers_count": len(carriers),
+        "stores_count": len(stores),
+        "family_fins": family_fins,
+    }
+
+    # Generate response
+    reply = generate_copilot_response(user_msg, context_data)
+
+    # Save to history
+    with get_connection() as conn:
+        msg_id_user = str(uuid.uuid4())
+        msg_id_assistant = str(uuid.uuid4())
+        conn.execute(
+            "INSERT INTO ai_chat_messages (id, user_id, role, content, created_at) VALUES (?, ?, 'user', ?, ?)",
+            (msg_id_user, current_user.id, user_msg, now_str),
+        )
+        conn.execute(
+            "INSERT INTO ai_chat_messages (id, user_id, role, content, created_at) VALUES (?, ?, 'assistant', ?, ?)",
+            (msg_id_assistant, current_user.id, reply, now_str),
+        )
+        conn.commit()
+
+    return AIChatResponse(
+        reply=reply,
+        timestamp=now_str,
+        context_used=context_data,
+    )
+
+
+@router.get("/ai/history", response_model=List[AIChatMessageResponse])
+async def get_ai_chat_history(
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> List[AIChatMessageResponse]:
+    """Retrieves recent AI chat history for the authenticated user."""
+    with get_connection() as conn:
+        rows = conn.execute(
+            "SELECT * FROM ai_chat_messages WHERE user_id = ? ORDER BY created_at ASC LIMIT 50",
+            (current_user.id,),
+        ).fetchall()
+        return [
+            AIChatMessageResponse(
+                id=r["id"],
+                role=r["role"],
+                content=r["content"],
+                created_at=str(r["created_at"]),
+            )
+            for r in rows
+        ]
+
+
+@router.delete("/ai/history")
+async def delete_ai_chat_history(
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> Dict[str, str]:
+    """Clears AI Copilot conversation history for the authenticated user."""
+    with get_connection() as conn:
+        conn.execute("DELETE FROM ai_chat_messages WHERE user_id = ?", (current_user.id,))
+        conn.commit()
+        return {"status": "success", "message": "Söhbət tarixçəsi təmizləndi."}
+
+
+# ==============================================================================
+# Modul 4: Ailə FİN Şəbəkəsi (Family FIN Mesh)
+# ==============================================================================
+
+@router.get("/family-fins", response_model=List[FamilyFinResponse])
+async def get_family_fins(
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> List[FamilyFinResponse]:
+    """Retrieves all registered Family FIN profiles for the current user."""
+    with get_connection() as conn:
+        rows = conn.execute(
+            "SELECT * FROM family_fins WHERE user_id = ? ORDER BY created_at ASC",
+            (current_user.id,),
+        ).fetchall()
+        return [
+            FamilyFinResponse(
+                id=r["id"],
+                user_id=r["user_id"],
+                name_relation=r["name_relation"],
+                fin=r["fin"],
+                monthly_limit_usd=float(r["monthly_limit_usd"]),
+                spent_usd=float(r["spent_usd"] or 0.0),
+                remaining_usd=max(0.0, round(float(r["monthly_limit_usd"]) - float(r["spent_usd"] or 0.0), 2)),
+                created_at=str(r["created_at"]),
+            )
+            for r in rows
+        ]
+
+
+@router.post("/family-fins", response_model=FamilyFinResponse, status_code=status.HTTP_201_CREATED)
+async def create_family_fin(
+    req: CreateFamilyFinRequest,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> FamilyFinResponse:
+    """Adds a family member FIN to the user's Family FIN Mesh."""
+    fin_clean = req.fin.strip().upper()
+    if len(fin_clean) != 7:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="FİN kod mütləq 7 simvoldan ibarət olmalıdır.",
+        )
+
+    fin_id = str(uuid.uuid4())
+    now_str = datetime.now(timezone.utc).isoformat()
+
+    with get_connection() as conn:
+        conn.execute(
+            """INSERT INTO family_fins (id, user_id, name_relation, fin, monthly_limit_usd, spent_usd, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            (fin_id, current_user.id, req.name_relation.strip(), fin_clean, req.monthly_limit_usd, req.spent_usd, now_str),
+        )
+        conn.commit()
+
+        return FamilyFinResponse(
+            id=fin_id,
+            user_id=current_user.id,
+            name_relation=req.name_relation.strip(),
+            fin=fin_clean,
+            monthly_limit_usd=req.monthly_limit_usd,
+            spent_usd=req.spent_usd,
+            remaining_usd=max(0.0, round(req.monthly_limit_usd - req.spent_usd, 2)),
+            created_at=now_str,
+        )
+
+
+@router.delete("/family-fins/{fin_id}")
+async def delete_family_fin(
+    fin_id: str,
+    current_user: AuthenticatedUser = Depends(get_current_user),
+) -> Dict[str, str]:
+    """Deletes a family member FIN profile (IDOR protected)."""
+    with get_connection() as conn:
+        row = conn.execute(
+            "SELECT * FROM family_fins WHERE id = ? AND user_id = ?",
+            (fin_id, current_user.id),
+        ).fetchone()
+        if not row:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Ailə FİN profili tapılmadı.",
+            )
+
+        conn.execute("DELETE FROM family_fins WHERE id = ?", (fin_id,))
+        conn.commit()
+
+        return {"status": "success", "message": "Ailə FİN profili uğurla silindi."}
 
 
 # ==============================================================================
@@ -575,7 +1258,7 @@ async def get_user_quota(
 async def export_user_data(
     current_user: AuthenticatedUser = Depends(get_current_user),
 ) -> DataExportBundle:
-    """Exports all personal profile, parcels, and customs quota history for the authenticated user.
+    """Exports all personal profile, parcels, stores, carriers, family fins, and customs quota history for the authenticated user.
     Strict tenant isolation is guaranteed.
     """
     now_str = datetime.now(timezone.utc).isoformat()
@@ -595,8 +1278,12 @@ async def export_user_data(
             "tier": user_data.get("tier", "cloud_managed"),
             "fin": user_data.get("fin") or "814CRM4",
             "default_branch": user_data.get("default_branch") or "28 May",
+            "default_carrier": user_data.get("default_carrier") or "STAREX",
+            "currency_preference": user_data.get("currency_preference") or "AZN",
             "notification_whatsapp": bool(user_data.get("notification_whatsapp", 1)),
             "notification_email": bool(user_data.get("notification_email", 1)),
+            "notification_sms": bool(user_data.get("notification_sms", 1)),
+            "notification_telegram": bool(user_data.get("notification_telegram", 0)),
             "created_at": str(user_data.get("created_at")),
         }
 
@@ -671,13 +1358,41 @@ async def export_user_data(
             "status": "safe" if total_spent_usd < 250.0 else ("warning" if total_spent_usd <= 290.0 else "danger"),
         }
 
+        # 4. Custom Stores (Etap 6)
+        custom_stores_rows = conn.execute(
+            """SELECT id, name, domain_url, country_code, default_currency, category, icon_badge, created_at 
+               FROM user_stores WHERE user_id = ? AND is_standard = 0""",
+            (current_user.id,),
+        ).fetchall()
+        custom_stores = [dict(r) for r in custom_stores_rows]
+
+        # 5. Custom Carriers (Etap 6)
+        custom_carriers_rows = conn.execute(
+            """SELECT id, name, website_url, tracking_url_template, origin_country, rate_per_kg_usd, 
+                      liquid_surcharge_usd, electronics_surcharge_usd, delivery_days_min, delivery_days_max, branch_address, created_at 
+               FROM user_carriers WHERE user_id = ? AND is_standard = 0""",
+            (current_user.id,),
+        ).fetchall()
+        custom_carriers = [dict(r) for r in custom_carriers_rows]
+
+        # 6. Family FINs (Etap 6)
+        family_fins_rows = conn.execute(
+            """SELECT id, name_relation, fin, monthly_limit_usd, spent_usd, created_at 
+               FROM family_fins WHERE user_id = ?""",
+            (current_user.id,),
+        ).fetchall()
+        family_fins = [dict(r) for r in family_fins_rows]
+
     return DataExportBundle(
-        schema_version="4.5.0",
+        schema_version="5.0.0",
         service="kargopilot-core",
         exported_at=now_str,
         user_profile=profile_dict,
         parcels=parcels,
         quota_summary=quota_dict,
+        custom_stores=custom_stores,
+        custom_carriers=custom_carriers,
+        family_fins=family_fins,
     )
 
 
@@ -686,21 +1401,14 @@ async def import_user_data(
     req: ImportDataRequest,
     current_user: AuthenticatedUser = Depends(get_current_user),
 ) -> ImportDataResponse:
-    """Imports an exported KargoPilot JSON dataset into the authenticated user's account.
-    Prevents duplicate tracking records and updates the quota dynamically.
+    """Imports an exported KargoPilot JSON dataset (parcels, custom stores, carriers, family FINs)
+    into the authenticated user's account. Prevents duplicate tracking records and updates quota dynamically.
     """
-    if not req.parcels:
-        return ImportDataResponse(
-            status="success",
-            message="İdxal ediləcək bağlama tapılmadı.",
-            imported_count=0,
-            skipped_count=0,
-            total_parcels=0,
-            updated_quota=await get_user_quota(current_user),
-        )
-
     imported_count = 0
     skipped_count = 0
+    imported_stores = 0
+    imported_carriers = 0
+    imported_family = 0
     now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
     with get_connection() as conn:
@@ -709,118 +1417,223 @@ async def import_user_data(
         fallback_phone = (u_row["phone"] if u_row and u_row["phone"] else None) or "+994776346310"
         fallback_fin = (u_row["fin"] if u_row and u_row["fin"] else None) or "814CRM4"
 
-        for p in req.parcels:
-            clean_tracking = p.tracking_number.strip().upper()
-            existing = conn.execute(
-                "SELECT id FROM orders WHERE user_id = ? AND UPPER(tracking_number) = ?",
-                (current_user.id, clean_tracking),
-            ).fetchone()
-            if existing:
-                skipped_count += 1
-                continue
+        # 1. Import Parcels
+        if req.parcels:
+            for p in req.parcels:
+                clean_tracking = p.tracking_number.strip().upper()
+                existing = conn.execute(
+                    "SELECT id FROM orders WHERE user_id = ? AND UPPER(tracking_number) = ?",
+                    (current_user.id, clean_tracking),
+                ).fetchone()
+                if existing:
+                    skipped_count += 1
+                    continue
 
-            order_id = str(uuid.uuid4())
-            amount_usd = round(p.invoice_amount_usd, 2)
-            amount_azn = round(p.invoice_amount_azn if p.invoice_amount_azn else amount_usd * 1.70, 2)
-            platform = p.platform.strip() or "Digər"
-            carrier = p.carrier.strip().upper() or "STAREX"
-            title = p.title.strip() or "İdxal edilmiş bağlama"
-            r_name = p.receiver_name or fallback_name
-            r_phone = p.receiver_phone or fallback_phone
-            r_fin = p.fin or fallback_fin
+                order_id = str(uuid.uuid4())
+                amount_usd = round(p.invoice_amount_usd, 2)
+                amount_azn = round(p.invoice_amount_azn if p.invoice_amount_azn else amount_usd * 1.70, 2)
+                platform = p.platform.strip() or "Digər"
+                carrier = p.carrier.strip().upper() or "STAREX"
+                title = p.title.strip() or "İdxal edilmiş bağlama"
+                r_name = p.receiver_name or fallback_name
+                r_phone = p.receiver_phone or fallback_phone
+                r_fin = p.fin or fallback_fin
 
-            conn.execute(
-                """INSERT INTO orders 
-                   (id, user_id, platform, temu_order_ref, tracking_number, carrier, receiver_name, 
-                    receiver_phone, fin, original_amount, original_currency, fx_rate_to_azn, 
-                    fx_rate_to_usd, invoice_amount_azn, invoice_amount_usd, temu_invoice_amount,
-                    temu_invoice_currency, status, extra, created_at, updated_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'AZN', 1.0, 0.5882, ?, ?, ?, 'AZN', ?, '{}', ?, ?)""",
-                (
-                    order_id,
-                    current_user.id,
-                    platform,
-                    f"KP-{uuid.uuid4().hex[:8]}",
-                    clean_tracking,
-                    carrier,
-                    r_name,
-                    r_phone,
-                    r_fin,
-                    amount_azn,
-                    amount_azn,
-                    amount_usd,
-                    amount_azn,
-                    p.status or "Yoldadır",
-                    now_str,
-                    now_str,
-                ),
-            )
-
-            if p.items:
-                for it in p.items:
-                    item_id = str(uuid.uuid4())
-                    it_usd = float(it.total_price_usd) if it.total_price_usd else amount_usd
-                    it_azn = float(it.total_price_azn) if it.total_price_azn else amount_azn
-                    unit_azn = it.unit_price_azn if it.unit_price_azn is not None else (it.unit_price or it_azn)
-                    conn.execute(
-                        """INSERT INTO order_items 
-                           (id, order_id, title, main_cat, sub_cat, quantity, unit_price, price_unknown, total_price, currency, unit_price_azn, total_price_azn, total_price_usd, extra)
-                           VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, '{}')""",
-                        (
-                            item_id,
-                            order_id,
-                            it.title.strip(),
-                            it.main_cat or "Geyim aksesuarları",
-                            it.sub_cat or "Digər",
-                            it.quantity,
-                            it.unit_price or it_azn,
-                            it_azn,
-                            it.currency or "AZN",
-                            unit_azn,
-                            it_azn,
-                            it_usd,
-                        ),
-                    )
-            else:
-                item_id = str(uuid.uuid4())
                 conn.execute(
-                    """INSERT INTO order_items 
-                       (id, order_id, title, main_cat, sub_cat, quantity, unit_price, price_unknown, total_price, currency, unit_price_azn, total_price_azn, total_price_usd, extra)
-                       VALUES (?, ?, ?, 'Geyim aksesuarları', 'Digər', 1, ?, 0, ?, 'AZN', ?, ?, ?, '{}')""",
+                    """INSERT INTO orders 
+                       (id, user_id, platform, temu_order_ref, tracking_number, carrier, receiver_name, 
+                        receiver_phone, fin, original_amount, original_currency, fx_rate_to_azn, 
+                        fx_rate_to_usd, invoice_amount_azn, invoice_amount_usd, temu_invoice_amount,
+                        temu_invoice_currency, status, extra, created_at, updated_at)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'AZN', 1.0, 0.5882, ?, ?, ?, 'AZN', ?, '{}', ?, ?)""",
                     (
-                        item_id,
                         order_id,
-                        title,
-                        amount_azn,
-                        amount_azn,
+                        current_user.id,
+                        platform,
+                        f"KP-{uuid.uuid4().hex[:8]}",
+                        clean_tracking,
+                        carrier,
+                        r_name,
+                        r_phone,
+                        r_fin,
                         amount_azn,
                         amount_azn,
                         amount_usd,
+                        amount_azn,
+                        p.status or "Yoldadır",
+                        now_str,
+                        now_str,
                     ),
                 )
-            imported_count += 1
 
-        conn.commit()
+                if p.items:
+                    for it in p.items:
+                        item_id = str(uuid.uuid4())
+                        it_usd = float(it.total_price_usd) if it.total_price_usd else amount_usd
+                        it_azn = float(it.total_price_azn) if it.total_price_azn else amount_azn
+                        unit_azn = it.unit_price_azn if it.unit_price_azn is not None else (it.unit_price or it_azn)
+                        conn.execute(
+                            """INSERT INTO order_items 
+                               (id, order_id, title, main_cat, sub_cat, quantity, unit_price, price_unknown, total_price, currency, unit_price_azn, total_price_azn, total_price_usd, extra)
+                               VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, '{}')""",
+                            (
+                                item_id,
+                                order_id,
+                                it.title.strip(),
+                                it.main_cat or "Geyim aksesuarları",
+                                it.sub_cat or "Digər",
+                                it.quantity,
+                                it.unit_price or it_azn,
+                                it_azn,
+                                it.currency or "AZN",
+                                unit_azn,
+                                it_azn,
+                                it_usd,
+                            ),
+                        )
+                else:
+                    item_id = str(uuid.uuid4())
+                    conn.execute(
+                        """INSERT INTO order_items 
+                           (id, order_id, title, main_cat, sub_cat, quantity, unit_price, price_unknown, total_price, currency, unit_price_azn, total_price_azn, total_price_usd, extra)
+                           VALUES (?, ?, ?, 'Geyim aksesuarları', 'Digər', 1, ?, 0, ?, 'AZN', ?, ?, ?, '{}')""",
+                        (
+                            item_id,
+                            order_id,
+                            title,
+                            amount_azn,
+                            amount_azn,
+                            amount_azn,
+                            amount_azn,
+                            amount_usd,
+                        ),
+                    )
+                imported_count += 1
 
+        # 2. Import Custom Stores (Etap 6)
+        if req.custom_stores:
+            for s in req.custom_stores:
+                s_name = s.get("name", "").strip()
+                s_url = s.get("domain_url", "").strip()
+                if not s_name:
+                    continue
+                exists = conn.execute(
+                    "SELECT id FROM user_stores WHERE user_id = ? AND LOWER(name) = LOWER(?)",
+                    (current_user.id, s_name),
+                ).fetchone()
+                if not exists:
+                    conn.execute(
+                        """INSERT INTO user_stores (id, user_id, name, domain_url, country_code, default_currency, category, icon_badge, is_standard, created_at)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?)""",
+                        (
+                            str(uuid.uuid4()),
+                            current_user.id,
+                            s_name,
+                            s_url or "https://" + s_name.lower().replace(" ", "") + ".com",
+                            s.get("country_code", "TR").upper(),
+                            s.get("default_currency", "TRY").upper(),
+                            s.get("category", "Ümumi"),
+                            s.get("icon_badge", "🛍️"),
+                            now_str,
+                        ),
+                    )
+                    imported_stores += 1
+
+        # 3. Import Custom Carriers (Etap 6)
+        if req.custom_carriers:
+            for c in req.custom_carriers:
+                c_name = c.get("name", "").strip()
+                if not c_name:
+                    continue
+                exists = conn.execute(
+                    "SELECT id FROM user_carriers WHERE user_id = ? AND LOWER(name) = LOWER(?)",
+                    (current_user.id, c_name),
+                ).fetchone()
+                if not exists:
+                    conn.execute(
+                        """INSERT INTO user_carriers 
+                           (id, user_id, name, website_url, tracking_url_template, origin_country, rate_per_kg_usd, liquid_surcharge_usd, electronics_surcharge_usd, delivery_days_min, delivery_days_max, branch_address, is_standard, created_at)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)""",
+                        (
+                            str(uuid.uuid4()),
+                            current_user.id,
+                            c_name,
+                            c.get("website_url"),
+                            c.get("tracking_url_template"),
+                            c.get("origin_country", "TR").upper(),
+                            float(c.get("rate_per_kg_usd", 3.0)),
+                            float(c.get("liquid_surcharge_usd", 0.0)),
+                            float(c.get("electronics_surcharge_usd", 0.0)),
+                            int(c.get("delivery_days_min", 3)),
+                            int(c.get("delivery_days_max", 6)),
+                            c.get("branch_address", "Mərkəzi filial"),
+                            now_str,
+                        ),
+                    )
+                    imported_carriers += 1
+
+        # 4. Import Family FINs (Etap 6)
+        if req.family_fins:
+            for f in req.family_fins:
+                f_fin = f.get("fin", "").strip().upper()
+                f_name = f.get("name_relation", "").strip()
+                if not f_fin or len(f_fin) != 7:
+                    continue
+                exists = conn.execute(
+                    "SELECT id FROM family_fins WHERE user_id = ? AND fin = ?",
+                    (current_user.id, f_fin),
+                ).fetchone()
+                if not exists:
+                    conn.execute(
+                        """INSERT INTO family_fins (id, user_id, name_relation, fin, monthly_limit_usd, spent_usd, created_at)
+                           VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                        (
+                            str(uuid.uuid4()),
+                            current_user.id,
+                            f_name or "Ailə üzvü",
+                            f_fin,
+                            float(f.get("monthly_limit_usd", 300.0)),
+                            float(f.get("spent_usd", 0.0)),
+                            now_str,
+                        ),
+                    )
+                    imported_family += 1
+
+        # 5. Profile Update (Optional)
         if req.user_profile:
             fin = req.user_profile.get("fin")
             branch = req.user_profile.get("default_branch")
-            if fin or branch:
+            carrier = req.user_profile.get("default_carrier")
+            curr = req.user_profile.get("currency_preference")
+            if fin or branch or carrier or curr:
                 conn.execute(
-                    """UPDATE users SET fin = COALESCE(?, fin), default_branch = COALESCE(?, default_branch) WHERE id = ?""",
-                    (fin, branch, current_user.id),
+                    """UPDATE users SET 
+                       fin = COALESCE(?, fin), 
+                       default_branch = COALESCE(?, default_branch),
+                       default_carrier = COALESCE(?, default_carrier),
+                       currency_preference = COALESCE(?, currency_preference)
+                       WHERE id = ?""",
+                    (fin, branch, carrier, curr, current_user.id),
                 )
-                conn.commit()
+
+        conn.commit()
 
     updated_quota = await get_user_quota(current_user)
 
+    msg = f"{imported_count} bağlama uğurla idxal edildi ({skipped_count} dublikat saxlanıldı)."
+    if imported_stores or imported_carriers or imported_family:
+        msg += f" [Əlavə olaraq: {imported_stores} satıcı, {imported_carriers} kargo, {imported_family} ailə FİN idxal olundu]."
+
     return ImportDataResponse(
         status="success",
-        message=f"{imported_count} bağlama uğurla idxal edildi ({skipped_count} dublikat saxlanıldı).",
+        message=msg,
         imported_count=imported_count,
         skipped_count=skipped_count,
         total_parcels=imported_count + skipped_count,
         updated_quota=updated_quota,
+        imported_stores_count=imported_stores,
+        imported_carriers_count=imported_carriers,
+        imported_family_fins_count=imported_family,
     )
 
 
@@ -829,7 +1642,9 @@ async def wipe_user_account_data(
     confirm_wipe: bool = Query(False, description="Məlumatların silinməsini təsdiqləyən flag"),
     current_user: AuthenticatedUser = Depends(get_current_user),
 ) -> WipeDataResponse:
-    """Wipes all personal parcels and customs data for the current user (Right to be Forgotten)."""
+    """Wipes all personal parcels, custom stores, custom carriers, AI messages, and family FINs
+    for the current user (Right to be Forgotten).
+    """
     if not confirm_wipe:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -837,6 +1652,7 @@ async def wipe_user_account_data(
         )
 
     with get_connection() as conn:
+        # 1. Orders and Items
         orders = conn.execute("SELECT id FROM orders WHERE user_id = ?", (current_user.id,)).fetchall()
         order_ids = [r["id"] for r in orders]
         count = len(order_ids)
@@ -845,13 +1661,35 @@ async def wipe_user_account_data(
             placeholders = ",".join("?" for _ in order_ids)
             conn.execute(f"DELETE FROM order_items WHERE order_id IN ({placeholders})", order_ids)
             conn.execute("DELETE FROM orders WHERE user_id = ?", (current_user.id,))
-            conn.commit()
+
+        # 2. Custom stores
+        wiped_stores = conn.execute(
+            "DELETE FROM user_stores WHERE user_id = ? AND is_standard = 0", (current_user.id,)
+        ).rowcount
+
+        # 3. Custom carriers
+        wiped_carriers = conn.execute(
+            "DELETE FROM user_carriers WHERE user_id = ? AND is_standard = 0", (current_user.id,)
+        ).rowcount
+
+        # 4. Family FINs
+        wiped_family = conn.execute(
+            "DELETE FROM family_fins WHERE user_id = ?", (current_user.id,)
+        ).rowcount
+
+        # 5. AI Chat Messages
+        conn.execute("DELETE FROM ai_chat_messages WHERE user_id = ?", (current_user.id,))
+
+        conn.commit()
 
     return WipeDataResponse(
         status="success",
-        message="Bütün şəxsi bağlama və gömrük məlumatlarınız bulud serverindən tam silindi.",
+        message="Bütün şəxsi bağlama, fərdi kargo, satıcı və ailə FİN məlumatlarınız bulud serverindən tam silindi.",
         wiped_orders_count=count,
         remaining_quota_usd=300.0,
+        wiped_stores_count=wiped_stores,
+        wiped_carriers_count=wiped_carriers,
+        wiped_family_fins_count=wiped_family,
     )
 
 
@@ -974,11 +1812,24 @@ CARRIER_TARIFF_MATRIX = {
 }
 
 
+async def get_optional_current_user(
+    request: Request,
+    bearer: Optional[HTTPAuthorizationCredentials] = Depends(_bearer_scheme),
+) -> Optional[AuthenticatedUser]:
+    try:
+        return await get_current_user(request, bearer)
+    except Exception:
+        return None
+
+
 @router.post("/arbitrage/calculate", response_model=ArbitrageResponse)
 async def calculate_smart_arbitrage(
     req: ArbitrageCalculateRequest,
+    current_user: Optional[AuthenticatedUser] = Depends(get_optional_current_user),
 ) -> ArbitrageResponse:
-    """Calculates shipping tariffs across all major carriers with volumetric weight, surcharges, and savings optimization."""
+    """Calculates shipping tariffs across all major carriers with volumetric weight, surcharges,
+    and dynamically includes the user's custom carriers matching origin_country.
+    """
     # Volumetric weight calculation: (L * W * H) / 6000
     volumetric_weight_kg: Optional[float] = None
     if (
@@ -1026,6 +1877,44 @@ async def calculate_smart_arbitrage(
             "delivery_eta": f"{c['days_min']}-{c['days_max']} iş günü",
             "notes": type_note,
         })
+
+    # Dynamically inject custom carriers if user is authenticated (Etap 6)
+    if current_user:
+        try:
+            with get_connection() as conn:
+                custom_rows = conn.execute(
+                    """SELECT name, origin_country, rate_per_kg_usd, liquid_surcharge_usd, 
+                              electronics_surcharge_usd, delivery_days_min, delivery_days_max 
+                       FROM user_carriers 
+                       WHERE user_id = ? AND origin_country = ? AND is_standard = 0""",
+                    (current_user.id, origin),
+                ).fetchall()
+                for cr in custom_rows:
+                    s_extra = 0.0
+                    if parcel_type_norm == "liquid":
+                        s_extra = float(cr["liquid_surcharge_usd"] or 0.0)
+                    elif parcel_type_norm == "electronics":
+                        s_extra = float(cr["electronics_surcharge_usd"] or 0.0)
+
+                    c_rate_per_kg = float(cr["rate_per_kg_usd"] or 3.0)
+                    raw_usd = (c_rate_per_kg * chargeable_weight_kg) + s_extra
+                    rate_usd = round(raw_usd, 2)
+                    rate_azn = round(rate_usd * 1.70, 2)
+                    c_min = int(cr["delivery_days_min"] or 3)
+                    c_max = int(cr["delivery_days_max"] or 6)
+                    computed_carriers.append({
+                        "carrier_name": cr["name"] + " (Fərdi)",
+                        "carrier_code": "CUSTOM_" + cr["name"].upper().replace(" ", "_")[:12],
+                        "chargeable_weight_kg": chargeable_weight_kg,
+                        "rate_usd": rate_usd,
+                        "rate_azn": rate_azn,
+                        "delivery_days_min": c_min,
+                        "delivery_days_max": c_max,
+                        "delivery_eta": f"{c_min}-{c_max} iş günü",
+                        "notes": f"Fərdi kargo tarifi (${c_rate_per_kg:.2f}/kq)",
+                    })
+        except Exception as e:
+            logger.warning("Failed to inject custom carriers into arbitrage: %s", e)
 
     # Sort cheapest to most expensive
     computed_carriers.sort(key=lambda x: (x["rate_usd"], x["delivery_days_max"]))

@@ -45,10 +45,10 @@ TRY_AZN_RATE: float = 0.0485  # Turkish Lira
 CNY_AZN_RATE: float = 0.2380  # Chinese Yuan
 
 # Consignee Details (Default Account Holder)
-CONSIGNEE_NAME: str = "Vasif Məcidli"
-CONSIGNEE_PHONE: str = "+994776346310"
-CONSIGNEE_FIN: str = "6XXXXXX"
-CONSIGNEE_ADDRESS: str = "Nəsimi rayonu, Eldar Tağızadə 1 (City Global Co-working Mərkəzi), Bakı, AZ1014"
+CONSIGNEE_NAME: str = os.getenv("KP_DEFAULT_CONSIGNEE_NAME", "KargoPilot İstifadəçisi")
+CONSIGNEE_PHONE: str = os.getenv("KP_DEFAULT_CONSIGNEE_PHONE", "+994501234567")
+CONSIGNEE_FIN: str = os.getenv("KP_DEFAULT_CONSIGNEE_FIN", "7KP2026")
+CONSIGNEE_ADDRESS: str = os.getenv("KP_DEFAULT_CONSIGNEE_ADDRESS", "Bakı şəhəri, Nəsimi rayonu, AZ1000")
 
 # Secret Key for Sessions / CSRF
 SECRET_KEY: str = os.getenv("PCS_SECRET_KEY", "pcs-secret-admin-key-48481-local")
