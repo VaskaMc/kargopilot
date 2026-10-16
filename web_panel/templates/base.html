@@ -1,172 +1,439 @@
 <!DOCTYPE html>
-<html lang="az" class="h-full bg-slate-950 text-slate-100">
+<html lang="az" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }} - PCS Central Management</title>
-    <!-- Tailwind CSS CDN -->
+    <title>{{ page_title }} · KargoPilot v4.0 İdarəetmə Mərkəzi</title>
+    <meta name="description" content="KargoPilot v4.0 Mərkəzi İdarəetmə Paneli · 4-Kargo Tarif Müqayisəsi, SmartCustoms $300 Kvota Mühafizəsi və Loyd WhatsApp AI Mühərriki.">
+    <meta name="theme-color" content="#0b0f14">
+    <link rel="canonical" href="https://vaskamc.github.io/kargopilot/">
+    <link rel="alternate" type="text/plain" title="LLM Documentation (llms.txt)" href="/llms.txt">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/img/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon-32.png">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/apple-touch-icon.png">
+
+    <!-- Open Graph & Twitter Card -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KargoPilot">
+    <meta property="og:locale" content="az_AZ">
+    <meta property="og:url" content="https://vaskamc.github.io/kargopilot/">
+    <meta property="og:title" content="{{ page_title }} · KargoPilot v4.0 İdarəetmə Mərkəzi">
+    <meta property="og:description" content="Azərbaycan üçün avtonom transsərhəd kargo, 4-daşıyıcı tarif müqayisəsi və SmartCustoms $300 kvota mühafizəsi.">
+    <meta property="og:image" content="/static/img/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page_title }} · KargoPilot v4.0">
+    <meta name="twitter:description" content="Azərbaycan üçün avtonom transsərhəd kargo, 4-daşıyıcı tarif müqayisəsi və SmartCustoms $300 kvota mühafizəsi.">
+    <meta name="twitter:image" content="/static/img/og-image.jpg">
+
+    <!-- Google Tag Manager + Consent Mode v2 + SHA-256 Enhanced Conversions -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        (function() {
+            var saved = null;
+            try { saved = JSON.parse(localStorage.getItem('kp_consent_v2')); } catch (e) {}
+            var granted = saved ? saved.mode === 'granted' : true;
+            gtag('consent', 'default', {
+                'ad_storage': granted ? 'granted' : 'denied',
+                'analytics_storage': granted ? 'granted' : 'denied',
+                'ad_user_data': granted ? 'granted' : 'denied',
+                'ad_personalization': granted ? 'granted' : 'denied',
+                'functionality_storage': 'granted',
+                'security_storage': 'granted'
+            });
+            try {
+                var p = new URLSearchParams(window.location.search);
+                var keys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid','ttclid'];
+                var cap = {}; var found = false;
+                for (var i = 0; i < keys.length; i++) {
+                    if (p.get(keys[i])) { cap[keys[i]] = p.get(keys[i]); found = true; }
+                }
+                if (found) {
+                    cap.ts = new Date().toISOString();
+                    if (!localStorage.getItem('kp_utm_first')) localStorage.setItem('kp_utm_first', JSON.stringify(cap));
+                    localStorage.setItem('kp_utm_last', JSON.stringify(cap));
+                }
+            } catch (e) {}
+            window.dataLayer.push({
+                'gtm.start': new Date().getTime(),
+                'event': 'gtm.js',
+                'kp_version': '4.0.0',
+                'kp_surface': 'local_tunnel_panel'
+            });
+        })();
+    </script>
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-KARGOPILOT"></script>
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://vaskamc.github.io/kargopilot/#organization",
+          "name": "KargoPilot",
+          "url": "https://vaskamc.github.io/kargopilot/",
+          "logo": "/static/img/logo.jpg"
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://vaskamc.github.io/kargopilot/#software",
+          "name": "KargoPilot v4.0 Central Web Panel",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Linux, Windows, macOS",
+          "softwareVersion": "4.0.0",
+          "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" }
+        }
+      ]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN configured with KargoPilot v4.0 Soot / Signal Lime / Aviation Cyan palette -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['"Schibsted Grotesk"', 'sans-serif'],
+                        mono: ['"Schibsted Grotesk"', 'sans-serif'],
+                    },
                     colors: {
+                        slate: {
+                            950: '#0b0f14',
+                            900: '#121922',
+                            800: '#192330',
+                            700: '#243244',
+                            600: '#35475e',
+                            500: '#647790',
+                            400: '#9badc4',
+                            300: '#c6d3e3',
+                            200: '#e2e9f2',
+                            100: '#f4f7fa',
+                        },
+                        indigo: {
+                            950: '#162415',
+                            900: '#1e331c',
+                            800: '#2b4a27',
+                            700: '#a8d162',
+                            600: '#dafa9c',
+                            500: '#e5ffba',
+                            400: '#dafa9c',
+                            300: '#e6ffba',
+                        },
+                        purple: {
+                            500: '#38bdf8',
+                            400: '#38bdf8',
+                        },
                         brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            900: '#312e81',
+                            lime: '#dafa9c',
+                            cyan: '#38bdf8',
+                            soot: '#0b0f14',
+                            slate: '#121922',
+                            panel: '#192330',
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Custom scrollbars */
+        :root {
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        body {
+            background-color: #0b0f14;
+            color: #f4f7fa;
+            font-family: 'Schibsted Grotesk', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .font-mono, .num, table td, table th {
+            font-variant-numeric: tabular-nums;
+        }
+        /* Make primary buttons (bg-indigo-600) use dark soot ink on Signal Lime (#dafa9c) */
+        .bg-indigo-600 {
+            background-color: #dafa9c !important;
+            color: #0b0f14 !important;
+            font-weight: 700 !important;
+            box-shadow: none !important;
+        }
+        .bg-indigo-600:hover {
+            background-color: #e6ffba !important;
+        }
+        .bg-indigo-600, .bg-indigo-600 *, .bg-indigo-600 i, .bg-indigo-600 svg, .bg-indigo-600 span {
+            color: #0b0f14 !important;
+        }
+        /* Eliminate generic shadows and pulsing animations per taste-skill & design-motion-principles */
+        .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl {
+            box-shadow: none !important;
+        }
+        .animate-pulse, .animate-ping, .animate-bounce {
+            animation: none !important;
+        }
+        a, button {
+            transition: transform 160ms var(--ease-out), background-color 160ms var(--ease-out), color 160ms var(--ease-out), opacity 160ms var(--ease-out);
+        }
+        :focus-visible {
+            outline: 2px solid #dafa9c !important;
+            outline-offset: 2px !important;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar-track { background: #0b0f14; }
+        ::-webkit-scrollbar-thumb { background: #243244; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #35475e; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
-<body class="h-full flex flex-col font-sans antialiased bg-slate-950 text-slate-100">
+<body class="h-full flex flex-col bg-slate-950 text-slate-100">
+
+    <!-- Skip Link for Keyboard & Screen Reader Users -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-slate-950 focus:font-extrabold focus:rounded-lg">
+        Əsas məzmuna keçid
+    </a>
 
     <!-- TOP BAR -->
-    <header class="h-14 border-b border-slate-800 bg-slate-900/90 backdrop-blur px-6 flex items-center justify-between z-30 shrink-0">
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/30">
-                    <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
-                </div>
-                <div>
-                    <span class="font-black text-sm tracking-wide text-white">PCS</span>
-                    <span class="text-xs font-medium text-slate-400 ml-1">Central Web Management</span>
-                </div>
-            </div>
+    <header class="h-16 bg-slate-900 px-4 sm:px-6 flex items-center justify-between z-30 shrink-0 border-b border-slate-800/80">
+        <div class="flex items-center gap-3 sm:gap-5">
+            <!-- Mobile Sidebar Toggle -->
+            <button type="button" onclick="toggleMobileSidebar()" class="md:hidden p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center shrink-0" aria-label="Menyunu aç və ya bağla">
+                <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
 
-            <!-- Security Badge: Localhost / SSH Tunnel Only -->
-            <div class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 text-xs font-mono">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <a href="/" class="flex items-center gap-3">
+                <img src="/static/img/logo-icon.png" alt="KargoPilot Korporativ Loqo" class="w-10 h-10 rounded-lg object-cover">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-extrabold text-base tracking-tight text-white">KargoPilot</span>
+                        <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-800 text-indigo-400">v4.0</span>
+                    </div>
+                    <span class="text-xs font-medium text-slate-400 block truncate max-w-[170px] sm:max-w-none">Sərhədsiz Kargo və Gömrük Otopilotu</span>
+                </div>
+            </a>
+
+            <!-- Security Indicator: Localhost / SSH Tunnel Only -->
+            <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-emerald-400 text-xs font-semibold num">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                 <span>127.0.0.1:48481</span>
-                <span class="text-emerald-600">|</span>
-                <span class="text-emerald-300 text-[11px]">SSH Tunnel Secured (-p 1999)</span>
+                <span class="text-slate-600">·</span>
+                <span class="text-slate-300">SSH Tunel Aktiv</span>
             </div>
         </div>
 
-        <!-- Right Side: Currency Rates & Status -->
+        <!-- Right Side: Currency Rates & Actions -->
         <div class="flex items-center gap-4 text-xs">
-            <div class="hidden lg:flex items-center gap-3 px-3 py-1 bg-slate-800/70 rounded-lg border border-slate-700/60 text-slate-300 font-mono">
-                <span>CBAR Məzənnə:</span>
-                <span class="text-indigo-400 font-semibold">$1 = 1.70 ₼</span>
-                <span class="text-slate-600">•</span>
-                <span class="text-amber-400 font-semibold">1₺ = 0.0485 ₼</span>
-                <span class="text-slate-600">•</span>
-                <span class="text-rose-400 font-semibold">1¥ = 0.238 ₼</span>
+            <div class="hidden xl:flex items-center gap-3 px-3.5 py-1.5 bg-slate-800 rounded-lg text-slate-200 font-semibold num">
+                <span class="text-slate-400">CBAR:</span>
+                <span class="text-indigo-400">1 USD = 1.7000 ₼</span>
+                <span class="text-slate-600">·</span>
+                <span class="text-amber-400">1 TRY = 0.0485 ₼</span>
+                <span class="text-slate-600">·</span>
+                <span class="text-sky-400">1 CNY = 0.2380 ₼</span>
             </div>
 
+            <a href="/showcase" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold rounded-lg">
+                <i data-lucide="compass" class="w-3.5 h-3.5 text-sky-400"></i>
+                <span>Vitrin &amp; Kalkulyator</span>
+            </a>
+
             <form action="/customs/sync" method="post" class="inline">
-                <button type="submit" class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition">
+                <button type="submit" class="flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 rounded-lg">
                     <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                     <span>Sinxronlaşdır</span>
                 </button>
             </form>
-
-            <div class="flex items-center gap-2 pl-2 border-l border-slate-800">
-                <div class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 font-bold text-xs border border-slate-700">
-                    VM
-                </div>
-                <span class="hidden sm:inline font-medium text-slate-300 text-xs">Vasif Məcidli</span>
-            </div>
         </div>
     </header>
 
+    <!-- Mobile Backdrop -->
+    <div id="sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-950/80 z-30 hidden md:hidden transition-opacity"></div>
+
     <!-- MAIN WRAPPER: SIDEBAR + CONTENT -->
-    <div class="flex-1 flex overflow-hidden">
+    <div class="flex-1 flex overflow-hidden relative">
         <!-- SIDEBAR -->
-        <aside class="w-64 border-r border-slate-800 bg-slate-900/60 shrink-0 flex flex-col justify-between p-4">
-            <nav class="space-y-1.5">
-                <a href="/" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'dashboard' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
+        <aside id="app-sidebar" class="hidden md:flex w-64 bg-slate-900 shrink-0 flex-col justify-between p-4 overflow-y-auto fixed md:static inset-y-0 left-0 z-40 transition-transform duration-200 ease-out border-r border-slate-800/80">
+            <nav class="space-y-1">
+                <a href="/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold {% if active_tab == 'dashboard' %}bg-indigo-600{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}" {% if active_tab == 'dashboard' %}aria-current="page"{% endif %}>
                     <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                    <span>Executive Overview</span>
+                    <span>İdarəetmə Mərkəzi</span>
                 </a>
-                <a href="/orders" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'orders' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
+                <a href="/orders" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold {% if active_tab == 'orders' %}bg-indigo-600{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}" {% if active_tab == 'orders' %}aria-current="page"{% endif %}>
                     <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                    <span>Orders Explorer</span>
+                    <span>Sifarişlər Bazası</span>
                 </a>
-                <a href="/customs" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'customs' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
+                <a href="/customs" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold {% if active_tab == 'customs' %}bg-indigo-600{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}" {% if active_tab == 'customs' %}aria-current="page"{% endif %}>
                     <i data-lucide="file-check-2" class="w-4 h-4"></i>
                     <span>SmartCustoms DGK</span>
                 </a>
-                <a href="/connectors" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'connectors' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
-                    <i data-lucide="network" class="w-4 h-4"></i>
-                    <span>Multi-Platform Connectors</span>
-                </a>
-                <a href="/system" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'system' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
-                    <i data-lucide="cpu" class="w-4 h-4"></i>
-                    <span>System Status & Logs</span>
-                </a>
-                <a href="/carriers" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {% if active_tab == 'carriers' %}bg-indigo-600 text-white shadow-md shadow-indigo-600/20{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-800/60{% endif %}">
+                <a href="/carriers" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold {% if active_tab == 'carriers' %}bg-indigo-600{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}" {% if active_tab == 'carriers' %}aria-current="page"{% endif %}>
                     <i data-lucide="truck" class="w-4 h-4"></i>
-                    <span>Kargo Daşıyıcıları</span>
+                    <span>4-Kargo Daşıyıcıları</span>
+                </a>
+                <a href="/connectors" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold {% if active_tab == 'connectors' %}bg-indigo-600{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}" {% if active_tab == 'connectors' %}aria-current="page"{% endif %}>
+                    <i data-lucide="network" class="w-4 h-4"></i>
+                    <span>Platforma Sessiyaları</span>
+                </a>
+                <a href="/screencast" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold {% if active_tab == 'screencast' %}bg-indigo-600{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}" {% if active_tab == 'screencast' %}aria-current="page"{% endif %}>
+                    <i data-lucide="monitor-play" class="w-4 h-4"></i>
+                    <span>Canlı Brauzer &amp; OTP</span>
+                </a>
+                <a href="/system" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold {% if active_tab == 'system' %}bg-indigo-600{% else %}text-slate-300 hover:text-white hover:bg-slate-800{% endif %}" {% if active_tab == 'system' %}aria-current="page"{% endif %}>
+                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                    <span>Sistem &amp; Ehtiyat Nüsxə</span>
+                </a>
+                <a href="/showcase" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800" {% if active_tab == 'showcase' %}aria-current="page"{% endif %}>
+                    <i data-lucide="calculator" class="w-4 h-4 text-indigo-400"></i>
+                    <span>Tam Ekran Kalkulyator</span>
                 </a>
             </nav>
 
-            <!-- Bottom System Info Pill -->
-            <div class="p-3 bg-slate-950/70 rounded-xl border border-slate-800 text-xs space-y-1.5">
-                <div class="flex items-center justify-between text-slate-400">
-                    <span>Daemon Status:</span>
-                    <span class="text-emerald-400 font-semibold flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Active
-                    </span>
+            <!-- Bottom Loyd AI Engine Card (Logo 5) & Legal Compliance -->
+            <div class="space-y-3 pt-4">
+                <div class="p-3.5 bg-slate-950 rounded-xl space-y-2.5 border border-slate-800/80">
+                    <div class="flex items-center gap-3">
+                        <img src="/static/img/loyd-avatar-48.png" alt="Loyd AI Mühərriki" class="w-10 h-10 rounded-lg object-cover shrink-0">
+                        <div>
+                            <div class="text-xs font-extrabold text-white">Loyd AI Mühərriki</div>
+                            <div class="text-[11px] font-semibold text-emerald-400">Quantum K Node · Aktiv</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
+                        <span>DGK Aylıq Kvota:</span>
+                        <span class="text-indigo-400 font-bold num">300.00 USD</span>
+                    </div>
                 </div>
-                <div class="flex items-center justify-between text-slate-400">
-                    <span>Customs Quota:</span>
-                    <span class="text-indigo-400 font-mono font-bold">$300 / Ay</span>
-                </div>
-                <div class="pt-1 border-t border-slate-800/80 text-[11px] text-slate-500 font-mono truncate">
-                    root@127.0.0.1
+
+                <div class="flex flex-wrap gap-2 text-[11px] font-semibold text-slate-400 px-1">
+                    <button type="button" onclick="openKpModal('terms')" class="hover:text-indigo-400">Şərtlər</button>
+                    <span>·</span>
+                    <button type="button" onclick="openKpModal('privacy')" class="hover:text-indigo-400">Məxfilik</button>
+                    <span>·</span>
+                    <button type="button" onclick="openKpModal('dgk')" class="hover:text-indigo-400">DGK $300</button>
                 </div>
             </div>
         </aside>
 
         <!-- MAIN CONTENT AREA -->
-        <main class="flex-1 overflow-y-auto p-6 lg:p-8 bg-slate-950">
+        <main id="main-content" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-950 focus:outline-none">
             {% block content %}{% endblock %}
         </main>
     </div>
 
+    <!-- Legal & DGK Compliance Modal -->
+    <div id="kp-legal-modal" class="fixed inset-0 bg-slate-950/85 hidden items-center justify-center p-6 z-50" role="dialog" aria-modal="true" aria-labelledby="kp-modal-title">
+        <div class="bg-slate-900 max-w-xl w-full p-7 rounded-xl space-y-4 border border-slate-800">
+            <div class="flex items-center justify-between">
+                <h2 id="kp-modal-title" class="text-lg font-extrabold text-white">DGK 300 USD Gömrük Uyğunluğu</h2>
+                <button type="button" onclick="closeKpModal()" aria-label="Pəncərəni bağla" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold text-slate-200">Bağla</button>
+            </div>
+            <div id="kp-modal-body" class="text-sm text-slate-200 space-y-3 leading-relaxed"></div>
+        </div>
+    </div>
+
     <!-- Notification / Toast Container -->
-    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <script>
         lucide.createIcons();
 
+        function toggleMobileSidebar() {
+            const sb = document.getElementById('app-sidebar');
+            const bd = document.getElementById('sidebar-backdrop');
+            if (!sb || !bd) return;
+            const isHidden = sb.classList.contains('hidden');
+            if (isHidden) {
+                sb.classList.remove('hidden');
+                sb.classList.add('flex');
+                bd.classList.remove('hidden');
+            } else {
+                sb.classList.add('hidden');
+                sb.classList.remove('flex');
+                bd.classList.add('hidden');
+            }
+        }
+
+        // Global Escape listener for accessible modal dismissal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeKpModal();
+                if (typeof closePredeclareModal === 'function') closePredeclareModal();
+                if (typeof closeTokenModal === 'function') closeTokenModal();
+                if (typeof closeManualModal === 'function') closeManualModal();
+                const sb = document.getElementById('app-sidebar');
+                const bd = document.getElementById('sidebar-backdrop');
+                if (sb && !sb.classList.contains('hidden') && window.innerWidth < 768) {
+                    toggleMobileSidebar();
+                }
+            }
+        });
+
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const bgClass = type === 'success' ? 'bg-emerald-900/90 border-emerald-700 text-emerald-200' : 'bg-rose-900/90 border-rose-700 text-rose-200';
-            toast.className = `px-4 py-3 rounded-lg border shadow-xl text-xs font-medium flex items-center gap-2 backdrop-blur transition-all duration-300 ${bgClass}`;
+            const bgClass = type === 'success' ? 'bg-slate-800 text-indigo-400 border border-slate-700' : 'bg-rose-950 text-rose-200 border border-rose-800';
+            toast.className = `pointer-events-auto px-4 py-3 rounded-lg text-xs font-bold flex items-center gap-2 shadow-none ${bgClass}`;
             toast.innerHTML = `<span>${msg}</span>`;
             container.appendChild(toast);
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-2');
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
+                toast.remove();
+            }, 3500);
         }
 
-        // Clipboard helper
         function copyToClipboard(text, label = 'Mətn') {
             navigator.clipboard.writeText(text).then(() => {
                 showToast(`${label} kopyalandı: ${text}`, 'success');
             }).catch(() => {
                 showToast('Kopyalama xətası!', 'error');
             });
+        }
+
+        const KP_MODAL_DATA = {
+            terms: {
+                title: 'İstifadə Şərtləri (Terms of Service)',
+                html: '<p><strong>1. Müstəqil Platforma:</strong> KargoPilot v4.0 fərdi istifadəçilərin öz sifarişlərini və gömrük kvotasını idarə etməsi üçün yaradılmış lokal sistemdir.</p><p><strong>2. Bəyannamə Məsuliyyəti:</strong> Hazırlanan PDF invoyslar və rüsum hesablamaları AR Gömrük Məcəlləsinə uyğun tərtib edilir; SmartCustoms bəyannaməsinin yekun təsdiqinə istifadəçi cavabdehdir.</p>'
+            },
+            privacy: {
+                title: 'Məxfilik Siyasəti (Privacy Policy)',
+                html: '<p><strong>1. Lokal Verilənlər Bazası:</strong> Bütün sifarişlər, FİN profilləri və mağaza kukiləri yalnız serverdəki <code>/data/pcs/pcs.db</code> (<code>chmod 0600</code>) daxilində saxlanılır.</p><p><strong>2. Şəbəkə İzolyasiyası:</strong> Veb Panel yalnız <code>127.0.0.1:48481</code> interfeysində dinləyir və yalnız SSH tuneli ilə əlçatandır.</p>'
+            },
+            dgk: {
+                title: 'AR NK 305 Saylı Qərar · 300 USD Gömrük Limiti',
+                html: '<p><strong>1. Rüsumsuz Limit:</strong> Hər təqvim ayı ərzində fiziki şəxslər 300 USD (510.00 AZN) dəyərinədək şəxsi bağlamaları gömrük rüsumundan azad idxal edə bilər.</p><p><strong>2. Hədd Aşıldıqda:</strong> 300 USD-dən artıq olan məbləğə 36% vahid gömrük rüsumu və 15.00 AZN elektron rəsmiləşdirmə haqqı tətbiq edilir.</p>'
+            }
+        };
+
+        function openKpModal(key) {
+            const modal = document.getElementById('kp-legal-modal');
+            const data = KP_MODAL_DATA[key];
+            if (!modal || !data) return;
+            document.getElementById('kp-modal-title').textContent = data.title;
+            document.getElementById('kp-modal-body').innerHTML = data.html;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeKpModal() {
+            const modal = document.getElementById('kp-legal-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
     </script>
 </body>

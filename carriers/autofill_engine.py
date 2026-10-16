@@ -603,25 +603,22 @@ class AutofillEngine:
         minified: bool = False,
     ) -> str:
         """Generates zero-dependency vanilla JS with a Floating HUD, React/Vue synthetic event triggers, and anti-bot jitter."""
-        # Pre-package emergency fallback dictionary so script works even if server is offline
-        fallback_data = {
-            "STAREX": {
-                "TR": cls.build_payload("STAREX", "trendyol", customer_code, default_branch).model_dump(mode="json"),
-                "CN": cls.build_payload("STAREX", "taobao", customer_code, default_branch).model_dump(mode="json"),
-            },
-            "LIMAK": {
-                "TR": cls.build_payload("LIMAK", "trendyol", "LMX-10294", default_branch).model_dump(mode="json"),
-                "CN": cls.build_payload("LIMAK", "taobao", "LMX-10294", default_branch).model_dump(mode="json"),
-            },
-            "CAMEX": {
-                "TR": cls.build_payload("CAMEX", "trendyol", "CAM-11111", default_branch).model_dump(mode="json"),
-                "CN": cls.build_payload("CAMEX", "taobao", "CAM-11111", default_branch).model_dump(mode="json"),
-            },
-            "DYNAMEX": {
-                "TR": cls.build_payload("DYNAMEX", "trendyol", "DYN-22222", default_branch).model_dump(mode="json"),
-                "CN": cls.build_payload("DYNAMEX", "taobao", "DYN-22222", default_branch).model_dump(mode="json"),
-            },
-        }
+        fallback_data = {}
+        carrier_suites = [
+            ("STAREX", customer_code),
+            ("LIMAK", "LMX-10294"),
+            ("CAMEX", "CAM-11111"),
+            ("DYNAMEX", "DYN-22222"),
+        ]
+        for c_name, c_suite in carrier_suites:
+            fallback_data[c_name] = {}
+            for country_code, plat_name in [("TR", "trendyol"), ("CN", "taobao")]:
+                try:
+                    fallback_data[c_name][country_code] = cls.build_payload(
+                        c_name, plat_name, c_suite, default_branch
+                    ).model_dump(mode="json")
+                except Exception:
+                    pass
         fallback_json = json.dumps(fallback_data, ensure_ascii=False)
         profiles_json = json.dumps({k: v.model_dump(mode="json") for k, v in PLATFORM_PROFILES.items()}, ensure_ascii=False)
 

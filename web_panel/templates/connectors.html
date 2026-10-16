@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6 max-w-7xl mx-auto">
+
+    <!-- HEADER TITLE -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+        <div>
+            <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
+                <span>Multi-Platform Qoşulmaları (Connectors)</span>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-950 text-indigo-400 border border-indigo-800/60 font-mono">
+                    {{ sessions|length }} Platforma
+                </span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">E-ticarət platformaları üçün sessiya izləmə, kukilər və SMS OTP autentifikasiyası</p>
+        </div>
+    </div>
+
+    <!-- CONNECTOR CARDS GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for s in sessions %}
+        <div class="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 shadow-xl flex flex-col justify-between">
+            <div>
+                <!-- PLATFORM HEADER -->
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg {% if s.platform == 'Temu' %}bg-orange-500/20 text-orange-400 border border-orange-500/30{% elif s.platform == 'Trendyol' %}bg-amber-500/20 text-amber-400 border border-amber-500/30{% elif s.platform == 'Taobao' %}bg-rose-500/20 text-rose-400 border border-rose-500/30{% else %}bg-indigo-500/20 text-indigo-400 border border-indigo-500/30{% endif %}">
+                            {{ s.platform[0] }}
+                        </div>
+                        <div>
+                            <h2 class="font-black text-base text-white">{{ s.platform }}</h2>
+                            <p class="text-[11px] text-slate-400">{{ s.auth_type }}</p>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase {% if s.status == 'ACTIVE' %}bg-emerald-950 text-emerald-400 border border-emerald-800/60{% elif s.status == 'OTP_REQUIRED' %}bg-amber-950 text-amber-400 border border-amber-800/60 animate-pulse{% elif s.status == 'CHALLENGE_ACTIVE' %}bg-purple-950 text-purple-400 border border-purple-800/60{% else %}bg-rose-950 text-rose-400 border border-rose-800/60{% endif %}">
+                        {{ s.status }}
+                    </span>
+                </div>
+
+                <!-- DETAILS LIST -->
+                <div class="my-5 space-y-2 text-xs">
+                    <div class="flex justify-between py-1.5 border-b border-slate-800/80 text-slate-400">
+                        <span>İstifadəçi Hesabı:</span>
+                        <span class="font-mono text-slate-200 font-medium">{{ s.username_hint or '-' }}</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 border-b border-slate-800/80 text-slate-400">
+                        <span>Son Autentifikasiya:</span>
+                        <span class="font-mono text-slate-300">{{ s.last_authenticated_at or 'Heç vaxt' }}</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 border-b border-slate-800/80 text-slate-400">
+                        <span>Sessiya Bitmə Tarixi:</span>
+                        <span class="font-mono text-slate-300">{{ s.expires_at or 'Məlum deyil' }}</span>
+                    </div>
+                    {% if s.details_parsed %}
+                    <div class="p-2.5 bg-slate-950/70 rounded-xl border border-slate-800/80 text-[11px] text-slate-400 space-y-0.5">
+                        <span class="font-semibold text-slate-300 block">Sessiya Detalları:</span>
+                        {% for k, v in s.details_parsed.items() %}
+                        <div class="flex justify-between font-mono text-[10px]">
+                            <span class="text-slate-500">{{ k }}:</span>
+                            <span class="text-slate-300 truncate max-w-[180px]">{{ v }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <a href="/connectors/{{ s.platform|lower }}/screencast" class="flex-1 py-2 px-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg transition text-center flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-600/20">
+                    <i data-lucide="monitor" class="w-3.5 h-3.5"></i>
+                    <span>Canlı Re-Auth / Captcha</span>
+                </a>
+
+                {% if s.status == 'OTP_REQUIRED' or s.platform == 'Trendyol' %}
+                <button onclick="openOtpModal('{{ s.platform }}')" class="py-2 px-3 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold rounded-lg transition text-center">
+                    SMS OTP
+                </button>
+                {% endif %}
+
+                <button onclick="openCookieModal('{{ s.platform }}')" class="py-2 px-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium rounded-lg border border-slate-700 transition text-center flex items-center gap-1" title="Kuki İdxal Et">
+                    <i data-lucide="cookie" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Kuki</span>
+                </button>
+
+                <button onclick="triggerReauth('{{ s.platform }}')" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    <span>Yenilə</span>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- SMS OTP MODAL -->
+<div id="otp-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-2xl max-w-md w-full p-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div>
+                <h3 id="otp-modal-title" class="text-base font-bold text-white">SMS Təsdiq Kodu (OTP)</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Telefonunuza göndərilən 6-rəqəmli kodu daxil edin</p>
+            </div>
+            <button onclick="closeOtpModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="my-6 space-y-4">
+            <div>
+                <label class="block text-xs font-medium text-slate-400 mb-1.5">6-Rəqəmli SMS Kodu:</label>
+                <input type="text" id="otp-code-input" placeholder="Məs: 849201" maxlength="8"
+                       class="w-full text-center tracking-widest text-xl font-mono py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-500">
+            </div>
+            <p class="text-[11px] text-slate-500 text-center">SMS nömrəsi: <strong class="text-slate-300 font-mono">+994 77 634 63 10</strong></p>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800 flex justify-end gap-3 text-xs">
+            <button onclick="closeOtpModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium">Ləğv Et</button>
+            <button onclick="submitOtpCode()" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-slate-950 rounded-lg font-bold">Təsdiq Et və Daxil Ol</button>
+        </div>
+    </div>
+</div>
+
+<!-- VNC MODAL -->
+<div id="vnc-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-2xl max-w-lg w-full p-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div>
+                <h3 class="text-base font-bold text-white">VNC Qrafik İnterfeysi (Alibaba Slider)</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Alibaba GeeTest sürüşdürmə CAPTCHA tapşırığı</p>
+            </div>
+            <button onclick="closeVncModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="my-6 space-y-3 text-xs text-slate-300">
+            <p>Taobao / Alibaba platforması brauzer sürüşdürmə təhlükəsizliyi tələb edir. Serverdə arxa fonda çalışan X11 TigerVNC interfeysinə qoşulun:</p>
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 font-mono text-indigo-400 select-all">
+                ssh -L 5900:127.0.0.1:5900 -p 1999 root@5.191.246.134
+            </div>
+            <p class="text-[11px] text-slate-400">VNC Viewer proqramında <code class="text-emerald-400 font-mono">127.0.0.1:5900</code> ünvanını açaraq tapşırığı həll edin.</p>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800 flex justify-end text-xs">
+            <button onclick="closeVncModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium">Bağla</button>
+        </div>
+    </div>
+</div>
+
+<!-- COOKIE IMPORT MODAL -->
+<div id="cookie-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-2xl max-w-lg w-full p-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div>
+                <h3 id="cookie-modal-title" class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="cookie" class="w-5 h-5 text-amber-400"></i>
+                    <span>Kuki Daxil Et (Session Import)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">Brauzerinizdən kuki mətni və ya JSON yapışdırın</p>
+            </div>
+            <button onclick="closeCookieModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="my-5 space-y-3">
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1.5">
+                    Kuki Mətni (Cookie header və ya Cookie-Editor JSON):
+                </label>
+                <textarea id="cookie-input-raw" rows="6" placeholder="Məsələn: sid=abc123xyz; token=eyJ... və ya [{name: 'sid', value: '...'}]"
+                          class="w-full font-mono text-xs p-3 bg-slate-950 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-amber-500"></textarea>
+            </div>
+            <div class="p-3 bg-slate-950/60 rounded-lg border border-slate-800 text-[11px] text-slate-400 space-y-1">
+                <p class="font-semibold text-slate-300">💡 Necə əldə etməli?</p>
+                <p>1. Kompüterinizdəki normal brauzerinizdə Trendyol hesabınıza daxil olun.</p>
+                <p>2. F12 sıxıb <strong>Application -> Cookies</strong> bölməsindən dəyərləri kopyalayın (və ya <em>Cookie-Editor</em> genişlənməsi ilə "Export -> Header String" və ya "JSON" seçin).</p>
+                <p>3. Yuxarıdakı xanaya yapışdırıb <strong>"Yadda Saxla və Aktiv Et"</strong> klikləyin.</p>
+            </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800 flex justify-end gap-3 text-xs">
+            <button onclick="closeCookieModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium">Ləğv Et</button>
+            <button onclick="submitCookieImport()" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-slate-950 rounded-lg font-bold">Yadda Saxla və Aktiv Et</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let activePlatform = 'Trendyol';
+
+    function openCookieModal(platform) {
+        activePlatform = platform;
+        document.getElementById('cookie-modal-title').innerHTML = `<i data-lucide="cookie" class="w-5 h-5 text-amber-400"></i> ${platform} Kuki Daxil Et`;
+        document.getElementById('cookie-input-raw').value = '';
+        document.getElementById('cookie-modal').classList.remove('hidden');
+        lucide.createIcons();
+    }
+    function closeCookieModal() {
+        document.getElementById('cookie-modal').classList.add('hidden');
+    }
+
+    function submitCookieImport() {
+        const raw = document.getElementById('cookie-input-raw').value;
+        if (!raw.trim()) {
+            showToast('Kuki mətnini daxil edin!', 'error');
+            return;
+        }
+        const formData = new FormData();
+        formData.append('cookies_raw', raw);
+
+        fetch(`/connectors/${activePlatform}/cookies`, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message, 'success');
+                closeCookieModal();
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                showToast('Xəta: ' + data.error, 'error');
+            }
+        });
+    }
+
+    function openOtpModal(platform) {
+        activePlatform = platform;
+        document.getElementById('otp-modal-title').innerText = `${platform} SMS Təsdiq Kodu`;
+        document.getElementById('otp-code-input').value = '';
+        document.getElementById('otp-modal').classList.remove('hidden');
+    }
+    function closeOtpModal() {
+        document.getElementById('otp-modal').classList.add('hidden');
+    }
+
+    function openVncModal(platform) {
+        document.getElementById('vnc-modal').classList.remove('hidden');
+    }
+    function closeVncModal() {
+        document.getElementById('vnc-modal').classList.add('hidden');
+    }
+
+    function triggerReauth(platform) {
+        fetch(`/connectors/${platform}/reauth`, { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    if (data.requires_otp) {
+                        openOtpModal(platform);
+                    } else {
+                        setTimeout(() => window.location.reload(), 1500);
+                    }
+                } else {
+                    showToast('Xəta: ' + data.error, 'error');
+                }
+            });
+    }
+
+    function submitOtpCode() {
+        const code = document.getElementById('otp-code-input').value;
+        if (!code) {
+            showToast('Kodu daxil edin!', 'error');
+            return;
+        }
+        const formData = new FormData();
+        formData.append('otp_code', code);
+
+        fetch(`/connectors/${activePlatform}/otp`, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message, 'success');
+                closeOtpModal();
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                showToast('Xəta: ' + data.error, 'error');
+            }
+        });
+    }
+</script>
+{% endblock %}

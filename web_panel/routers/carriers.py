@@ -4,28 +4,46 @@ from __future__ import annotations
 
 from html import escape
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException, Request, Query
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
 from app.carriers.base_carrier import CarrierAccountDTO, ShipmentStatus
 from app.carriers.forwarding_hub import ForwardingHub
 from app.carriers.address_formatter import AddressFormatterEngine
 from app.carriers.tariff_engine import DynamicTariffEngine
+from app.carriers.consolidation_engine import (
+    SmartConsolidationEngine,
+    PackageItem,
+    FINProfile,
+)
+from app.carriers.branch_directory import (
+    BranchDirectoryEngine,
+    ReverseLogisticsEngine,
+    BranchDTO,
+    ReverseLogisticsRequest,
+    ReverseLogisticsQuote,
+    ReverseLogisticsWaybill,
+    ReturnReasonEnum,
+    haversine_distance,
+)
 
 router = APIRouter(prefix="/carriers", tags=["carriers"])
 
-TEMPLATE_PATH = Path(__file__).resolve().parent.parent / "templates" / "carriers.html"
+TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
+TEMPLATE_PATH = TEMPLATES_DIR / "carriers.html"
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 STATUS_BADGE_STYLES: Dict[str, tuple[str, str]] = {
-    ShipmentStatus.PRE_DECLARED.value: ("bg-blue-500/20 text-blue-300 border-blue-500/40", "Ön bəyan edildi"),
-    ShipmentStatus.AT_FOREIGN_HUB.value: ("bg-amber-500/20 text-amber-300 border-amber-500/40", "Xarici anbarda"),
-    ShipmentStatus.ON_THE_WAY.value: ("bg-amber-500/20 text-amber-300 border-amber-500/40", "Yolda (Uçuşda)"),
-    ShipmentStatus.CUSTOMS_INSPECTION.value: ("bg-purple-500/20 text-purple-300 border-purple-500/40", "Gömrükdə"),
-    ShipmentStatus.AT_LOCAL_BRANCH.value: ("bg-emerald-500/20 text-emerald-300 border-emerald-500/40", "Filialda (Bakı)"),
-    ShipmentStatus.DELIVERED.value: ("bg-emerald-500/20 text-emerald-300 border-emerald-500/40", "Təhvil verildi"),
+    ShipmentStatus.PRE_DECLARED.value: ("bg-sky-950 text-sky-400 border-sky-800/60", "Ön bəyan edildi"),
+    ShipmentStatus.AT_FOREIGN_HUB.value: ("bg-amber-950 text-amber-400 border-amber-800/60", "Xarici anbarda"),
+    ShipmentStatus.ON_THE_WAY.value: ("bg-amber-950 text-amber-400 border-amber-800/60", "Yolda (Uçuşda)"),
+    ShipmentStatus.CUSTOMS_INSPECTION.value: ("bg-sky-950 text-sky-300 border-sky-700/60", "Gömrükdə"),
+    ShipmentStatus.AT_LOCAL_BRANCH.value: ("bg-emerald-950 text-emerald-400 border-emerald-800/60", "Filialda (Bakı)"),
+    ShipmentStatus.DELIVERED.value: ("bg-emerald-950 text-emerald-400 border-emerald-800/60", "Təhvil verildi"),
 }
 
 
@@ -56,10 +74,10 @@ def _get_hub(request: Request) -> ForwardingHub:
 def _render_carrier_cards(accounts: list[CarrierAccountDTO]) -> str:
     by_name = {a.carrier_name.upper(): a for a in accounts}
     default_carriers = [
-        ("STAREX", "ST123456", {"TR": "İstanbul (Avcılar)", "CN": "Quançjou", "US": "Delaware", "DE": "Frankfurt"}),
-        ("LIMAK", "LMX-10294", {"TR": "İstanbul (Halkalı)", "US": "Delaware"}),
-        ("CAMEX", "CAM-11111", {"TR": "İstanbul (Güngören)", "CN": "Quançjou", "US": "Delaware"}),
-        ("DYNAMEX", "DYN-22222", {"TR": "İstanbul (Başakşehir)", "US": "Delaware"}),
+        ("STAREX", "ST026090", {"TR": "İstanbul (Tuzla/Avcılar)", "CN": "Quançjou", "US": "Delaver", "DE": "Frankfurt"}),
+        ("LIMAK", "LMX-10294", {"TR": "İstanbul (Halkalı)", "CN": "Quançjou", "US": "Delaver"}),
+        ("CAMEX", "CAM-44810", {"TR": "İstanbul (Güngören)", "CN": "Quançjou", "US": "Delaver"}),
+        ("DYNAMEX", "DYN-77120", {"TR": "İstanbul (Başakşehir)", "CN": "Quançjou", "US": "Delaver"}),
     ]
     cards: list[str] = []
     for name, def_code, def_suites in default_carriers:
@@ -67,39 +85,45 @@ def _render_carrier_cards(accounts: list[CarrierAccountDTO]) -> str:
         cust_id = acc.customer_id if acc else def_code
         branch = acc.default_branch if acc else "28 May"
         has_token = bool(acc and acc.auth_token)
-        status_label = "ACTIVE" if has_token else "AUTH_REQUIRED"
+        status_label = "AKTİV" if has_token else "HAZIR"
         badge_cls = (
-            "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+            "bg-emerald-950 text-emerald-400 border-emerald-800/60"
             if has_token
-            else "bg-amber-500/20 text-amber-400 border-amber-500/30"
+            else "bg-slate-800 text-indigo-400 border-slate-700"
         )
         suites = (acc.warehouse_suites if acc and acc.warehouse_suites else def_suites)
         suite_lines = "".join(
-            f"<div class='text-xs text-slate-400'><span class='font-mono text-slate-300'>{escape(k)}:</span> {escape(v)}</div>"
+            f"<div class='text-xs text-slate-400 flex items-center justify-between'><span class='font-mono font-bold text-slate-300'>{escape(k)}:</span> <span class='text-slate-200'>{escape(v)}</span></div>"
             for k, v in suites.items()
         )
         cards.append(
-            f"""<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-3">
+            f"""<div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-4">
                 <div>
                     <div class="flex items-center justify-between">
-                        <span class="font-bold text-white text-base">{escape(name)}</span>
-                        <span class="px-2 py-0.5 text-[11px] font-mono rounded border {badge_cls}">{status_label}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full {'bg-emerald-400' if has_token else 'bg-indigo-400'}"></span>
+                            <span class="font-extrabold text-white text-base tracking-tight">{escape(name)}</span>
+                        </div>
+                        <span class="px-2 py-0.5 text-[11px] font-mono font-bold rounded border {badge_cls}">{status_label}</span>
                     </div>
-                    <div class="mt-2 text-xs text-slate-300">
-                        Müştəri ID: <span class="font-mono text-emerald-400 font-semibold">{escape(cust_id)}</span> • Filial: <strong>{escape(branch)}</strong>
+                    <div class="mt-3 p-2.5 rounded-xl bg-slate-950 text-xs text-slate-300 flex items-center justify-between">
+                        <span>Suite: <strong class="font-mono text-indigo-400">{escape(cust_id)}</strong></span>
+                        <span>Filial: <strong class="text-white">{escape(branch)}</strong></span>
                     </div>
-                    <div class="mt-2 space-y-1 border-t border-slate-800/80 pt-2">
+                    <div class="mt-3 space-y-1.5 pt-2 border-t border-slate-800/80">
                         {suite_lines}
                     </div>
                 </div>
-                <div class="pt-2 flex items-center justify-between space-x-2">
-                    <button onclick="openTokenModal('{escape(name)}', '{escape(cust_id)}', '{escape(branch)}')"
-                            class="flex-1 py-1.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
-                        🔑 Kuki/Token
+                <div class="pt-2 flex items-center justify-between gap-2">
+                    <button type="button" onclick="openTokenModal('{escape(name)}', '{escape(cust_id)}', '{escape(branch)}')"
+                            class="flex-1 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 flex items-center justify-center gap-1.5">
+                        <i data-lucide="key" class="w-3.5 h-3.5 text-sky-400"></i>
+                        <span>Kuki / Token</span>
                     </button>
-                    <button onclick="selectCarrierForAddress('{escape(name)}', '{escape(cust_id)}', '{escape(branch)}')"
-                            class="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-xs font-medium text-emerald-300 border border-emerald-500/40 transition">
-                        📍 Ünvanı Al
+                    <button type="button" onclick="selectCarrierForAddress('{escape(name)}', '{escape(cust_id)}', '{escape(branch)}')"
+                            class="flex-1 py-2 px-3 rounded-lg bg-indigo-600 text-xs font-bold flex items-center justify-center gap-1.5">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                        <span>Ünvanı Al</span>
                     </button>
                 </div>
             </div>"""
@@ -109,49 +133,53 @@ def _render_carrier_cards(accounts: list[CarrierAccountDTO]) -> str:
 
 def _render_shipment_rows(shipments: list[Dict[str, Any]]) -> str:
     if not shipments:
-        return """<tr><td colspan="7" class="py-8 text-center text-slate-500">Hələ aktiv kargo bağlaması yoxdur.</td></tr>"""
+        return """<tr><td colspan="7" class="py-10 text-center text-slate-400 text-xs">Hələ aktiv kargo bağlaması yoxdur. Yuxarıdakı <strong>"1-Kliklə Ön Bəyan"</strong> düyməsi ilə bağlama əlavə edə bilərsiniz.</td></tr>"""
     rows: list[str] = []
     for sh in shipments:
         extra = sh.get("extra") or {}
         platform = extra.get("platform") or ("Taobao" if str(sh["order_ref"]).startswith("TB") else "Trendyol")
-        flag = "🇨🇳" if sh.get("origin_country") == "CN" else ("🇹🇷" if sh.get("origin_country") == "TR" else "🇺🇸")
+        origin_code = sh.get("origin_country") or "TR"
         awb = sh.get("destination_tracking") or "Gözlənilir..."
         sc_no = sh.get("smart_customs_no") or "—"
         status_code = sh.get("status") or "PRE_DECLARED"
         badge_cls, badge_text = STATUS_BADGE_STYLES.get(
-            status_code, ("bg-slate-700 text-slate-300 border-slate-600", status_code)
+            status_code, ("bg-slate-800 text-slate-300 border-slate-700", status_code)
         )
         fee_str = (
-            f"<div class='text-xs text-slate-400'>Kargo: ${sh['delivery_fee_usd']:.2f} ({sh['delivery_fee_azn']:.2f} ₼)</div>"
+            f"<div class='text-[11px] text-slate-400 font-mono mt-0.5'>Daşıma: ${sh['delivery_fee_usd']:.2f} ({sh['delivery_fee_azn']:.2f} ₼)</div>"
             if sh.get("delivery_fee_usd")
             else ""
         )
         rows.append(
-            f"""<tr class="hover:bg-slate-900/50">
-                <td class="py-3 px-4">
-                    <div class="font-medium text-white">{flag} {escape(platform)}</div>
-                    <div class="text-xs font-mono text-slate-400">{escape(str(sh['order_ref']))}</div>
+            f"""<tr class="hover:bg-slate-800/50">
+                <td class="py-3.5 px-4">
+                    <div class="font-bold text-white flex items-center gap-1.5">
+                        <span class="px-1.5 py-0.5 rounded bg-slate-800 text-indigo-400 font-mono text-[10px] font-bold">{escape(origin_code)}</span>
+                        <span>{escape(platform)}</span>
+                    </div>
+                    <div class="text-xs font-mono text-slate-400 mt-0.5">{escape(str(sh['order_ref']))}</div>
                 </td>
-                <td class="py-3 px-4 font-semibold text-slate-200">{escape(str(sh['carrier_name']))}</td>
-                <td class="py-3 px-4 font-mono text-xs">
+                <td class="py-3.5 px-4 font-bold text-slate-200">{escape(str(sh['carrier_name']))}</td>
+                <td class="py-3.5 px-4 font-mono text-xs">
                     <span class="text-slate-300">{escape(str(sh['origin_tracking']))}</span>
                     <span class="text-slate-500 mx-1">➔</span>
-                    <span class="text-emerald-400 font-semibold">{escape(str(awb))}</span>
+                    <span class="text-indigo-400 font-bold">{escape(str(awb))}</span>
                 </td>
-                <td class="py-3 px-4 font-mono text-xs text-indigo-300">{escape(str(sc_no))}</td>
-                <td class="py-3 px-4">
-                    <span class="px-2.5 py-1 rounded-full text-xs font-medium border {badge_cls}">
+                <td class="py-3.5 px-4 font-mono text-xs text-sky-400 font-bold">{escape(str(sc_no))}</td>
+                <td class="py-3.5 px-4">
+                    <span class="px-2.5 py-1 rounded-md text-xs font-bold border {badge_cls}">
                         {escape(badge_text)}
                     </span>
                 </td>
-                <td class="py-3 px-4 text-right">
-                    <div class="font-medium text-white">${float(sh.get('amount_usd') or 0):.2f} USD ({float(sh.get('amount_azn') or 0):.2f} ₼)</div>
+                <td class="py-3.5 px-4 text-right">
+                    <div class="font-mono font-bold text-white">${float(sh.get('amount_usd') or 0):.2f} USD ({float(sh.get('amount_azn') or 0):.2f} ₼)</div>
                     {fee_str}
                 </td>
-                <td class="py-3 px-4 text-center">
+                <td class="py-3.5 px-4 text-center">
                     <a href="/carriers/invoices/{escape(str(sh['order_ref']))}" target="_blank"
-                       class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-xs text-emerald-400 font-mono">
-                        📄 PDF
+                       class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-indigo-400 font-bold font-mono">
+                        <i data-lucide="file-text" class="w-3.5 h-3.5 text-sky-400"></i>
+                        <span>PDF</span>
                     </a>
                 </td>
             </tr>"""
@@ -171,11 +199,17 @@ async def get_carriers_dashboard(request: Request):
                 "shipments": shipments,
             }
         )
-    template_str = TEMPLATE_PATH.read_text(encoding="utf-8")
-    html = template_str.replace("{{CARRIER_CARDS_HTML}}", _render_carrier_cards(accounts)).replace(
-        "{{SHIPMENT_ROWS_HTML}}", _render_shipment_rows(shipments)
+    return templates.TemplateResponse(
+        request=request,
+        name="carriers.html",
+        context={
+            "page_title": "4-Kargo Daşıyıcıları İdarəetmə Mərkəzi",
+            "active_tab": "carriers",
+            "carrier_cards_html": _render_carrier_cards(accounts),
+            "shipment_rows_html": _render_shipment_rows(shipments),
+            "shipments_count": len(shipments),
+        },
     )
-    return HTMLResponse(content=html)
 
 
 @router.get("/api/address")
@@ -189,13 +223,28 @@ async def get_formatted_address_api(
     request: Request = None,
 ):
     hub = _get_hub(request)
+    c_upper = carrier.upper()
+    cntry_upper = country.upper()
+
+    # Automatically adapt default platform if country is US or DE and platform was defaulted to trendyol
+    if cntry_upper in ("US", "DE") and platform.lower() == "trendyol":
+        platform = "amazon"
+    elif cntry_upper == "CN" and platform.lower() == "trendyol":
+        platform = "taobao"
+
     if not customer_code:
-        # Resolve customer code from DB
+        # Resolve customer code from DB or carrier-specific defaults
         accs = {a.carrier_name.upper(): a for a in hub.list_accounts()}
-        if carrier.upper() in accs and accs[carrier.upper()].customer_id:
-            customer_code = accs[carrier.upper()].customer_id
+        if c_upper in accs and accs[c_upper].customer_id:
+            customer_code = accs[c_upper].customer_id
         else:
-            customer_code = "ST123456" if carrier.upper() == "STAREX" else ("CAM-11111" if carrier.upper() == "CAMEX" else "DYN-22222")
+            defaults = {
+                "STAREX": "ST026090",
+                "LIMAK": "LMX-10294",
+                "CAMEX": "CAM-44810",
+                "DYNAMEX": "DYN-77120",
+            }
+            customer_code = defaults.get(c_upper, "ST026090")
 
     try:
         block = AddressFormatterEngine.format_address(
@@ -275,3 +324,295 @@ async def download_carrier_invoice(order_ref: str, request: Request):
     if not pdf_path.exists():
         raise HTTPException(status_code=404, detail="Invoice PDF not found")
     return FileResponse(path=str(pdf_path), media_type="application/pdf", filename=pdf_path.name)
+
+
+class ConsolidationOptimizeRequest(BaseModel):
+    packages: list[PackageItem]
+    carrier: str = "STAREX"
+    current_used_usd: float = 0.0
+    primary_fin: str = "6XXXXXX"
+    available_fins: Optional[list[FINProfile]] = None
+
+
+class RepackAssessmentRequest(BaseModel):
+    package: PackageItem
+    carrier: str = "STAREX"
+    repack_fee_usd: float = 1.00
+
+
+@router.post("/api/consolidation/optimize")
+async def optimize_consolidation_endpoint(payload: ConsolidationOptimizeRequest):
+    try:
+        report = SmartConsolidationEngine.run_full_optimization(
+            packages=payload.packages,
+            carrier=payload.carrier,
+            current_used_usd=payload.current_used_usd,
+            primary_fin=payload.primary_fin,
+            available_fins=payload.available_fins,
+        )
+        return report.model_dump(mode="json")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/api/consolidation/repack-assessment")
+async def assess_repack_endpoint(payload: RepackAssessmentRequest):
+    try:
+        assessment = SmartConsolidationEngine.evaluate_volumetric_repack(
+            package=payload.package,
+            carrier=payload.carrier,
+            repack_fee_usd=payload.repack_fee_usd,
+        )
+        return assessment.model_dump(mode="json")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# -----------------------------------------------------------------------------
+# BRANCH DIRECTORY, PROXIMITY & REVERSE LOGISTICS ENDPOINTS
+# -----------------------------------------------------------------------------
+
+@router.get("/api/branches")
+async def list_branches_endpoint(
+    carrier: Optional[str] = Query(None),
+    region: Optional[str] = Query(None),
+    city: Optional[str] = Query(None),
+    metro: Optional[str] = Query(None),
+    transit_hub: Optional[str] = Query(None),
+    is_liquid: bool = Query(False),
+    is_bulky: bool = Query(False),
+    is_sunday: bool = Query(False),
+    is_door_delivery: bool = Query(False),
+):
+    try:
+        branches = BranchDirectoryEngine.filter_branches(
+            carrier=carrier,
+            region=region,
+            city=city,
+            metro_station=metro,
+            transit_hub=transit_hub,
+            requires_liquid=is_liquid,
+            requires_bulky=is_bulky,
+            requires_sunday=is_sunday,
+            requires_door_delivery=is_door_delivery,
+        )
+        return {
+            "count": len(branches),
+            "branches": [b.model_dump(mode="json") for b in branches],
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/api/branches/proximity")
+async def branch_proximity_endpoint(
+    lat: float = Query(...),
+    lon: float = Query(...),
+    carrier: Optional[str] = Query(None),
+    is_liquid: bool = Query(False),
+    is_bulky: bool = Query(False),
+    is_sunday: bool = Query(False),
+):
+    try:
+        caps = set()
+        if is_liquid:
+            caps.add("liquid_accepted")
+        if is_bulky:
+            caps.add("bulky_items_accepted")
+        if is_sunday:
+            caps.add("sunday_open")
+
+        if carrier:
+            res = BranchDirectoryEngine.find_nearest_branch(
+                user_lat=lat,
+                user_lon=lon,
+                carrier=carrier,
+                required_capabilities=caps,
+            )
+            if not res:
+                raise HTTPException(status_code=404, detail="No matching branch found")
+            return res.model_dump(mode="json")
+        else:
+            multi_res = BranchDirectoryEngine.find_nearest_branches_for_all_carriers(
+                user_lat=lat,
+                user_lon=lon,
+                required_capabilities=caps,
+            )
+            return multi_res.model_dump(mode="json")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+class SmartRoutePayload(BaseModel):
+    carrier: str
+    user_preferred_branch_id: str
+    is_liquid: bool = False
+    is_bulky: bool = False
+    requires_sunday: bool = False
+
+
+@router.post("/api/branches/smart-route")
+async def smart_route_endpoint(payload: SmartRoutePayload):
+    try:
+        decision = BranchDirectoryEngine.smart_route_shipment(
+            carrier=payload.carrier,
+            user_preferred_branch_id=payload.user_preferred_branch_id,
+            is_liquid=payload.is_liquid,
+            is_bulky=payload.is_bulky,
+            requires_sunday=payload.requires_sunday,
+        )
+        return decision.model_dump(mode="json")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/api/reverse-logistics/quote")
+async def reverse_logistics_quote_endpoint(payload: ReverseLogisticsRequest):
+    try:
+        quote = ReverseLogisticsEngine.generate_return_quote(payload)
+        return quote.model_dump(mode="json")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+class IssueWaybillPayload(BaseModel):
+    quote: ReverseLogisticsQuote
+    order_ref: str
+    merchant_return_code: str
+
+
+@router.post("/api/reverse-logistics/waybill")
+async def reverse_logistics_waybill_endpoint(payload: IssueWaybillPayload):
+    try:
+        waybill = ReverseLogisticsEngine.issue_return_waybill(
+            quote=payload.quote,
+            order_ref=payload.order_ref,
+            merchant_return_code=payload.merchant_return_code,
+        )
+        return waybill.model_dump(mode="json")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/api/reverse-logistics/quota-advice")
+async def reverse_logistics_quota_advice_endpoint(
+    order_ref: str = Query(...),
+    invoice_usd: float = Query(...),
+):
+    try:
+        advice = ReverseLogisticsEngine.get_customs_quota_advice(
+            order_ref=order_ref,
+            invoice_usd=invoice_usd,
+        )
+        return advice
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# -------------------------------------------------------------------------
+# SMART CONSOLIDATION & QUOTA SPLIT OPTIMIZER ENDPOINTS
+# -------------------------------------------------------------------------
+
+class ConsolidationOptimizeRequest(BaseModel):
+    packages: list[PackageItem]
+    carrier: str = "STAREX"
+    current_used_usd: float = 0.0
+    primary_fin: str = "6XXXXXX"
+    available_fins: Optional[list[FINProfile]] = None
+
+
+class RepackAssessmentRequest(BaseModel):
+    package: PackageItem
+    carrier: str = "STAREX"
+    repack_fee_usd: float = 1.00
+
+
+@router.post("/api/consolidation/optimize")
+async def optimize_consolidation_endpoint(payload: ConsolidationOptimizeRequest):
+    try:
+        report = SmartConsolidationEngine.run_full_optimization(
+            packages=payload.packages,
+            carrier=payload.carrier,
+            current_used_usd=payload.current_used_usd,
+            primary_fin=payload.primary_fin,
+            available_fins=payload.available_fins,
+        )
+        return report.model_dump(mode="json")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/api/consolidation/repack-assessment")
+async def assess_repack_endpoint(payload: RepackAssessmentRequest):
+    try:
+        assessment = SmartConsolidationEngine.evaluate_volumetric_repack(
+            package=payload.package,
+            carrier=payload.carrier,
+            repack_fee_usd=payload.repack_fee_usd,
+        )
+        return assessment.model_dump(mode="json")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+class DutyPredictBasketItem(BaseModel):
+    title: str
+    price: float
+    currency: str = "USD"
+    quantity: int = 1
+
+
+class DutyPredictRequest(BaseModel):
+    basket_items: List[DutyPredictBasketItem] = []
+    current_monthly_used_usd: float = 0.0
+    monthly_allowance_usd: float = 300.0
+
+
+DutyPredictRequest.model_rebuild()
+
+
+@router.post("/api/duty/predict")
+async def predict_duty_endpoint(payload: DutyPredictRequest):
+    try:
+        import dataclasses
+        from app.customs.duty_calculator import (
+            BasketItem,
+            cbar_converter,
+            calculate_duty_on_excess,
+            get_quota_status,
+        )
+
+        def _to_dict(obj: Any) -> Any:
+            if hasattr(obj, "model_dump"):
+                return obj.model_dump(mode="json")
+            if dataclasses.is_dataclass(obj):
+                d = dataclasses.asdict(obj)
+                for k, v in list(d.items()):
+                    if hasattr(v, "value"):
+                        d[k] = v.value
+                return d
+            return obj
+
+        converted_items = [
+            BasketItem(title=it.title, price=it.price, currency=it.currency, quantity=it.quantity)
+            for it in payload.basket_items
+        ]
+        tot_azn, tot_usd, breakdown = cbar_converter.evaluate_mixed_basket(converted_items)
+        new_total_usd = payload.current_monthly_used_usd + tot_usd
+        excess_usd = max(0.0, new_total_usd - payload.monthly_allowance_usd)
+        duty_calc = calculate_duty_on_excess(excess_usd)
+        status = get_quota_status(new_total_usd, limit_usd=payload.monthly_allowance_usd)
+
+        return {
+            "basket_total_usd": tot_usd,
+            "basket_total_azn": tot_azn,
+            "currency_breakdown": breakdown,
+            "projected_monthly_total_usd": new_total_usd,
+            "duty_calculation": _to_dict(duty_calc),
+            "quota_status": _to_dict(status),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+
