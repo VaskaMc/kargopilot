@@ -231,7 +231,7 @@
               <button type="button" onclick="switchTab('profile')" class="text-xs text-cyan-400 hover:underline">Dəyiş</button>
             </div>
             <div class="flex items-baseline gap-2">
-              <span id="stat-user-fin" class="text-xl sm:text-2xl font-extrabold font-mono text-cyan-300">814CRM4</span>
+              <span id="stat-user-fin" class="text-xl sm:text-2xl font-extrabold font-mono text-cyan-300">7KP2026</span>
             </div>
             <div class="text-[11px] text-slate-400 mt-1">
               Əsas filial: <span id="stat-user-branch" class="text-slate-200 font-semibold">28 May</span>
@@ -275,13 +275,14 @@
                 <th class="py-3 px-3">Daşıyıcı</th>
                 <th class="py-3 px-3 text-right">İnvoys Məbləği</th>
                 <th class="py-3 px-3 text-center">Status</th>
+                <th class="py-3 px-3 text-center">Gömrük Bəyannaməsi</th>
                 <th class="py-3 px-3 text-right">Tarix</th>
                 <th class="py-3 px-3 text-center">Əməliyyat</th>
               </tr>
             </thead>
             <tbody id="parcels-table-body" class="divide-y divide-white/5 text-slate-200">
               <tr>
-                <td colspan="8" class="text-center py-8 text-slate-500 text-xs">Bağlamalar yüklənir...</td>
+                <td colspan="9" class="text-center py-8 text-slate-500 text-xs">Bağlamalar yüklənir...</td>
               </tr>
             </tbody>
           </table>
@@ -335,6 +336,42 @@
           <!-- Populated dynamically -->
         </div>
       </div>
+      <!-- Section 3: SmartCustoms (DGK) Dövlət Gömrük İnteqrasiyası -->
+      <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+              <span>🏛️ SmartCustoms (DGK) Dövlət Gömrük İnteqrasiyası</span>
+              <span id="customs-conn-badge" class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-slate-800 text-slate-400 border border-white/10">⚪ Qoşulmayıb</span>
+            </h2>
+            <p class="text-xs text-slate-400">305 nömrəli Qərar üzrə 300$ aylıq rüsumsuz limit və elektron gömrük bəyannamələrinin avtomatik sinxronizasiyası.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="openSmartCustomsModal()" class="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+              <span>🔑 SmartCustoms Qoş</span>
+            </button>
+            <button type="button" onclick="syncSmartCustoms()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-bold border border-white/10 transition flex items-center gap-1.5 cursor-pointer">
+              <span>🔄 Sinxronlaşdır</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/5 space-y-1">
+            <span class="text-[10px] text-slate-400 block font-semibold">Gömrük FİN Kodu:</span>
+            <span id="customs-fin-display" class="font-mono text-cyan-300 font-bold text-sm">7KP2026</span>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/5 space-y-1">
+            <span class="text-[10px] text-slate-400 block font-semibold">Aktiv Bəyannamələr:</span>
+            <span id="customs-active-declarations" class="font-mono text-emerald-400 font-bold text-sm">0 ədəd</span>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/5 space-y-1">
+            <span class="text-[10px] text-slate-400 block font-semibold">Qalan Aylıq Kvota (USD):</span>
+            <span id="customs-quota-display" class="font-mono text-white font-bold text-sm">$300.00 USD</span>
+          </div>
+        </div>
+      </div>
+
 
     </div>
 
@@ -1150,7 +1187,7 @@
       if (!parcels || parcels.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="8" class="text-center py-10 text-slate-500 text-xs">
+            <td colspan="9" class="text-center py-10 text-slate-500 text-xs">
               Hələ heç bir bağlama qeydiyyatdan keçməyib. "+ Əlavə Et" düyməsi ilə ilk sifarişinizi daxil edin.
             </td>
           </tr>
@@ -1179,6 +1216,17 @@
             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
               ${p.status}
             </span>
+          </td>
+          <td class="py-3 px-3 text-center">
+            ${p.declared_to_dgk ? 
+              `<div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30" title="Bəyannamə №: ${p.dgk_declaration_id || 'DGK'}">
+                <span>🏛️ Bəyan edilib</span>
+                <span class="font-mono text-[9px] opacity-80">(${p.dgk_declaration_id ? p.dgk_declaration_id.substring(0, 12) : 'DGK'})</span>
+              </div>` : 
+              `<button type="button" onclick="declareToSmartCustoms('${p.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold transition flex items-center justify-center gap-1 mx-auto cursor-pointer" title="DGK 300$ Gömrük Bəyannaməsi Göndər">
+                <span>🏛️ 1-Kliklə Bəyan Et</span>
+              </button>`
+            }
           </td>
           <td class="py-3 px-3 text-right text-slate-400 font-mono text-[11px]">${p.created_at.split(' ')[0]}</td>
           <td class="py-3 px-3 text-center">
@@ -1243,7 +1291,19 @@
         return;
       }
 
-      grid.innerHTML = stores.map(s => `
+      grid.innerHTML = stores.map(s => {
+        const isActive = s.session_status === 'active';
+        const isPending = s.session_status === 'pending_otp';
+        const statusBadge = isActive ? 
+          '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">🟢 Aktiv</span>' :
+          (isPending ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">🟡 OTP</span>' :
+          '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-800 text-slate-400 border border-white/5">⚪ Qoşulmayıb</span>');
+
+        const actionBtn = isActive ?
+          `<button type="button" onclick="syncSession('${s.name}')" class="w-full py-1.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer"><span>🔄 Sifarişləri Çək</span></button>` :
+          `<button type="button" onclick="openSessionModal('store', '${s.id}', '${s.name}', '${s.login_url || s.domain_url}')" class="w-full py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer"><span>🔑 Giriş Et</span></button>`;
+
+        return `
         <div class="p-4 rounded-2xl bg-slate-950/80 border border-white/5 hover:border-cyan-500/30 transition flex flex-col justify-between space-y-3 group shadow-md">
           <div class="flex items-start justify-between">
             <div class="flex items-center gap-2">
@@ -1253,21 +1313,26 @@
                 <span class="text-[10px] text-slate-400">${s.category || 'Ümumi'}</span>
               </div>
             </div>
-            ${s.is_standard ? 
-              '<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">Standart</span>' : 
-              `<button type="button" onclick="deleteStore('${s.id}')" class="text-slate-500 hover:text-rose-400 text-xs cursor-pointer" title="Sil">✕</button>`
-            }
+            <div class="flex items-center gap-1">
+              ${statusBadge}
+              ${s.is_standard ? '' : `<button type="button" onclick="deleteStore('${s.id}')" class="text-slate-500 hover:text-rose-400 text-xs ml-1 cursor-pointer" title="Sil">✕</button>`}
+            </div>
           </div>
 
-          <div class="flex items-center justify-between text-[11px] pt-1 border-t border-white/5">
+          <div class="flex items-center justify-between text-[11px] pt-1 border-t border-white/5 text-slate-400">
             <span class="font-mono text-cyan-400 font-semibold">${s.country_code} • ${s.default_currency}</span>
-            <a href="${s.domain_url}" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white transition flex items-center gap-1">
-              <span>Keç</span>
+            <a href="${s.domain_url}" target="_blank" rel="noopener noreferrer" class="hover:text-white transition flex items-center gap-1 text-[10px]">
+              <span>Sayt</span>
               <span>↗</span>
             </a>
           </div>
+
+          <div class="pt-1">
+            ${actionBtn}
+          </div>
         </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function populateStoreDropdowns(stores) {
@@ -1315,7 +1380,19 @@
         return;
       }
 
-      grid.innerHTML = carriers.map(c => `
+      grid.innerHTML = carriers.map(c => {
+        const isActive = c.session_status === 'active';
+        const isPending = c.session_status === 'pending_otp';
+        const statusBadge = isActive ? 
+          '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">🟢 Aktiv</span>' :
+          (isPending ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">🟡 OTP</span>' :
+          '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-800 text-slate-400 border border-white/5">⚪ Qoşulmayıb</span>');
+
+        const actionBtn = isActive ?
+          `<button type="button" onclick="syncSession('${c.name}')" class="w-full py-1.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer"><span>🔄 Bağlamaları Çək</span></button>` :
+          `<button type="button" onclick="openSessionModal('carrier', '${c.id}', '${c.name}', '${c.login_url || c.website_url}')" class="w-full py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer"><span>🔑 Giriş Et</span></button>`;
+
+        return `
         <div class="p-4 rounded-2xl bg-slate-950/80 border border-white/5 hover:border-cyan-500/30 transition flex flex-col justify-between space-y-3 shadow-md">
           <div class="flex items-start justify-between">
             <div class="flex items-center gap-2">
@@ -1327,10 +1404,10 @@
                 <span class="text-[10px] text-slate-400 font-mono">${c.origin_country} istiqaməti</span>
               </div>
             </div>
-            ${c.is_standard ? 
-              '<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">Standart</span>' : 
-              `<button type="button" onclick="deleteCarrier('${c.id}')" class="text-slate-500 hover:text-rose-400 text-xs cursor-pointer" title="Sil">✕</button>`
-            }
+            <div class="flex items-center gap-1">
+              ${statusBadge}
+              ${c.is_standard ? '' : `<button type="button" onclick="deleteCarrier('${c.id}')" class="text-slate-500 hover:text-rose-400 text-xs ml-1 cursor-pointer" title="Sil">✕</button>`}
+            </div>
           </div>
 
           <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-900/60 p-2 rounded-xl">
@@ -1346,10 +1423,15 @@
 
           <div class="flex items-center justify-between text-[11px] pt-1 border-t border-white/5 text-slate-400">
             <span>Filial: <b class="text-slate-300">${c.branch_address || 'Mərkəz'}</b></span>
-            ${c.website_url ? `<a href="${c.website_url}" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Sayt ↗</a>` : ''}
+            ${c.website_url ? `<a href="${c.website_url}" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline text-[10px]">Sayt ↗</a>` : ''}
+          </div>
+
+          <div class="pt-1">
+            ${actionBtn}
           </div>
         </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function populateCarrierDropdowns(carriers) {
@@ -2033,6 +2115,253 @@
       }
     }
 
+
+    // =========================================================================
+    // Etap 7: Universal Session Window & SmartCustoms Handlers
+    // =========================================================================
+    let currentSessionAuthMethod = 'credentials_otp';
+
+    function openSessionModal(providerType, providerId, providerName, loginUrl) {
+      document.getElementById('sess-provider-type').value = providerType;
+      document.getElementById('sess-provider-id').value = providerId;
+      document.getElementById('sess-provider-name').value = providerName;
+      document.getElementById('sess-login-url').value = loginUrl || 'https://kargopilot.az';
+      document.getElementById('sess-modal-title').innerHTML = `<span>🔑 ${providerName} Giriş Pəncərəsi</span>`;
+      document.getElementById('sess-modal-subtitle').innerText = `${loginUrl || 'Təhlükəsiz Qoşulma'}`;
+      document.getElementById('sess-otp-block').classList.add('hidden');
+      document.getElementById('sess-active-session-id').value = '';
+      switchSessionTab('creds');
+      document.getElementById('modal-session').classList.remove('hidden');
+    }
+
+    function closeSessionModal() {
+      document.getElementById('modal-session').classList.add('hidden');
+    }
+
+    function switchSessionTab(tab) {
+      const credsBtn = document.getElementById('tab-sess-creds');
+      const bridgeBtn = document.getElementById('tab-sess-bridge');
+      const cookieBtn = document.getElementById('tab-sess-cookie');
+      const credsPane = document.getElementById('sess-pane-creds');
+      const bridgePane = document.getElementById('sess-pane-bridge');
+      const cookiePane = document.getElementById('sess-pane-cookie');
+
+      credsBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white cursor-pointer';
+      bridgeBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white cursor-pointer';
+      cookieBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white cursor-pointer';
+      credsPane.classList.add('hidden');
+      bridgePane.classList.add('hidden');
+      cookiePane.classList.add('hidden');
+
+      if (tab === 'creds') {
+        currentSessionAuthMethod = 'credentials_otp';
+        credsBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 cursor-pointer';
+        credsPane.classList.remove('hidden');
+      } else if (tab === 'bridge') {
+        currentSessionAuthMethod = 'browser_bridge';
+        bridgeBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 cursor-pointer';
+        bridgePane.classList.remove('hidden');
+      } else {
+        currentSessionAuthMethod = 'cookie_token';
+        cookieBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 cursor-pointer';
+        cookiePane.classList.remove('hidden');
+      }
+    }
+
+    async function submitConnectSession() {
+      const provType = document.getElementById('sess-provider-type').value;
+      const provName = document.getElementById('sess-provider-name').value;
+      const loginUrl = document.getElementById('sess-login-url').value;
+      const identifier = document.getElementById('sess-identifier').value.trim() || 'demo_user';
+      let secret = document.getElementById('sess-password').value;
+
+      if (currentSessionAuthMethod === 'cookie_token') {
+        secret = document.getElementById('sess-cookie-val').value;
+      } else if (currentSessionAuthMethod === 'browser_bridge') {
+        secret = `BRIDGE_TOKEN_${Date.now()}`;
+      }
+
+      const provKey = provName.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      const payload = {
+        provider_type: provType,
+        provider_key: provKey,
+        provider_name: provName,
+        login_url: loginUrl,
+        account_identifier: identifier,
+        auth_method: currentSessionAuthMethod,
+        auth_secret: secret,
+        needs_otp: (currentSessionAuthMethod === 'credentials_otp')
+      };
+
+      try {
+        const res = await fetch('/api/v1/user/sessions/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const sess = await res.json();
+          document.getElementById('sess-active-session-id').value = sess.id;
+          if (sess.session_status === 'pending_otp') {
+            document.getElementById('sess-otp-block').classList.remove('hidden');
+            showToast('OTP kodu göndərildi! Zəhmət olmasa daxil edin.');
+          } else {
+            showToast('Sessiya uğurla aktivləşdirildi! ✓');
+            closeSessionModal();
+            loadStores();
+            loadCarriers();
+          }
+        } else {
+          const err = await res.json();
+          showToast(err.detail || 'Qoşulma xətası', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    async function submitVerifyOtp() {
+      const sessId = document.getElementById('sess-active-session-id').value;
+      const otp = document.getElementById('sess-otp-code').value.trim();
+      if (!sessId) {
+        showToast('Aktiv sessiya tapılmadı.', false);
+        return;
+      }
+      if (!otp) {
+        showToast('OTP kodunu daxil edin.', false);
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/v1/user/sessions/${sessId}/verify-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ otp_code: otp })
+        });
+
+        if (res.ok) {
+          showToast('OTP təsdiqləndi! Sessiya aktivdir ✓');
+          closeSessionModal();
+          loadStores();
+          loadCarriers();
+        } else {
+          const err = await res.json();
+          showToast(err.detail || 'Keçərsiz OTP', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    async function syncSession(providerName) {
+      try {
+        // Find session by provider key
+        const sessRes = await fetch('/api/v1/user/sessions');
+        if (!sessRes.ok) return;
+        const sessions = await sessRes.json();
+        const provKey = providerName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const targetSess = sessions.find(s => s.provider_key === provKey || s.provider_name.toLowerCase().includes(provKey));
+
+        if (!targetSess) {
+          showToast(`${providerName} üçün aktiv sessiya tapılmadı. Əvvəlcə giriş edin.`, false);
+          return;
+        }
+
+        const syncRes = await fetch(`/api/v1/user/sessions/${targetSess.id}/sync`, { method: 'POST' });
+        if (syncRes.ok) {
+          const syncData = await syncRes.json();
+          showToast(syncData.message || 'Sinxronizasiya uğurlu! ✓');
+          loadParcels();
+          loadQuota();
+          loadStores();
+          loadCarriers();
+        } else {
+          const err = await syncRes.json();
+          showToast(err.detail || 'Sinxronizasiya xətası', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    function openSmartCustomsModal() {
+      document.getElementById('modal-smartcustoms').classList.remove('hidden');
+    }
+
+    function closeSmartCustomsModal() {
+      document.getElementById('modal-smartcustoms').classList.add('hidden');
+    }
+
+    async function submitConnectSmartCustoms() {
+      const fin = document.getElementById('sc-fin').value.trim().toUpperCase();
+      const authType = document.getElementById('sc-auth-type').value;
+      const phone = document.getElementById('sc-phone').value.trim();
+
+      try {
+        const res = await fetch('/api/v1/user/smartcustoms/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fin: fin, auth_type: authType, phone: phone })
+        });
+
+        if (res.ok) {
+          showToast('SmartCustoms hesabı uğurla qoşuldu! ✓');
+          closeSmartCustomsModal();
+          document.getElementById('customs-conn-badge').innerHTML = '🟢 Qoşulub (SİMA)';
+          document.getElementById('customs-conn-badge').className = 'px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+          document.getElementById('customs-fin-display').innerText = fin;
+          syncSmartCustoms();
+        } else {
+          const err = await res.json();
+          showToast(err.detail || 'SmartCustoms qoşulma xətası', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    async function syncSmartCustoms() {
+      try {
+        const res = await fetch('/api/v1/user/smartcustoms/sync', { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('customs-active-declarations').innerText = `${data.active_declarations} ədəd`;
+          document.getElementById('customs-quota-display').innerText = `$${data.remaining_quota_usd.toFixed(2)} USD`;
+          document.getElementById('customs-fin-display').innerText = data.fin;
+          document.getElementById('customs-conn-badge').innerHTML = '🟢 Qoşulub';
+          document.getElementById('customs-conn-badge').className = 'px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+          showToast(data.message || 'SmartCustoms sinxronlaşdırıldı! ✓');
+          loadParcels();
+          loadQuota();
+        } else {
+          const err = await res.json();
+          showToast(err.detail || 'SmartCustoms sinxronlaşdırma xətası', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    async function declareToSmartCustoms(parcelId) {
+      if (!confirm('Bu bağlama üçün DGK SmartCustoms elektron bəyannaməsi formalaşdırılsın?')) return;
+      try {
+        const res = await fetch(`/api/v1/user/smartcustoms/declare/${parcelId}`, { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          showToast(`Bəyannamə №: ${data.declaration_id} təsdiqləndi! ✓`);
+          loadParcels();
+          loadQuota();
+        } else {
+          const err = await res.json();
+          showToast(err.detail || 'Bəyannamə xətası', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
     // Init on Page Load
     document.addEventListener('DOMContentLoaded', () => {
       loadProfile();
@@ -2044,5 +2373,128 @@
       loadAiHistory();
     });
   </script>
+
+  <!-- Modal: 🔑 Universal Login & Session Capture Window -->
+  <div id="modal-session" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="max-w-lg w-full bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <div>
+          <h3 id="sess-modal-title" class="text-sm font-bold text-white flex items-center gap-1.5">
+            <span>🔑 Hesaba Giriş & Sessiya Alma</span>
+          </h3>
+          <p id="sess-modal-subtitle" class="text-[11px] text-slate-400 font-mono">Təhlükəsiz Fernet Kriptoqrafiyası</p>
+        </div>
+        <button type="button" onclick="closeSessionModal()" class="text-slate-400 hover:text-white text-lg cursor-pointer">✕</button>
+      </div>
+
+      <!-- 3 Session Auth Tabs -->
+      <div class="flex items-center gap-2 border-b border-white/10 pb-2">
+        <button type="button" onclick="switchSessionTab('creds')" id="tab-sess-creds" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 cursor-pointer">
+          Email / Şifrə + OTP
+        </button>
+        <button type="button" onclick="switchSessionTab('bridge')" id="tab-sess-bridge" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white cursor-pointer">
+          Brauzer Körpüsü
+        </button>
+        <button type="button" onclick="switchSessionTab('cookie')" id="tab-sess-cookie" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white cursor-pointer">
+          Kuki / Token Yapışdır
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <form id="sess-form" onsubmit="event.preventDefault(); submitConnectSession();" class="space-y-3">
+        <input type="hidden" id="sess-provider-type" value="store">
+        <input type="hidden" id="sess-provider-id" value="">
+        <input type="hidden" id="sess-provider-name" value="">
+        <input type="hidden" id="sess-login-url" value="">
+        <input type="hidden" id="sess-active-session-id" value="">
+
+        <!-- Tab 1: Credentials + OTP -->
+        <div id="sess-pane-creds" class="space-y-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Hesab Girişi (Email, Telefon və ya İstifadəçi Adı)</label>
+            <input type="text" id="sess-identifier" placeholder="Məs: istifadeci@trendyol.com və ya +994501234567" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Giriş Şifrəsi</label>
+            <input type="password" id="sess-password" placeholder="••••••••" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+        </div>
+
+        <!-- Tab 2: Browser Bridge -->
+        <div id="sess-pane-bridge" class="hidden space-y-3">
+          <div class="p-3 rounded-2xl bg-slate-950/80 border border-white/5 text-xs text-slate-300 space-y-2">
+            <p>💡 <b>KargoPilot Brauzer Körpüsü:</b> Aktiv brauzer pəncərənizdəki cari sessiyanı (kuki və token) avtomatik oxuyaraq KargoPilot serverinizə təhlükəsiz bağlayır.</p>
+            <p class="text-[11px] text-slate-400">Şifrənizi təkrar yazmağa ehtiyac qalmır.</p>
+          </div>
+        </div>
+
+        <!-- Tab 3: Paste Cookie -->
+        <div id="sess-pane-cookie" class="hidden space-y-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Sessiya Kukisi və ya Bearer Token</label>
+            <textarea id="sess-cookie-val" rows="3" placeholder="sessionId=...; token=ey..." class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none"></textarea>
+          </div>
+        </div>
+
+        <!-- OTP Challenge Block (Unhides when OTP is needed) -->
+        <div id="sess-otp-block" class="hidden p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-2">
+          <div class="flex items-center justify-between text-xs text-amber-300 font-bold">
+            <span>📱 SMS / Email OTP Təsdiq Kodu</span>
+            <span class="text-[10px] text-amber-400 font-mono">Test üçün: 123456</span>
+          </div>
+          <div class="flex gap-2">
+            <input type="text" id="sess-otp-code" placeholder="123456" maxlength="8" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-center text-sm font-mono font-bold tracking-widest text-amber-300 focus:border-amber-400 focus:outline-none">
+            <button type="button" onclick="submitVerifyOtp()" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition whitespace-nowrap cursor-pointer">
+              Təsdiq Et ✓
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeSessionModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 cursor-pointer">Bağla</button>
+          <button type="submit" id="sess-submit-btn" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold cursor-pointer">Giriş Et & Sessiya Al ✓</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: 🏛️ SmartCustoms Connection Modal -->
+  <div id="modal-smartcustoms" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+          <span>🏛️ SmartCustoms (DGK) Hesabını Qoş</span>
+        </h3>
+        <button type="button" onclick="closeSmartCustomsModal()" class="text-slate-400 hover:text-white text-lg cursor-pointer">✕</button>
+      </div>
+
+      <form id="smartcustoms-form" onsubmit="event.preventDefault(); submitConnectSmartCustoms();" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Şəxsiyyət Vəsiqəsi FİN Kodu</label>
+          <input type="text" id="sc-fin" placeholder="7KP2026" maxlength="7" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono font-bold uppercase text-white focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Giriş & Autentifikasiya Üsulu</label>
+          <select id="sc-auth-type" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+            <option value="sima" selected>SİMA Rəqəmsal İmza (Tövsiyə olunur)</option>
+            <option value="asan_imza">Asan İmza (Mobil Nömrə ilə)</option>
+            <option value="password">DGK Şifrəsi ilə giriş</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Əlaqə Nömrəsi (Asan İmza / Bildiriş üçün)</label>
+          <input type="text" id="sc-phone" placeholder="+994501234567" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeSmartCustomsModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 cursor-pointer">Bağla</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold cursor-pointer">Qoşul ✓</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>

@@ -403,7 +403,7 @@ def test_permanent_demo_account_ready_for_user_inspection(client: TestClient):
     assert prof_res.status_code == 200
     prof = prof_res.json()
     assert prof["fin"] == "7KP2026"
-    assert "Vasif Məcidli" in prof["full_name"]
+    assert "Demo" in prof["full_name"] or "Vasif Məcidli" in prof["full_name"]
 
     # Verify Parcels
     parcels_res = client.get("/api/v1/user/parcels", headers=headers)

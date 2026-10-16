@@ -177,6 +177,7 @@ def init_db() -> None:
     _ensure_fin_profiles(conn)
     _ensure_users_and_auth_tables(conn)
     _ensure_etap6_tables(conn)
+    _ensure_etap7_tables(conn)
 
     conn.commit()
     conn.close()
@@ -278,7 +279,7 @@ def _ensure_users_and_auth_tables(conn: sqlite3.Connection) -> None:
     ) VALUES (
         ?, 'vasif@kargopilot.az',
         '$argon2id$v=19$m=65536,t=3,p=4$c29tZXNhbHRzdHJpbmc$5V2g+qX8zXp5w8e9s1Q2u3V4w5x6y7z8A9b0C1d2E3f',
-        'Vasif Məcidli', '+994776346310', 'SUPER_ADMIN', 'active', 'enterprise', CURRENT_TIMESTAMP
+        'Vasif Məcidli', '+994501234567', 'SUPER_ADMIN', 'active', 'enterprise', CURRENT_TIMESTAMP
     );
     """, (superadmin_id,))
 
@@ -390,6 +391,58 @@ def _ensure_etap6_tables(conn: sqlite3.Connection) -> None:
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
     );
     """)
+
+
+def _ensure_etap7_tables(conn: sqlite3.Connection) -> None:
+    cur = conn.cursor()
+    # 1. external_sessions table
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS external_sessions (
+        id VARCHAR(36) PRIMARY KEY,
+        user_id VARCHAR(36) NOT NULL,
+        provider_type VARCHAR(32) NOT NULL,
+        provider_key VARCHAR(64) NOT NULL,
+        provider_name VARCHAR(120) NOT NULL,
+        login_url VARCHAR(255) NOT NULL,
+        account_identifier VARCHAR(120) NOT NULL,
+        auth_method VARCHAR(32) NOT NULL,
+        session_payload_encrypted TEXT NOT NULL,
+        session_status VARCHAR(32) NOT NULL DEFAULT 'disconnected',
+        last_synced_at DATETIME,
+        expires_at DATETIME,
+        sync_summary_json TEXT DEFAULT '{}',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    """)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_ext_sess_user ON external_sessions(user_id);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_ext_sess_user_prov ON external_sessions(user_id, provider_key);")
+
+    # 2. Add SmartCustoms declaration columns to orders
+    order_cols = [c[1] for c in cur.execute("PRAGMA table_info(orders)").fetchall()]
+    if "declared_to_dgk" not in order_cols:
+        cur.execute("ALTER TABLE orders ADD COLUMN declared_to_dgk BOOLEAN DEFAULT 0")
+    if "dgk_declaration_id" not in order_cols:
+        cur.execute("ALTER TABLE orders ADD COLUMN dgk_declaration_id VARCHAR(64)")
+    if "declared_at" not in order_cols:
+        cur.execute("ALTER TABLE orders ADD COLUMN declared_at DATETIME")
+    if "declaration_fin" not in order_cols:
+        cur.execute("ALTER TABLE orders ADD COLUMN declaration_fin VARCHAR(7)")
+
+    # 3. Add login_url and auth_method to user_stores
+    store_cols = [c[1] for c in cur.execute("PRAGMA table_info(user_stores)").fetchall()]
+    if "login_url" not in store_cols:
+        cur.execute("ALTER TABLE user_stores ADD COLUMN login_url VARCHAR(255)")
+    if "auth_method" not in store_cols:
+        cur.execute("ALTER TABLE user_stores ADD COLUMN auth_method VARCHAR(32) DEFAULT 'credentials_otp'")
+
+    # 4. Add login_url and auth_method to user_carriers
+    carr_cols = [c[1] for c in cur.execute("PRAGMA table_info(user_carriers)").fetchall()]
+    if "login_url" not in carr_cols:
+        cur.execute("ALTER TABLE user_carriers ADD COLUMN login_url VARCHAR(255)")
+    if "auth_method" not in carr_cols:
+        cur.execute("ALTER TABLE user_carriers ADD COLUMN auth_method VARCHAR(32) DEFAULT 'credentials_otp'")
 
 
 def _ensure_platform_sessions(conn: sqlite3.Connection) -> None:
