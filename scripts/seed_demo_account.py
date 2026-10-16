@@ -1,0 +1,138 @@
+"""Script to seed/ensure the official KargoPilot Demo Account on local or VPS database.
+User: demo@kargopilot.az / KargoPilot2026! / FIN: 7KP2026
+Contains 2 active parcels totaling $260.00 USD (DGK 300$ Warning status).
+"""
+
+from __future__ import annotations
+
+import os
+import sqlite3
+import sys
+import uuid
+from datetime import datetime, timezone
+from pathlib import Path
+
+# Try to find the db path
+possible_paths = [
+    Path("/data/pcs/pcs.db"),
+    Path(__file__).resolve().parent.parent / "web_panel" / "pcs.db",
+    Path("pcs.db"),
+]
+
+db_path = None
+for p in possible_paths:
+    if p.exists() or str(p).startswith("/data/pcs"):
+        db_path = p
+        break
+
+if not db_path:
+    db_path = Path("pcs.db")
+
+print(f"Targeting Database at: {db_path}")
+
+# Import password hasher
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "web_panel"))
+try:
+    from app.security.crypto import password_manager
+    hashed_pwd = password_manager.hash_password("KargoPilot2026!")
+except Exception:
+    import bcrypt
+    hashed_pwd = bcrypt.hashpw("KargoPilot2026!".encode(), bcrypt.gensalt(12)).decode()
+
+conn = sqlite3.connect(str(db_path), timeout=30.0)
+conn.row_factory = sqlite3.Row
+
+user_id = "demo-user-7kp2026"
+email = "demo@kargopilot.az"
+full_name = "Vasif Məcidli (Demo Pilot)"
+phone = "+994776346310"
+fin = "7KP2026"
+branch = "Bakı - Mərkəz (28 May Filialı)"
+now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+# 1. Upsert User
+conn.execute("""
+INSERT INTO users (
+    id, email, password_hash, full_name, phone, role, status, tier,
+    is_active, is_verified, failed_login_attempts, fin, default_branch,
+    notification_whatsapp, notification_email, created_at, updated_at
+) VALUES (?, ?, ?, ?, ?, 'CUSTOMER', 'active', 'cloud_managed', 1, 1, 0, ?, ?, 1, 1, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+    email = excluded.email,
+    password_hash = excluded.password_hash,
+    full_name = excluded.full_name,
+    phone = excluded.phone,
+    fin = excluded.fin,
+    default_branch = excluded.default_branch,
+    notification_whatsapp = 1,
+    notification_email = 1,
+    updated_at = excluded.updated_at
+""", (user_id, email, hashed_pwd, full_name, phone, fin, branch, now_str, now_str))
+
+# Also ensure by email if id was different
+conn.execute("""
+UPDATE users SET 
+    password_hash = ?, full_name = ?, phone = ?, fin = ?, default_branch = ?,
+    role = 'CUSTOMER', status = 'active', tier = 'cloud_managed',
+    is_active = 1, failed_login_attempts = 0, updated_at = ?
+WHERE LOWER(email) = ?
+""", (hashed_pwd, full_name, phone, fin, branch, now_str, email.lower()))
+
+# 2. Reset and seed parcels for demo user
+orders = conn.execute("SELECT id FROM orders WHERE user_id = ?", (user_id,)).fetchall()
+order_ids = [r["id"] for r in orders]
+if order_ids:
+    placeholders = ",".join("?" for _ in order_ids)
+    conn.execute(f"DELETE FROM order_items WHERE order_id IN ({placeholders})", order_ids)
+    conn.execute("DELETE FROM orders WHERE user_id = ?", (user_id,))
+
+# Seed Parcel 1: $85.00 USD
+order1_id = f"demo-ord-01-{uuid.uuid4().hex[:6]}"
+conn.execute("""
+INSERT INTO orders (
+    id, user_id, platform, temu_order_ref, tracking_number, carrier,
+    receiver_name, receiver_phone, fin, original_amount, original_currency,
+    fx_rate_to_azn, fx_rate_to_usd, invoice_amount_azn, invoice_amount_usd,
+    temu_invoice_amount, temu_invoice_currency, status, extra, created_at, updated_at
+) VALUES (?, ?, 'Trendyol', ?, 'TRK-TY984120', 'STAREX', ?, ?, ?, 144.50, 'AZN', 1.0, 0.5882, 144.50, 85.00, 144.50, 'AZN', 'Bəyan edilib ✓', '{}', ?, ?)
+""", (order1_id, user_id, f"TY-{uuid.uuid4().hex[:8]}", full_name, phone, fin, now_str, now_str))
+
+conn.execute("""
+INSERT INTO order_items (
+    id, order_id, title, main_cat, sub_cat, quantity, unit_price, price_unknown,
+    total_price, currency, unit_price_azn, total_price_azn, total_price_usd, extra
+) VALUES (?, ?, 'Kişi Qış Gödəkcəsi və İdman Ayaqqabısı', 'Geyim aksesuarları', 'Digər', 1, 144.50, 0, 144.50, 'AZN', 144.50, 144.50, 85.00, '{}')
+""", (str(uuid.uuid4()), order1_id))
+
+# Seed Parcel 2: $175.00 USD
+order2_id = f"demo-ord-02-{uuid.uuid4().hex[:6]}"
+conn.execute("""
+INSERT INTO orders (
+    id, user_id, platform, temu_order_ref, tracking_number, carrier,
+    receiver_name, receiver_phone, fin, original_amount, original_currency,
+    fx_rate_to_azn, fx_rate_to_usd, invoice_amount_azn, invoice_amount_usd,
+    temu_invoice_amount, temu_invoice_currency, status, extra, created_at, updated_at
+) VALUES (?, ?, 'Amazon', ?, 'AMZ-441029US', 'CAMEX', ?, ?, ?, 297.50, 'AZN', 1.0, 0.5882, 297.50, 175.00, 297.50, 'AZN', 'Yoldadır ✈️', '{}', ?, ?)
+""", (order2_id, user_id, f"AMZ-{uuid.uuid4().hex[:8]}", full_name, phone, fin, now_str, now_str))
+
+conn.execute("""
+INSERT INTO order_items (
+    id, order_id, title, main_cat, sub_cat, quantity, unit_price, price_unknown,
+    total_price, currency, unit_price_azn, total_price_azn, total_price_usd, extra
+) VALUES (?, ?, 'Sony Simsiz Səs Qulaqlığı (ANC)', 'Elektronika', 'Digər', 1, 297.50, 0, 297.50, 'AZN', 297.50, 297.50, 175.00, '{}')
+""", (str(uuid.uuid4()), order2_id))
+
+# 3. Update fin_profiles
+conn.execute("""
+INSERT INTO fin_profiles (fin, full_name, phone, is_active, monthly_limit_usd, notes)
+VALUES (?, ?, ?, 1, 300.0, 'Demo Pilot İstifadəçi Profili')
+ON CONFLICT(fin) DO UPDATE SET full_name = excluded.full_name, phone = excluded.phone
+""", (fin, full_name, phone))
+
+conn.commit()
+conn.close()
+print("[OK] Demo Account seeded successfully:")
+print(f"  Email: {email}")
+print(f"  Password: KargoPilot2026!")
+print(f"  FIN: {fin}")
+print(f"  Parcels: 2 ($85.00 + $175.00 = $260.00 USD, Warning status)")
