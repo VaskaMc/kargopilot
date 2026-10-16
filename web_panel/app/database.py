@@ -176,6 +176,7 @@ def init_db() -> None:
     _ensure_platform_sessions(conn)
     _ensure_fin_profiles(conn)
     _ensure_users_and_auth_tables(conn)
+    _ensure_etap6_tables(conn)
 
     conn.commit()
     conn.close()
@@ -260,6 +261,14 @@ def _ensure_users_and_auth_tables(conn: sqlite3.Connection) -> None:
         cur.execute("ALTER TABLE users ADD COLUMN notification_whatsapp BOOLEAN DEFAULT 1")
     if "notification_email" not in user_cols:
         cur.execute("ALTER TABLE users ADD COLUMN notification_email BOOLEAN DEFAULT 1")
+    if "default_carrier" not in user_cols:
+        cur.execute("ALTER TABLE users ADD COLUMN default_carrier TEXT DEFAULT 'STAREX'")
+    if "currency_preference" not in user_cols:
+        cur.execute("ALTER TABLE users ADD COLUMN currency_preference TEXT DEFAULT 'AZN'")
+    if "notification_sms" not in user_cols:
+        cur.execute("ALTER TABLE users ADD COLUMN notification_sms BOOLEAN DEFAULT 1")
+    if "notification_telegram" not in user_cols:
+        cur.execute("ALTER TABLE users ADD COLUMN notification_telegram BOOLEAN DEFAULT 0")
 
     # Seed Superadmin if not exists
     superadmin_id = "00000000-0000-4000-8000-000000000001"
@@ -272,6 +281,115 @@ def _ensure_users_and_auth_tables(conn: sqlite3.Connection) -> None:
         'Vasif Məcidli', '+994776346310', 'SUPER_ADMIN', 'active', 'enterprise', CURRENT_TIMESTAMP
     );
     """, (superadmin_id,))
+
+
+def _ensure_etap6_tables(conn: sqlite3.Connection) -> None:
+    cur = conn.cursor()
+
+    # 1. user_stores table
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS user_stores (
+        id VARCHAR(36) PRIMARY KEY,
+        user_id VARCHAR(36),
+        name VARCHAR(100) NOT NULL,
+        domain_url VARCHAR(255) NOT NULL,
+        country_code VARCHAR(10) NOT NULL DEFAULT 'TR',
+        default_currency VARCHAR(10) NOT NULL DEFAULT 'TRY',
+        category VARCHAR(50) NOT NULL DEFAULT 'Ümumi',
+        icon_badge VARCHAR(50),
+        is_standard BOOLEAN DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    """)
+
+    # Seed standard stores if none exist
+    std_stores_count = cur.execute("SELECT COUNT(*) FROM user_stores WHERE is_standard = 1").fetchone()[0]
+    if std_stores_count == 0:
+        std_stores = [
+            ("std-store-trendyol", None, "Trendyol", "https://trendyol.com", "TR", "TRY", "Geyim", "🛍️", 1),
+            ("std-store-temu", None, "Temu", "https://temu.com", "CN", "USD", "Ümumi", "📦", 1),
+            ("std-store-amazon", None, "Amazon", "https://amazon.com", "US", "USD", "Ümumi", "🛒", 1),
+            ("std-store-zara", None, "Zara", "https://zara.com/tr", "TR", "TRY", "Geyim", "👗", 1),
+            ("std-store-hepsiburada", None, "Hepsiburada", "https://hepsiburada.com", "TR", "TRY", "Ümumi", "🛍️", 1),
+            ("std-store-aliexpress", None, "AliExpress", "https://aliexpress.com", "CN", "USD", "Elektronika", "🔌", 1),
+            ("std-store-shein", None, "Shein", "https://shein.com", "CN", "USD", "Geyim", "👠", 1),
+            ("std-store-iherb", None, "iHerb", "https://iherb.com", "US", "USD", "Kosmetika", "💊", 1),
+        ]
+        for s in std_stores:
+            cur.execute("""
+            INSERT OR IGNORE INTO user_stores (id, user_id, name, domain_url, country_code, default_currency, category, icon_badge, is_standard)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, s)
+
+    # 2. user_carriers table
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS user_carriers (
+        id VARCHAR(36) PRIMARY KEY,
+        user_id VARCHAR(36),
+        name VARCHAR(100) NOT NULL,
+        website_url VARCHAR(255),
+        tracking_url_template VARCHAR(255),
+        origin_country VARCHAR(10) NOT NULL DEFAULT 'TR',
+        rate_per_kg_usd REAL NOT NULL,
+        liquid_surcharge_usd REAL NOT NULL DEFAULT 0.0,
+        electronics_surcharge_usd REAL NOT NULL DEFAULT 0.0,
+        delivery_days_min INTEGER DEFAULT 3,
+        delivery_days_max INTEGER DEFAULT 6,
+        branch_address VARCHAR(255),
+        is_standard BOOLEAN DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    """)
+
+    # Seed standard carriers if none exist
+    std_carriers_count = cur.execute("SELECT COUNT(*) FROM user_carriers WHERE is_standard = 1").fetchone()[0]
+    if std_carriers_count == 0:
+        std_carriers = [
+            ("std-carr-starex-tr", None, "Starex", "https://starex.az", "https://starex.az/tracking/{tracking}", "TR", 3.00, 1.50, 2.00, 3, 5, "28 May Filialı", 1),
+            ("std-carr-expargo-tr", None, "Expargo", "https://expargo.com", "https://expargo.com/track/{tracking}", "TR", 3.20, 1.00, 2.00, 4, 6, "Nərimanov Filialı", 1),
+            ("std-carr-dynamex-tr", None, "Dynamex", "https://dynamex.az", "https://dynamex.az/track/{tracking}", "TR", 2.99, 1.20, 1.80, 3, 5, "28 May Filialı", 1),
+            ("std-carr-limak-tr", None, "Limak", "https://limak.az", "https://limak.az/tracking/{tracking}", "TR", 3.10, 1.50, 2.00, 3, 6, "28 May Filialı", 1),
+            ("std-carr-camex-tr", None, "Camex", "https://camex.az", "https://camex.az/track/{tracking}", "TR", 3.20, 1.00, 2.00, 4, 6, "Yasamal Filialı", 1),
+            ("std-carr-mover-tr", None, "Mover", "https://mover.az", "https://mover.az/track/{tracking}", "TR", 3.30, 1.20, 2.00, 3, 5, "Xalqlar Dostluğu", 1),
+            ("std-carr-koliplus-tr", None, "KoliPlus", "https://koliplus.az", "https://koliplus.az/track/{tracking}", "TR", 2.85, 1.50, 1.50, 4, 7, "Əhmədli Filialı", 1),
+            ("std-carr-camex-us", None, "Camex US", "https://camex.az", "https://camex.az/track/{tracking}", "US", 8.50, 2.00, 2.50, 5, 8, "Yasamal Filialı", 1),
+            ("std-carr-starex-us", None, "Starex US", "https://starex.az", "https://starex.az/tracking/{tracking}", "US", 9.00, 2.00, 2.50, 5, 7, "28 May Filialı", 1),
+            ("std-carr-camex-cn", None, "Camex CN", "https://camex.az", "https://camex.az/track/{tracking}", "CN", 9.00, 2.50, 3.00, 8, 12, "Yasamal Filialı", 1),
+            ("std-carr-starex-cn", None, "Starex CN", "https://starex.az", "https://starex.az/tracking/{tracking}", "CN", 9.50, 2.50, 3.00, 7, 10, "28 May Filialı", 1),
+        ]
+        for c in std_carriers:
+            cur.execute("""
+            INSERT OR IGNORE INTO user_carriers (id, user_id, name, website_url, tracking_url_template, origin_country, rate_per_kg_usd, liquid_surcharge_usd, electronics_surcharge_usd, delivery_days_min, delivery_days_max, branch_address, is_standard)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, c)
+
+    # 3. ai_chat_messages table
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS ai_chat_messages (
+        id VARCHAR(36) PRIMARY KEY,
+        user_id VARCHAR(36) NOT NULL,
+        role VARCHAR(20) NOT NULL,
+        content TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    """)
+
+    # 4. family_fins table
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS family_fins (
+        id VARCHAR(36) PRIMARY KEY,
+        user_id VARCHAR(36) NOT NULL,
+        name_relation VARCHAR(100) NOT NULL,
+        fin VARCHAR(7) NOT NULL,
+        monthly_limit_usd REAL DEFAULT 300.0,
+        spent_usd REAL DEFAULT 0.0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    """)
 
 
 def _ensure_platform_sessions(conn: sqlite3.Connection) -> None:

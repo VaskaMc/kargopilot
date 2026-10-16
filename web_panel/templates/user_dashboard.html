@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Şəxsi Kabinet — KargoPilot Bulud İdarəetmə Paneli</title>
+  <title>Şəxsi Kabinet — KargoPilot Bulud İdarəetmə Paneli v5.0</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   
   <!-- Tailwind CSS & Fonts -->
@@ -15,13 +15,32 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
-    [x-cloak] { display: none !important; }
+    .tab-btn.active {
+      background-color: rgb(6 182 212 / 0.15);
+      color: rgb(103 232 249);
+      border-color: rgb(6 182 212 / 0.4);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(51, 65, 85, 0.8);
+      border-radius: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 1);
+    }
   </style>
 </head>
 <body class="min-h-full bg-[#0b0f19] text-slate-100 flex flex-col">
   
   <!-- Top Navigation Header -->
-  <header class="border-b border-white/10 bg-slate-900/70 backdrop-blur-md sticky top-0 z-40">
+  <header class="border-b border-white/10 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
       <!-- Brand Logo -->
@@ -31,7 +50,7 @@
           <div class="leading-tight">
             <div class="text-base font-extrabold text-white tracking-tight flex items-center gap-1.5">
               <span>KargoPilot</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">Bulud</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">v5.0</span>
             </div>
             <div class="text-[11px] text-slate-400">Şəxsi İdarəetmə Paneli</div>
           </div>
@@ -39,31 +58,26 @@
       </div>
 
       <!-- User Profile & Action Bar -->
-      <div class="flex items-center gap-3 sm:gap-4">
-        <button type="button" onclick="openProfileModal()" class="hidden sm:flex flex-col text-right hover:opacity-80 transition cursor-pointer">
+      <div class="flex items-center gap-2.5 sm:gap-4">
+        <button type="button" onclick="switchTab('profile')" class="hidden sm:flex flex-col text-right hover:opacity-80 transition cursor-pointer">
           <span id="header-user-name" class="text-xs font-bold text-white">{{ user.full_name if user else 'İstifadəçi' }}</span>
-          <span id="header-user-email" class="text-[11px] font-mono text-cyan-400">{{ user.email if user else 'bulud@kargopilot.az' }}</span>
+          <span id="header-user-email" class="text-[11px] font-mono text-cyan-400">{{ user.email if user else 'demo@kargopilot.az' }}</span>
         </button>
 
-        <!-- Profile Settings Trigger -->
-        <button type="button" onclick="openProfileModal()" title="Profil Tənzimləmələri" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition flex items-center justify-center">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <!-- Quick AI Launcher -->
+        <button type="button" onclick="switchTab('ai')" title="Sərbəst AI Copilot" class="px-3 py-1.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 transition flex items-center gap-1.5 text-xs font-bold cursor-pointer">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+          <span>🤖 AI Copilot</span>
         </button>
 
-        <!-- Tier Chip -->
-        <span class="hidden md:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-          <span>Aktiv Otopilot</span>
-        </span>
-
-        <!-- Active Server Mode Badge (Data Sovereignty) -->
-        <button type="button" onclick="openSovereigntyModal()" id="active-server-badge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 hover:border-cyan-400 transition cursor-pointer" title="Server və Məlumat İdarəetməsi">
+        <!-- Active Server Mode Badge -->
+        <button type="button" onclick="switchTab('server')" id="active-server-badge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 hover:border-cyan-400 transition cursor-pointer" title="Server və Məlumat İdarəetməsi">
           <span id="server-badge-dot" class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
           <span id="server-badge-text">☁️ Bulud Serveri</span>
         </button>
 
         <!-- Logout Button -->
-        <a href="/logout" class="min-h-[40px] px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold border border-slate-700 transition flex items-center gap-1.5">
+        <a href="/logout" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold border border-slate-700 transition flex items-center gap-1.5">
           <span>Çıxış</span>
           <span>↳</span>
         </a>
@@ -81,378 +95,622 @@
   </div>
 
   <!-- Main Container -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
     
-    <!-- Welcome Banner with Mode Badge -->
+    <!-- Welcome Banner with Quick Actions -->
     <div class="p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-900/90 to-cyan-950/40 border border-white/10 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2 mb-1">
           <h1 id="welcome-title" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Salam, {{ (user.full_name.split()[0]) if user else 'Müştəri' }}! 👋</h1>
-          <span class="text-xs px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium">Bizim Server (Cloud Managed)</span>
+          <span class="text-xs px-2.5 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium">Bulud Otopilot Aktivdir</span>
         </div>
-        <p class="text-xs sm:text-sm text-slate-400">Bütün xarici sifarişləriniz və gömrük kvotanız 7/24 avtomatik otopilot nəzarətindədir.</p>
+        <p class="text-xs sm:text-sm text-slate-400">DGK 300$ rüsumsuz kvotanız, xarici kargolarınız və fərdi satıcı saytlarınız tək mərkəzdən idarə olunur.</p>
       </div>
 
       <div class="flex flex-wrap items-center gap-2.5">
-        <button type="button" onclick="openOrderModal()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold shadow-lg shadow-cyan-500/20 transition flex items-center gap-2 cursor-pointer">
+        <button type="button" onclick="openOrderModal()" class="min-h-[42px] px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold shadow-lg shadow-cyan-500/20 transition flex items-center gap-2 cursor-pointer">
           <span class="text-base leading-none">+</span>
-          <span>Yeni Sifariş Əlavə Et</span>
+          <span>Yeni Bağlama</span>
         </button>
-        <button type="button" onclick="openProfileModal()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition flex items-center gap-2 cursor-pointer">
-          <span>⚙️ Profil</span>
+        <button type="button" onclick="openStoreModal()" class="min-h-[42px] px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition flex items-center gap-2 cursor-pointer">
+          <span>🛍️ + Satıcı</span>
         </button>
-        <button type="button" onclick="openSovereigntyModal()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold border border-emerald-500/30 transition flex items-center gap-2 cursor-pointer">
-          <span>🛡️ Məlumat Müstəqilliyi</span>
-        </button>
-        <button type="button" onclick="openLoydAssistant()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition flex items-center gap-2 cursor-pointer">
-          <img src="/assets/loyd-avatar-128.png" alt="Loyd AI" class="w-5 h-5 rounded-full object-cover">
-          <span>Loyd AI-yə Sual Ver</span>
+        <button type="button" onclick="openCarrierModal()" class="min-h-[42px] px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition flex items-center gap-2 cursor-pointer">
+          <span>🚚 + Kargo</span>
         </button>
       </div>
     </div>
 
-    <!-- 4 Key Stat Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      
-      <!-- Card 1: Monthly DGK 300$ Quota -->
-      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between shadow-lg">
-        <div>
-          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
-            <span>DGK 300$ İdxal Limiti</span>
-            <span id="quota-status-badge" class="text-emerald-400 font-bold font-mono">Təhlükəsiz</span>
-          </div>
-          <div class="text-2xl font-extrabold text-white font-mono tabular-nums">
-            <span id="quota-spent-usd">${{ quota.used_usd if quota else '0.00' }}</span> <span class="text-xs text-slate-400 font-sans font-normal">/ 300.00 USD</span>
-          </div>
-          
-          <!-- Progress Track -->
-          <div class="w-full h-2 bg-slate-800 rounded-full mt-3 overflow-hidden">
-            <div id="quota-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-500" style="width: 0%;"></div>
-          </div>
-        </div>
+    <!-- Navigation Tabs Bar (Next-Gen Bento SaaS) -->
+    <div class="flex items-center gap-2 border-b border-white/10 pb-3 overflow-x-auto custom-scroll">
+      <button type="button" onclick="switchTab('overview')" id="tab-btn-overview" class="tab-btn active px-4 py-2.5 rounded-xl text-xs font-bold border border-white/10 text-slate-300 hover:text-white transition flex items-center gap-2 whitespace-nowrap cursor-pointer">
+        <span>📊</span>
+        <span>İcmal & Bağlamalar</span>
+      </button>
 
-        <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-          <span>Qalan ehtiyat:</span>
-          <span id="quota-remaining-usd" class="font-bold text-slate-200 font-mono">${{ quota.remaining_usd if quota else '300.00' }} USD</span>
-        </div>
-      </div>
+      <button type="button" onclick="switchTab('ecosystem')" id="tab-btn-ecosystem" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold border border-white/10 text-slate-300 hover:text-white transition flex items-center gap-2 whitespace-nowrap cursor-pointer">
+        <span>🏪</span>
+        <span>Satıcı və Kargo Ekosistemi</span>
+      </button>
 
-      <!-- Card 2: Active Packages -->
-      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between shadow-lg">
-        <div>
-          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
-            <span>Yoldakı Bağlamalar</span>
-            <span class="text-cyan-400 font-bold">Aktiv</span>
-          </div>
-          <div class="text-2xl font-extrabold text-white font-mono tabular-nums">
-            <span id="active-parcels-count">{{ active_orders_count if active_orders_count is defined else '0' }}</span> <span class="text-xs text-slate-400 font-sans font-normal">bağlama</span>
-          </div>
-          <div class="text-xs text-slate-400 mt-2 flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-            <span id="parcels-subtitle">Avtomatik otopilot izləmədə</span>
-          </div>
-        </div>
+      <button type="button" onclick="switchTab('arbitrage')" id="tab-btn-arbitrage" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold border border-white/10 text-slate-300 hover:text-white transition flex items-center gap-2 whitespace-nowrap cursor-pointer">
+        <span>⚖️</span>
+        <span>Arbitraj & 300$ Gömrük</span>
+      </button>
 
-        <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-          <span>İdxal statusu:</span>
-          <span class="font-bold text-slate-200">Rejim aktivdir</span>
-        </div>
-      </div>
+      <button type="button" onclick="switchTab('ai')" id="tab-btn-ai" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold border border-white/10 text-slate-300 hover:text-white transition flex items-center gap-2 whitespace-nowrap cursor-pointer">
+        <span>🤖</span>
+        <span>AI Söhbət (Copilot)</span>
+      </button>
 
-      <!-- Card 3: Connected Carriers -->
-      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between shadow-lg">
-        <div>
-          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
-            <span>Təhvil Filialı</span>
-            <span class="text-indigo-400 font-bold">Aktiv</span>
-          </div>
-          <div class="text-lg font-bold text-white mt-1">
-            <span id="card-branch-name">{{ user.default_branch if user and user.default_branch else '28 May Filialı' }}</span>
-          </div>
-          <div class="flex items-center gap-1.5 mt-2">
-            <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold text-cyan-300">STAREX</span>
-            <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold text-emerald-300">CAMEX</span>
-            <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold text-amber-300">LIMAK</span>
-          </div>
-        </div>
+      <button type="button" onclick="switchTab('profile')" id="tab-btn-profile" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold border border-white/10 text-slate-300 hover:text-white transition flex items-center gap-2 whitespace-nowrap cursor-pointer">
+        <span>👤</span>
+        <span>Profil & Ailə FİN</span>
+      </button>
 
-        <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-          <span>Sinxronizasiya:</span>
-          <span class="font-bold text-emerald-400">Avtomatik ✓</span>
-        </div>
-      </div>
-
-      <!-- Card 4: Loyd AI Copilot -->
-      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between shadow-lg">
-        <div>
-          <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
-            <span>Loyd AI Köməkçi</span>
-            <span class="text-cyan-400 font-bold flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-              <span>Online</span>
-            </span>
-          </div>
-          <div class="flex items-center gap-2.5 mt-1">
-            <img src="/assets/loyd-avatar-128.png" alt="Loyd Avatar" class="w-8 h-8 rounded-xl object-cover border border-cyan-500/30">
-            <div>
-              <div class="text-xs font-bold text-white">Smart Bəyannaməçi</div>
-              <div class="text-[11px] text-slate-400">37 kateqoriyaya tam hakim</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-          <span>Otopilot statusu:</span>
-          <span class="font-bold text-cyan-300">Aktiv nəzarətdə</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Legal Reassurance Shield Card (Customs Anxiety Reduction) -->
-    <div class="p-4 sm:p-5 rounded-2xl bg-cyan-950/25 border border-cyan-500/25 flex items-start gap-3.5 shadow-lg">
-      <span class="text-xl sm:text-2xl shrink-0">🛡️</span>
-      <div class="text-xs leading-relaxed text-slate-300">
-        <b class="text-cyan-300">Hüquqi Təminat: Bağlamanız müsadirə olunmur.</b>  
-        300 USD fərdi idxal limiti aşıldıqda bağlamanız gömrükdə saxlanılmır və bütün məhsullar vergiyə cəlb edilmir. Azərbaycan Respublikasının qanunvericiliyinə əsasən, rüsum <b>yalnız 300 USD-dən artıq qalan fərq hissəsinə</b> (36% rüsum və 15 AZN gömrük rəsmiləşdirmə haqqı) tətbiq edilir. Ailə üzvlərinin FİN kodlarını əlavə edərək limitinizi qanuni şəkildə genişləndirə bilərsiniz.
-      </div>
+      <button type="button" onclick="switchTab('server')" id="tab-btn-server" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold border border-white/10 text-slate-300 hover:text-white transition flex items-center gap-2 whitespace-nowrap cursor-pointer">
+        <span>🛡️</span>
+        <span>Server & Müstəqil İdarəetmə</span>
+      </button>
     </div>
 
     <!-- ========================================================================= -->
-    <!-- ETAP 4: SMART ARBITRAGE & CUSTOMS SUPERVISOR INTERACTIVE SUITE            -->
+    <!-- TAB 1: 📊 İCMAL & BAĞLAMALAR -->
     <!-- ========================================================================= -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      
-      <!-- Card 1: ⚖️ Smart Arbitrage (Daşıyıcı Tarif Müqayisəsi) -->
-      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 shadow-xl space-y-4 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-            <div class="flex items-center gap-2">
-              <span class="text-xl">⚖️</span>
-              <div>
-                <h3 class="text-sm font-extrabold text-white tracking-tight flex items-center gap-2">
-                  <span>Smart Arbitraj</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Tarif Analizatoru</span>
-                </h3>
-                <p class="text-[11px] text-slate-400">Ölkə, çəki və bağlama növünə görə ən sərfəli daşıyıcını tapın.</p>
-              </div>
-            </div>
-            <span id="arbitrage-savings-badge" class="hidden text-[10px] font-bold px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              Qənaət: $0.00
-            </span>
-          </div>
-
-          <!-- Form Inputs -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4">
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ölkə</label>
-              <select id="arb-country" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:border-cyan-500 focus:outline-none">
-                <option value="TR">🇹🇷 Türkiyə</option>
-                <option value="CN">🇨🇳 Çin / Temu</option>
-                <option value="US">🇺🇸 ABŞ</option>
-                <option value="EU">🇪🇺 Avropa</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Çəki (kq) *</label>
-              <input type="number" id="arb-weight" step="0.1" min="0.1" value="1.0" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Növ</label>
-              <select id="arb-type" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:border-cyan-500 focus:outline-none">
-                <option value="standard">Standart</option>
-                <option value="liquid">Maye / Kosmetika</option>
-                <option value="electronics">Elektronika</option>
-              </select>
-            </div>
-            <div class="flex items-end">
-              <button type="button" onclick="calculateArbitrage()" id="btn-calc-arb" class="w-full min-h-[34px] px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold transition shadow flex items-center justify-center gap-1.5 cursor-pointer">
-                <span id="arb-calc-spinner" class="hidden w-3 h-3 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
-                <span>Hesabla</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Optional Dimensions Toggle -->
-          <div class="mt-2.5">
-            <details class="text-[11px] text-slate-400 cursor-pointer">
-              <summary class="hover:text-slate-200 transition">📐 Ölçülər daxil et (Həcmi çəki: L*W*H / 6000)</summary>
-              <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-800/60">
-                <div>
-                  <label class="block text-[10px] text-slate-400 mb-0.5">Uzunluq (sm)</label>
-                  <input type="number" id="arb-len" min="0" placeholder="0" class="w-full px-2 py-1 rounded-lg bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
-                </div>
-                <div>
-                  <label class="block text-[10px] text-slate-400 mb-0.5">En (sm)</label>
-                  <input type="number" id="arb-wid" min="0" placeholder="0" class="w-full px-2 py-1 rounded-lg bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
-                </div>
-                <div>
-                  <label class="block text-[10px] text-slate-400 mb-0.5">Hündürlük (sm)</label>
-                  <input type="number" id="arb-hei" min="0" placeholder="0" class="w-full px-2 py-1 rounded-lg bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
-                </div>
-              </div>
-            </details>
-          </div>
-
-          <!-- Carrier Rate Results Container -->
-          <div id="arbitrage-results" class="mt-3.5 space-y-2">
-            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 text-center text-xs text-slate-400">
-              Parametrləri seçin və "Hesabla" düyməsini sıxaraq real daşıyıcı tariflərini müqayisə edin.
-            </div>
-          </div>
-        </div>
-
-        <div class="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-slate-800/60">
-          <span>Məzənnə: <b class="font-mono text-slate-300">1 USD = 1.70 AZN</b></span>
-          <span class="text-slate-400">Avtomatik ən ucuz daşıyıcı seçimi</span>
-        </div>
-      </div>
-
-      <!-- Card 2: 🏛️ Customs $300 Supervisor (Gömrük Limiti & Rüsum Simulyatoru) -->
-      <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 shadow-xl space-y-4 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-            <div class="flex items-center gap-2">
-              <span class="text-xl">🏛️</span>
-              <div>
-                <h3 class="text-sm font-extrabold text-white tracking-tight flex items-center gap-2">
-                  <span>DGK 300$ Supervisor</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">305 № Qərar</span>
-                </h3>
-                <p class="text-[11px] text-slate-400">Yeni sifarişin aylıq 300$ limitinə təsirini və 36% rüsum riskini əvvəlcədən simulyasiya edin.</p>
-              </div>
-            </div>
-            <span id="sim-status-badge" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">
-              Gözləmədə
-            </span>
-          </div>
-
-          <!-- Simulator Inputs -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-4">
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Məhsulun Qiyməti (USD) *</label>
-              <input type="number" id="sim-price-usd" step="0.5" min="0" placeholder="məs: 75.00" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Daşınma Haqqı (USD)</label>
-              <input type="number" id="sim-shipping-usd" step="0.1" min="0" value="0.0" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
-            </div>
-            <div class="flex items-end">
-              <button type="button" onclick="simulateCustoms()" id="btn-calc-sim" class="w-full min-h-[34px] px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold transition shadow flex items-center justify-center gap-1.5 cursor-pointer">
-                <span id="sim-calc-spinner" class="hidden w-3 h-3 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
-                <span>Limiti Yoxla</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Simulation Live Output Container -->
-          <div id="sim-results" class="mt-3.5 space-y-2.5">
-            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 text-center text-xs text-slate-400">
-              Məhsulun invoys qiymətini yazaraq "Limiti Yoxla" düyməsini sıxın. Real sifarişləriniz üzərinə hesablanacaqdır.
-            </div>
-          </div>
-        </div>
-
-        <div class="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-slate-800/60">
-          <span>Qanunvericilik: <b class="text-slate-300">Yalnız limit aşımına 36%</b></span>
-          <span class="text-slate-400">Fərdi Şəxsi İdxal Qaydası</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Main 2-Column Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
-      <!-- Left Column: Active Tracking Feed (2 cols wide) -->
-      <div class="lg:col-span-2 space-y-4">
+    <div id="tab-pane-overview" class="space-y-6">
+      <!-- 4 Key Stat Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <h2 class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
-              <span>📦 Şəxsi Bağlamalar və İzləmə</span>
-              <span id="parcels-count-badge" class="text-xs font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">Canlı</span>
+        <!-- Card 1: Monthly DGK 300$ Quota -->
+        <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between shadow-lg">
+          <div>
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
+              <span>DGK 300$ Aylıq Kvota</span>
+              <span id="quota-status-pill" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Təhlükəsiz ✓</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span id="stat-remaining-usd" class="text-2xl sm:text-3xl font-extrabold font-mono text-white">$300.00</span>
+              <span class="text-xs text-slate-400 font-mono">Qalan Ehtiyat</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1">
+              Xərclənib: <span id="stat-spent-usd" class="font-mono text-slate-200 font-semibold">$0.00 USD</span> (<span id="stat-spent-azn" class="font-mono text-slate-200">0.00 AZN</span>)
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-white/5">
+              <div id="stat-quota-bar" class="h-full bg-emerald-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Active In-Flight Parcels -->
+        <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between shadow-lg">
+          <div>
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
+              <span>Aktiv Bağlamalar</span>
+              <span class="text-[11px] text-cyan-400 font-mono font-semibold">Yoldadır</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span id="stat-active-orders" class="text-2xl sm:text-3xl font-extrabold font-mono text-white">0</span>
+              <span class="text-xs text-slate-400">ədəd bağlama</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1">
+              Cari ay bəyan edilmiş: <span id="stat-total-orders" class="font-mono text-slate-200 font-semibold">0</span>
+            </div>
+          </div>
+          <div class="mt-4 flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-white/5">
+            <span>Daşıyıcılar: Starex, Camex, Limak</span>
+            <span class="text-emerald-400 font-semibold">Aktiv</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Potential Customs Duty -->
+        <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between shadow-lg">
+          <div>
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
+              <span>Gömrük Rüsumu Riski</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">305 nömrəli Qərar</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span id="stat-duty-estimate" class="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-400">0.00 AZN</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1">
+              300$ aşıldıqda yalnız fərqə 36% tətbiq olunur.
+            </div>
+          </div>
+          <div class="mt-4 flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium">
+            <span>✓ Bağlamanız müsadirə olunmur</span>
+          </div>
+        </div>
+
+        <!-- Card 4: FİN & Branch Profile -->
+        <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 flex flex-col justify-between shadow-lg">
+          <div>
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
+              <span>FİN & Təhvil Filialı</span>
+              <button type="button" onclick="switchTab('profile')" class="text-xs text-cyan-400 hover:underline">Dəyiş</button>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span id="stat-user-fin" class="text-xl sm:text-2xl font-extrabold font-mono text-cyan-300">814CRM4</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1">
+              Əsas filial: <span id="stat-user-branch" class="text-slate-200 font-semibold">28 May</span>
+            </div>
+          </div>
+          <div class="mt-4 flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-white/5">
+            <span>Ailə FİN Şəbəkəsi</span>
+            <span id="stat-family-fin-count" class="text-cyan-400 font-mono font-bold">1 profil</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Parcels Grid / Table -->
+      <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+              <span>📦 Şəxsi Bağlamalarınız</span>
+              <span id="parcels-count-badge" class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">0</span>
             </h2>
+            <p class="text-xs text-slate-400">Yalnız sizin hesabınıza aid bağlamalar (IDOR qorumalı izolyasiya).</p>
           </div>
-          
-          <div class="flex items-center gap-2">
-            <!-- Platform Filter -->
-            <select id="platform-filter" onchange="filterParcels()" class="bg-slate-900 border border-slate-800 text-slate-300 text-xs rounded-xl px-2.5 py-1.5 focus:border-cyan-500 focus:outline-none">
-              <option value="ALL">Bütün Platformalar</option>
-              <option value="Trendyol">Trendyol</option>
-              <option value="Temu">Temu</option>
-              <option value="Amazon">Amazon</option>
-              <option value="Zara">Zara</option>
-            </select>
-            <button type="button" onclick="loadParcels()" title="Yenilə" class="p-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <input type="text" id="parcel-search-input" oninput="filterParcelsTable()" placeholder="İzləmə kodu və ya məhsul axtar..." class="w-full sm:w-64 px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
+            <button type="button" onclick="openOrderModal()" class="min-h-[38px] px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+              <span>+ Əlavə Et</span>
             </button>
           </div>
         </div>
 
-        <!-- Orders Table / Card List Container -->
-        <div id="parcels-container" class="bg-slate-900/80 border border-white/10 rounded-2xl overflow-hidden divide-y divide-slate-800/80 shadow-xl min-h-[160px] flex flex-col justify-center">
-          <div class="p-8 text-center text-xs text-slate-400 flex flex-col items-center justify-center gap-2">
-            <div class="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-            <span>Bağlamalar yüklənir...</span>
+        <!-- Table Container -->
+        <div class="overflow-x-auto custom-scroll">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-white/10 text-slate-400 uppercase tracking-wider text-[10px]">
+                <th class="py-3 px-3">Bağlama / Məhsul</th>
+                <th class="py-3 px-3">Satıcı Platforma</th>
+                <th class="py-3 px-3">İzləmə Kodu</th>
+                <th class="py-3 px-3">Daşıyıcı</th>
+                <th class="py-3 px-3 text-right">İnvoys Məbləği</th>
+                <th class="py-3 px-3 text-center">Status</th>
+                <th class="py-3 px-3 text-right">Tarix</th>
+                <th class="py-3 px-3 text-center">Əməliyyat</th>
+              </tr>
+            </thead>
+            <tbody id="parcels-table-body" class="divide-y divide-white/5 text-slate-200">
+              <tr>
+                <td colspan="8" class="text-center py-8 text-slate-500 text-xs">Bağlamalar yüklənir...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: 🏪 SATICI VƏ KARGO EKOSİSTEMİ -->
+    <!-- ========================================================================= -->
+    <div id="tab-pane-ecosystem" class="hidden space-y-6">
+      
+      <!-- Section 1: Stores / Marketplaces Hub -->
+      <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+              <span>🛍️ Satıcı Saytları & Marketpleyslər</span>
+              <span id="stores-count-badge" class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">0</span>
+            </h2>
+            <p class="text-xs text-slate-400">Standart bazar platformaları və öz əlavə etdiyiniz fərdi mağazalar.</p>
+          </div>
+          <button type="button" onclick="openStoreModal()" class="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+            <span>+ Yeni Satıcı Saytı</span>
+          </button>
+        </div>
+
+        <!-- Stores Grid -->
+        <div id="stores-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Section 2: Carriers Hub -->
+      <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+              <span>🚚 Kargo Şirkətləri & Tarif Hub-ı</span>
+              <span id="carriers-count-badge" class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">0</span>
+            </h2>
+            <p class="text-xs text-slate-400">Standart çatdırıcılar və sizin xüsusi tarifli kargolarınız (avtomatik Smart Arbitraja daxil olur).</p>
+          </div>
+          <button type="button" onclick="openCarrierModal()" class="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+            <span>+ Yeni Kargo Şirkəti</span>
+          </button>
+        </div>
+
+        <!-- Carriers Grid -->
+        <div id="carriers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 3: ⚖️ ARBİTRAJ & 300$ GÖMRÜK -->
+    <!-- ========================================================================= -->
+    <div id="tab-pane-arbitrage" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Smart Arbitrage Calculator -->
+        <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10">
+            <div>
+              <h2 class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+                <span>⚖️ Smart Arbitraj (Tarif Analizatoru)</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Ağıllı Müqayisə</span>
+              </h2>
+              <p class="text-xs text-slate-400">Bütün kargolar və fərdi şirkətləriniz üzrə ən ucuz daşıyıcı tapılır.</p>
+            </div>
+            <span id="arbitrage-savings-badge" class="hidden px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold"></span>
+          </div>
+
+          <form id="arb-form" onsubmit="event.preventDefault(); calculateArbitrage();" class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Mənşə Ölkəsi</label>
+                <select id="arb-country" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+                  <option value="TR" selected>🇹🇷 Türkiyə (TR)</option>
+                  <option value="US">🇺🇸 ABŞ (US)</option>
+                  <option value="CN">🇨🇳 Çin / Temu (CN)</option>
+                  <option value="EU">🇪🇺 Avropa (EU)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Faktiki Çəki (kq)</label>
+                <input type="number" step="0.05" id="arb-weight" value="1.0" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none font-mono">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Bağlama Növü</label>
+                <select id="arb-type" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+                  <option value="standard" selected>Standart</option>
+                  <option value="liquid">Maye / Kosmetika</option>
+                  <option value="electronics">Elektronika / Batareya</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Optional Volumetric Dimensions -->
+            <div class="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2">
+              <span class="text-[11px] font-semibold text-slate-400 block">Həcmi Çəki Ölçüləri (İstəyə bağlı, sm):</span>
+              <div class="grid grid-cols-3 gap-2">
+                <input type="number" step="1" id="arb-len" placeholder="Uzunluq" class="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono placeholder-slate-600 focus:border-cyan-500 focus:outline-none">
+                <input type="number" step="1" id="arb-wid" placeholder="En" class="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono placeholder-slate-600 focus:border-cyan-500 focus:outline-none">
+                <input type="number" step="1" id="arb-hei" placeholder="Hündürlük" class="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono placeholder-slate-600 focus:border-cyan-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="flex justify-end pt-1">
+              <button type="submit" id="btn-calc-arb" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+                <span id="arb-calc-spinner" class="hidden w-3 h-3 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
+                <span>Müqayisə Et ⚖️</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Arbitrage Results Container -->
+          <div id="arbitrage-results" class="pt-2">
+            <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 text-center text-xs text-slate-500">
+              Parametrləri seçib "Müqayisə Et" düyməsinə klikləyin.
+            </div>
+          </div>
+        </div>
+
+        <!-- Customs Supervisor Engine Simulator -->
+        <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10">
+            <div>
+              <h2 class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+                <span>🛡️ DGK 300$ Supervisor (305 № Qərar)</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">300$ Simulyator</span>
+              </h2>
+              <p class="text-xs text-slate-400">36% rüsum ehtimalını və qalan aylıq kvotanı əvvəlcədən yoxlayın.</p>
+            </div>
+            <span id="sim-status-badge" class="px-2 py-1 rounded-lg bg-slate-800 text-slate-400 text-[10px] font-bold">Hazır</span>
+          </div>
+
+          <form id="sim-form" onsubmit="event.preventDefault(); simulateCustoms();" class="space-y-3">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Məhsul Qiyməti (USD)</label>
+                <input type="number" step="0.5" id="sim-price-usd" value="120.0" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none font-mono">
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Çatdırılma Haqqı (USD)</label>
+                <input type="number" step="0.5" id="sim-shipping-usd" value="10.0" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none font-mono">
+              </div>
+            </div>
+
+            <div class="flex justify-end pt-1">
+              <button type="submit" id="btn-calc-sim" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+                <span id="sim-calc-spinner" class="hidden w-3 h-3 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
+                <span>Gömrük Riskini Yoxla 🛡️</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Simulator Results Container -->
+          <div id="sim-results" class="pt-2">
+            <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 text-center text-xs text-slate-500">
+              Məbləği daxil edib "Gömrük Riskini Yoxla" düyməsinə klikləyin.
+            </div>
           </div>
         </div>
 
       </div>
+    </div>
 
-      <!-- Right Column: Multi-FIN Mesh & Loyd AI (1 col wide) -->
-      <div class="space-y-6">
+    <!-- ========================================================================= -->
+    <!-- TAB 4: 🤖 AI SÖHBƏT (COPILOT) -->
+    <!-- ========================================================================= -->
+    <div id="tab-pane-ai" class="hidden space-y-4">
+      <div class="p-6 rounded-3xl bg-slate-900/95 border border-white/10 shadow-2xl space-y-4 flex flex-col h-[650px]">
         
-        <!-- Multi-FIN Family Quota Mesh -->
-        <div class="p-5 rounded-2xl bg-slate-900/80 border border-white/10 space-y-4 shadow-xl">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-extrabold text-white tracking-tight uppercase tracking-wider">FİN & Ailə Limiti</h3>
-            <span class="text-[10px] font-mono text-cyan-400 font-semibold">Smart Mesh</span>
+        <!-- Chat Header -->
+        <div class="flex items-center justify-between pb-3 border-b border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-xl shadow-lg shadow-cyan-500/10">
+              🤖
+            </div>
+            <div>
+              <h2 class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+                <span>Loyd AI — Kargo & Gömrük Köməkçiniz</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Onlayn</span>
+              </h2>
+              <p class="text-xs text-slate-400">Profiliniz, 300$ limitiniz, bağlamalarınız və kargo tariflərinizi ətraflı bilir.</p>
+            </div>
           </div>
 
-          <div class="space-y-2.5">
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-              <div>
-                <div id="mesh-user-name" class="text-xs font-bold text-white">{{ user.full_name if user else 'Vasif Məcidli' }} (Siz)</div>
-                <div class="text-[10px] font-mono text-slate-400">FİN: <span id="mesh-user-fin" class="text-cyan-300 font-bold">{{ user.fin if user and user.fin else '814CRM4' }}</span> · Əsas Profil</div>
-              </div>
-              <span id="mesh-user-spent" class="text-xs font-mono font-bold text-emerald-400">${{ quota.used_usd if quota else '0.00' }} / $300</span>
-            </div>
+          <button type="button" onclick="clearAiHistory()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold border border-slate-700 transition flex items-center gap-1.5 cursor-pointer">
+            <span>🗑️ Söhbəti Təmizlə</span>
+          </button>
+        </div>
 
-            <div class="p-3.5 rounded-xl bg-slate-950/60 border border-dashed border-slate-800 flex items-center justify-between text-xs text-slate-400">
-              <span>Ailə FİN-i əlavə edərək limiti artırın</span>
-              <button type="button" onclick="alert('Tezliklə: Ailə üzvlərinin FİN kodunu əlavə edərək hər birinə 300$ rüsumsuz limit qazanmaq imkanı!')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition cursor-pointer">
-                + Əlavə et
-              </button>
+        <!-- Quick Chips Bar -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scroll">
+          <button type="button" onclick="sendQuickAiMessage('Mənim bu ay nə qədər gömrük limitim qalıb?')" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700/80 transition whitespace-nowrap cursor-pointer">
+            📊 Qalan 300$ limitim
+          </button>
+          <button type="button" onclick="sendQuickAiMessage('Türkiyədən 2 kq bağlama üçün ən ucuz kargo hansıdır?')" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700/80 transition whitespace-nowrap cursor-pointer">
+            🇹🇷 2 kq TR ən ucuz kargo
+          </button>
+          <button type="button" onclick="sendQuickAiMessage('120 dollar dəyərində bağlama alsam gömrük rüsumu düşürmü?')" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700/80 transition whitespace-nowrap cursor-pointer">
+            ⚖️ 120$ gömrük simulyasiyası
+          </button>
+          <button type="button" onclick="sendQuickAiMessage('Hal-hazırda yolda olan bağlamalarım hansılardır?')" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700/80 transition whitespace-nowrap cursor-pointer">
+            📦 Yolda olan bağlamalarım
+          </button>
+        </div>
+
+        <!-- Messages Thread Box -->
+        <div id="ai-chat-thread" class="flex-1 overflow-y-auto space-y-3.5 pr-2 custom-scroll p-3 rounded-2xl bg-slate-950/60 border border-slate-800">
+          <!-- Initial Welcome Message -->
+          <div class="flex items-start gap-2.5 max-w-[85%]">
+            <span class="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-sm shrink-0">🤖</span>
+            <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-slate-200 shadow-md leading-relaxed">
+              Salam! Mən KargoPilot-un şəxsi AI köməkçisiyəm. Sizə cari ayın 300$ DGK kvotası, kargo tarifləri müqayisəsi, bağlama statusları və gömrük qaydaları barədə istənilən sualınızda kömək etməyə hazıram. Buyurun, nəyi bilmək istərdiniz?
             </div>
           </div>
         </div>
 
-        <!-- Loyd AI Assistant Widget -->
-        <div class="p-5 rounded-2xl bg-gradient-to-b from-slate-900 to-cyan-950/30 border border-cyan-500/30 space-y-4 shadow-xl">
-          <div class="flex items-center gap-3">
-            <img src="/assets/loyd-avatar-128.png" alt="Loyd AI" class="w-10 h-10 rounded-2xl object-cover border border-cyan-500/40 shadow-lg shadow-cyan-500/10">
+        <!-- Input Bar -->
+        <form id="ai-chat-form" onsubmit="event.preventDefault(); submitAiMessage();" class="flex items-center gap-2 pt-1">
+          <input type="text" id="ai-chat-input" placeholder="Loyd AI-yə sual verin (məs: 2 kq bağlama TR-dən neçəyə gələr?)..." class="flex-1 px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
+          <button type="submit" id="ai-chat-send-btn" class="px-5 py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold transition flex items-center gap-1.5 shadow-lg shadow-cyan-500/20 cursor-pointer">
+            <span id="ai-chat-spinner" class="hidden w-3 h-3 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
+            <span>Göndər 🚀</span>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 5: 👤 PROFİL & AİLƏ FİN ŞƏBƏKƏSİ -->
+    <!-- ========================================================================= -->
+    <div id="tab-pane-profile" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Profile Settings Card -->
+        <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+          <div class="pb-3 border-b border-white/10">
+            <h2 class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+              <span>👤 Profil Tənzimləmələri</span>
+            </h2>
+            <p class="text-xs text-slate-400">FİN kodunuz və kargo çatdırılma detallarınız.</p>
+          </div>
+
+          <form id="profile-form" onsubmit="event.preventDefault(); saveProfile();" class="space-y-3.5">
             <div>
-              <div class="text-xs font-extrabold text-white">Loyd AI Otopilot</div>
-              <div class="text-[11px] text-cyan-300">24/7 Gömrük & Kargo Məsləhətçiniz</div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ad və Soyad</label>
+              <input type="text" id="prof-fullname" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">FİN Kod (7 simvol)</label>
+                <input type="text" id="prof-fin" maxlength="7" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono uppercase focus:border-cyan-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Əlaqə Nömrəsi</label>
+                <input type="text" id="prof-phone" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Əsas Filial</label>
+                <select id="prof-branch" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+                  <option value="28 May">28 May Filialı</option>
+                  <option value="Nərimanov">Nərimanov Filialı</option>
+                  <option value="Yasamal">Yasamal Filialı</option>
+                  <option value="Xalqlar Dostluğu">Xalqlar Dostluğu</option>
+                  <option value="Gənclik">Gənclik Mall</option>
+                  <option value="Sumqayıt">Sumqayıt Mərkəz</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Əsas Daşıyıcı Şirkət</label>
+                <select id="prof-default-carrier" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+                  <!-- Populated from carriers -->
+                </select>
+              </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="pt-2 border-t border-white/5 space-y-2">
+              <span class="text-[11px] font-semibold text-slate-400 block">Bildiriş Kanalları:</span>
+              <div class="grid grid-cols-2 gap-2 text-xs text-slate-300">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="prof-notif-wa" checked class="rounded bg-slate-950 border-slate-800 text-cyan-500">
+                  <span>WhatsApp Bildiriş</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="prof-notif-em" checked class="rounded bg-slate-950 border-slate-800 text-cyan-500">
+                  <span>E-poçt Bildiriş</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="prof-notif-sms" checked class="rounded bg-slate-950 border-slate-800 text-cyan-500">
+                  <span>SMS Bildiriş</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="prof-notif-tg" class="rounded bg-slate-950 border-slate-800 text-cyan-500">
+                  <span>Telegram Bot</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2">
+              <button type="button" onclick="openPasswordModal()" class="text-xs text-cyan-400 hover:underline">
+                🔑 Şifrəni Dəyişdir
+              </button>
+              <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition cursor-pointer">
+                Yadda Saxla ✓
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Family FIN Mesh Card -->
+        <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10">
+            <div>
+              <h2 class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+                <span>👨‍👩‍👧‍👦 Ailə FİN Şəbəkəsi (Family Mesh)</span>
+                <span id="family-fin-count-badge" class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">0</span>
+              </h2>
+              <p class="text-xs text-slate-400">300$ limitiniz çatmadıqda ailə üzvlərinin adına rüsumsuz sifariş bölünməsi.</p>
+            </div>
+            <button type="button" onclick="openFamilyFinModal()" class="px-3.5 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+              <span>+ FİN Əlavə Et</span>
+            </button>
+          </div>
+
+          <!-- Family FIN Cards List -->
+          <div id="family-fins-list" class="space-y-3">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 6: 🛡️ SERVER & MÜSTƏQİL İDARƏETMƏ -->
+    <!-- ========================================================================= -->
+    <div id="tab-pane-server" class="hidden space-y-6">
+      
+      <!-- Dual-Hosting Node Verifier -->
+      <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+        <div class="pb-3 border-b border-white/10">
+          <h2 class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+            <span>🛡️ Müstəqil Serverə Qoşulma və Düyün Doğrulaması</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">SSRF Qorumalı</span>
+          </h2>
+          <p class="text-xs text-slate-400">Öz serverinizdə (On-Premise / Local Node) işləyən KargoPilot nüvəsinə birbaşa qoşulun.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-2 space-y-2">
+            <label class="block text-xs font-semibold text-slate-300">Müstəqil Server Ünvanı (Host:Port)</label>
+            <div class="flex items-center gap-2">
+              <input type="text" id="target-node-url" value="http://127.0.0.1:48481" placeholder="http://127.0.0.1:48481" class="flex-1 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-white focus:border-cyan-500 focus:outline-none">
+              <button type="button" onclick="testNodeReachability()" id="btn-test-node" class="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+                <span id="node-test-spinner" class="hidden w-3 h-3 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
+                <span>Yoxla 🔍</span>
+              </button>
             </div>
           </div>
 
-          <div id="loyd-response-bubble" class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 leading-relaxed">
-            "Salam! Bu ay üçün qalan limitinizi və bağlamalarınızı izləyirəm. Yeni sifariş verərkən invoys məbləğini daxil edin, mən kateqoriyanı və rüsum riskini dərhal yoxlayacağam."
+          <!-- Connection Status Card -->
+          <div id="node-status-box" class="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col justify-between text-xs">
+            <span class="text-slate-400">Server Statusu:</span>
+            <span id="node-status-text" class="text-cyan-400 font-bold font-mono">Yoxlanılmayıb</span>
           </div>
+        </div>
+      </div>
 
-          <div class="space-y-1.5">
-            <button type="button" onclick="askLoyd('Bu ay nə qədər limitim qalıb?')" class="w-full text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-[11px] text-slate-300 transition cursor-pointer">
-              💬 "Bu ay nə qədər limitim qalıb?"
-            </button>
-            <button type="button" onclick="askLoyd('Bəyannaməmi necə təsdiqləyim?')" class="w-full text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-[11px] text-slate-300 transition cursor-pointer">
-              💬 "Bəyannaməmi necə təsdiqləyim?"
-            </button>
-            <button type="button" onclick="askLoyd('Gömrük rüsumu necə hesablanır?')" class="w-full text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-[11px] text-slate-300 transition cursor-pointer">
-              💬 "Gömrük rüsumu necə hesablanır?"
+      <!-- Data Sovereignty (Export / Import / Wipe) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- 1. Full JSON Export -->
+        <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-2xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-lg mb-2">
+              📦
+            </div>
+            <h3 class="text-sm font-extrabold text-white">Məlumatların Tam İxracı (Export v5.0)</h3>
+            <p class="text-xs text-slate-400">Bütün profiliniz, bağlamalarınız, satıcı saytlarınız, kargolarınız və ailə FİN şəbəkəniz standart JSON faylında yüklənir.</p>
+          </div>
+          <button type="button" onclick="exportDataJson()" class="w-full py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-bold transition cursor-pointer">
+            JSON Faylını Yüklə ⤓
+          </button>
+        </div>
+
+        <!-- 2. JSON Import -->
+        <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-lg mb-2">
+              📥
+            </div>
+            <h3 class="text-sm font-extrabold text-white">Məlumatların İdxalı (Import v5.0)</h3>
+            <p class="text-xs text-slate-400">İxrac edilmiş KargoPilot JSON faylını yükləyərək bütün tarixçənizi və ekosisteminizi bərpa edin.</p>
+          </div>
+          <div>
+            <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="handleFileImport(event)">
+            <button type="button" onclick="document.getElementById('import-file-input').click()" class="w-full py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold transition cursor-pointer">
+              JSON Faylı Seç ⤒
             </button>
           </div>
+        </div>
+
+        <!-- 3. Account Wipe -->
+        <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-300 flex items-center justify-center text-lg mb-2">
+              🗑️
+            </div>
+            <h3 class="text-sm font-extrabold text-white">Unudulmaq Hüququ (Data Wipe)</h3>
+            <p class="text-xs text-slate-400">Bulud serverindəki bütün şəxsi sifarişləriniz, satıcılarınız və kargolarınız birdəfəlik silinir.</p>
+          </div>
+          <button type="button" onclick="wipeAccountData()" class="w-full py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-bold transition cursor-pointer">
+            Məlumatları Tam Sil ⚠️
+          </button>
         </div>
 
       </div>
@@ -462,262 +720,292 @@
   </main>
 
   <!-- ========================================================================= -->
-  <!-- MODAL: + Yeni Sifariş / Bağlama Əlavə Et                                   -->
+  <!-- MODALS -->
   <!-- ========================================================================= -->
-  <div id="order-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-white/10 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-        <div>
-          <h3 class="text-base font-extrabold text-white">Yeni Bağlama Əlavə Et</h3>
-          <p class="text-xs text-slate-400">Xarici mağaza sifarişinizi daxil edin, otopilot dərhal izləməyə alsın.</p>
-        </div>
-        <button type="button" onclick="closeOrderModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold">✕</button>
+
+  <!-- Modal 1: + Yeni Bağlama / Sifariş -->
+  <div id="modal-order" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+          <span>📦 Yeni Bağlama Əlavə Et</span>
+        </h3>
+        <button type="button" onclick="closeOrderModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
 
-      <form id="create-parcel-form" onsubmit="submitParcel(event)" class="mt-5 space-y-4">
+      <form id="order-form" onsubmit="event.preventDefault(); submitOrder();" class="space-y-3">
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">İzləmə Kodu (Tracking Number) *</label>
-          <input type="text" id="p-tracking" required placeholder="məs: TRK-984120 və ya DW5341635" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none uppercase">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Platforma *</label>
-            <select id="p-platform" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:border-cyan-500 focus:outline-none">
-              <option value="Trendyol">Trendyol</option>
-              <option value="Temu">Temu</option>
-              <option value="Amazon">Amazon</option>
-              <option value="Zara">Zara</option>
-              <option value="eBay">eBay</option>
-              <option value="Digər">Digər Xarici Mağaza</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Daşıyıcı Şirkət *</label>
-            <select id="p-carrier" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:border-cyan-500 focus:outline-none">
-              <option value="STAREX">STAREX</option>
-              <option value="EXPARGO">EXPARGO</option>
-              <option value="DYNAMEX">DYNAMEX</option>
-              <option value="CAMEX">CAMEX</option>
-              <option value="MOVER">MOVER</option>
-              <option value="KOLIPLUS">KOLIPLUS</option>
-              <option value="LIMAK">LIMAK</option>
-              <option value="Fizza">Fizza</option>
-              <option value="Digər">Digər Daşıyıcı</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Məhsulun Təsviri / Adı *</label>
-          <input type="text" id="p-title" required placeholder="məs: Kişi qış gödəkcəsi və idman ayaqqabısı" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:border-cyan-500 focus:outline-none">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">İnvoys Məbləği (USD) *</label>
-            <input type="number" step="0.01" min="0.5" id="p-amount-usd" oninput="calculateAznEquivalent()" required placeholder="45.00" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">Təxmini AZN Ekvivalenti</label>
-            <input type="text" id="p-amount-azn-display" readonly value="0.00 AZN" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 font-mono text-xs">
-          </div>
-        </div>
-
-        <div class="pt-3 border-t border-slate-800 flex items-center justify-end gap-3">
-          <button type="button" onclick="closeOrderModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
-            Ləğv et
-          </button>
-          <button type="submit" id="submit-parcel-btn" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold shadow-lg shadow-cyan-500/20 transition">
-            Əlavə Et & İzlə
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- MODAL: Profil və FİN Tənzimləmələri                                       -->
-  <!-- ========================================================================= -->
-  <div id="profile-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-white/10 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-        <div>
-          <h3 class="text-base font-extrabold text-white">Profil və FİN Tənzimləmələri</h3>
-          <p class="text-xs text-slate-400">DGK 300$ limiti və çatdırılma filialı bu məlumatlar üzrə təyin edilir.</p>
-        </div>
-        <button type="button" onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold">✕</button>
-      </div>
-
-      <form id="update-profile-form" onsubmit="submitProfile(event)" class="mt-5 space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Ad və Soyad *</label>
-          <input type="text" id="prof-fullname" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:border-cyan-500 focus:outline-none">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">FİN Kod (7 simvol) *</label>
-            <input type="text" id="prof-fin" required maxlength="7" minlength="7" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none uppercase">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Əlaqə Nömrəsi</label>
-            <input type="tel" id="prof-phone" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Əsas Təhvil Filialı *</label>
-          <select id="prof-branch" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:border-cyan-500 focus:outline-none">
-            <option value="28 May Filialı">28 May Filialı</option>
-            <option value="Gənclik Filialı">Gənclik Filialı</option>
-            <option value="Əhmədli Filialı">Əhmədli Filialı</option>
-            <option value="Yasamal Filialı">Yasamal Filialı</option>
-            <option value="Sumqayıt Filialı">Sumqayıt Filialı</option>
-            <option value="Gəncə Filialı">Gəncə Filialı</option>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Satıcı Platforma</label>
+          <select id="p-platform" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+            <!-- Populated dynamically -->
           </select>
         </div>
 
-        <div class="space-y-2 pt-2 border-t border-slate-800">
-          <label class="flex items-center gap-2.5 text-xs text-slate-300 cursor-pointer">
-            <input type="checkbox" id="prof-notif-wa" class="w-4 h-4 rounded border-slate-700 text-cyan-500 focus:ring-0">
-            <span>WhatsApp ilə bağlama və gömrük status bildirişləri al</span>
-          </label>
-          <label class="flex items-center gap-2.5 text-xs text-slate-300 cursor-pointer">
-            <input type="checkbox" id="prof-notif-email" class="w-4 h-4 rounded border-slate-700 text-cyan-500 focus:ring-0">
-            <span>E-poçt ilə həftəlik xülasə və bəyannamə PDF-ləri al</span>
-          </label>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Məhsul Təsviri / Başlıq</label>
+          <input type="text" id="p-title" placeholder="Məs: Qış gödəkçəsi və ya idman ayaqqabısı" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
         </div>
 
-        <div class="pt-3 border-t border-slate-800 flex items-center justify-end gap-3">
-          <button type="button" onclick="closeProfileModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
-            Bağla
-          </button>
-          <button type="submit" id="save-profile-btn" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold shadow-lg shadow-cyan-500/20 transition">
-            Yadda Saxla
-          </button>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">İzləmə Kodu (Tracking)</label>
+            <input type="text" id="p-tracking" placeholder="Məs: 7324892183" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono uppercase focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Daşıyıcı Kargo</label>
+            <select id="p-carrier" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">İnvoys Məbləği (USD)</label>
+            <input type="number" step="0.01" id="p-amount-usd" oninput="calculateAznEquivalent()" placeholder="0.00" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">AZN Qarşılığı (1.70)</label>
+            <input type="number" step="0.01" id="p-amount-azn" readonly placeholder="0.00" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400 font-mono">
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeOrderModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700">Bağla</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold">Əlavə Et ✓</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL: Server və Məlumat Müstəqilliyi (Data Sovereignty Mərkəzi)           -->
-  <!-- ========================================================================= -->
-  <div id="sovereignty-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="sov-title">
-    <div class="bg-slate-900 border border-white/10 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative my-6">
-      
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-        <div class="flex items-center gap-3">
-          <span class="text-2xl">🛡️</span>
-          <div>
-            <h3 id="sov-title" class="text-base font-extrabold text-white flex items-center gap-2">
-              <span>Məlumat Müstəqilliyi & Server İdarəetməsi</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Dual-Hosting</span>
-            </h3>
-            <p class="text-xs text-slate-400">100% məlumat suverenliyi: İxrac edin, idxal edin və ya öz serverinizə bağlayın.</p>
-          </div>
-        </div>
-        <button type="button" onclick="closeSovereigntyModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold">✕</button>
+  <!-- Modal 2: + Yeni Satıcı Saytı -->
+  <div id="modal-store" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+          <span>🛍️ Yeni Satıcı Saytı Əlavə Et</span>
+        </h3>
+        <button type="button" onclick="closeStoreModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
 
-      <div class="mt-5 space-y-6">
-
-        <!-- 1. EXPORT SECTION -->
-        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <div class="text-xs font-bold text-white flex items-center gap-1.5">
-                <span>📥 1. Məlumatlarımı Endir (JSON Portability)</span>
-              </div>
-              <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-                Bütün profil məlumatlarınızı, bağlama tarixçənizi və DGK kvotanızı vahid KargoPilot JSON faylı olaraq endirin.
-              </p>
-            </div>
-            <button type="button" onclick="downloadExportJson()" id="btn-export-json" class="min-h-[38px] px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold transition shrink-0 flex items-center gap-1.5 shadow">
-              <span>İxrac Et (JSON)</span>
-            </button>
-          </div>
+      <form id="store-form" onsubmit="event.preventDefault(); submitStore();" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Mağaza / Sayt Adı</label>
+          <input type="text" id="store-name" placeholder="Məs: Morhipo və ya Boyner" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
         </div>
 
-        <!-- 2. IMPORT SECTION -->
-        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Domen Ünvanı (URL)</label>
+          <input type="text" id="store-url" placeholder="Məs: https://morhipo.com" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <div class="text-xs font-bold text-white flex items-center gap-1.5">
-              <span>📤 2. Məlumatları İdxal Et (JSON Import)</span>
-            </div>
-            <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-              Əvvəlcədən və ya başqa KargoPilot serverindən endirilmiş JSON faylını yükləyin. Dublikatlar təkrar əlavə olunmur.
-            </p>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ölkə</label>
+            <select id="store-country" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+              <option value="TR" selected>Türkiyə (TR)</option>
+              <option value="US">ABŞ (US)</option>
+              <option value="CN">Çin (CN)</option>
+              <option value="EU">Avropa (EU)</option>
+            </select>
           </div>
-          <div class="flex flex-col sm:flex-row items-center gap-2">
-            <input type="file" id="import-json-file" accept=".json" class="block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-300 hover:file:bg-slate-700 cursor-pointer">
-            <button type="button" onclick="uploadImportJson()" id="btn-import-json" class="w-full sm:w-auto min-h-[38px] px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold transition shrink-0">
-              Yüklə & İdxal Et
-            </button>
-          </div>
-        </div>
-
-        <!-- 3. SERVER NODE VERIFIER & SWITCH SECTION -->
-        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
           <div>
-            <div class="text-xs font-bold text-white flex items-center gap-1.5">
-              <span>🖥️ 3. Şəxsi Server Bağlantısı (Sovereign Node)</span>
-            </div>
-            <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-              Öz serverinizdə (və ya lokal kompüterinizdə) quraşdırılmış KargoPilot düyününün ünvanını yoxlayın və paneli ona bağlayın.
-            </p>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Valyuta</label>
+            <select id="store-currency" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+              <option value="TRY" selected>Türk Lirəsi (TRY)</option>
+              <option value="USD">ABŞ Dolları (USD)</option>
+              <option value="EUR">Avro (EUR)</option>
+            </select>
           </div>
-
-          <div class="flex flex-col sm:flex-row gap-2">
-            <input type="text" id="custom-node-url" value="http://127.0.0.1:48481" placeholder="http://127.0.0.1:48481" class="flex-1 min-h-[38px] px-3.5 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-emerald-500">
-            <button type="button" onclick="testCustomNode()" id="btn-test-custom-node" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition flex items-center justify-center gap-1.5 shrink-0">
-              <span id="custom-node-spinner" class="hidden w-3 h-3 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></span>
-              <span>Yoxla</span>
-            </button>
-            <button type="button" onclick="applyCustomNode()" id="btn-apply-custom-node" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40 text-xs font-bold transition shrink-0">
-              Bu Serverə Keç
-            </button>
-          </div>
-
-          <div id="custom-node-feedback" class="hidden p-3 rounded-xl border text-[11px] leading-relaxed"></div>
         </div>
 
-        <!-- 4. RIGHT TO BE FORGOTTEN / WIPE SECTION -->
-        <div class="p-4 rounded-2xl bg-rose-950/20 border border-rose-500/30 space-y-3">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <div class="text-xs font-bold text-rose-300 flex items-center gap-1.5">
-              <span>⚠️ 4. Buluddakı Məlumatlarımı Sil (Right to be Forgotten)</span>
-            </div>
-            <p class="text-[11px] text-slate-300 mt-0.5 leading-relaxed">
-              Əgər platformanı yalnız öz serverinizdə işlətmək qərarına gəlsəniz, bu düymə vasitəsilə bulud serverində saxlanılan bütün şəxsi bağlamalarınızı və gömrük qeydlərinizi həmişəlik təmizləyə bilərsiniz.
-            </p>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kateqoriya</label>
+            <input type="text" id="store-category" value="Geyim" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
           </div>
-
-          <div class="flex items-center justify-between gap-3 pt-1">
-            <span class="text-[11px] text-slate-400">İstifadəçi hesabı aktiv qalır, bağlamalar sıfırlanır.</span>
-            <button type="button" onclick="confirmWipeData()" id="btn-wipe-data" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/40 text-xs font-bold transition shrink-0">
-              Bulud Məlumatlarımı Təmizlə
-            </button>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">İkon Emocisi</label>
+            <input type="text" id="store-icon" value="👗" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white text-center focus:border-cyan-500 focus:outline-none">
           </div>
         </div>
 
-      </div>
-
-      <div class="mt-6 pt-3 border-t border-slate-800 flex justify-end">
-        <button type="button" onclick="closeSovereigntyModal()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
-          Bağla
-        </button>
-      </div>
-
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeStoreModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700">Bağla</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold">Əlavə Et ✓</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- Client-side Logic -->
-  <script>
-    let allParcels = [];
+  <!-- Modal 3: + Yeni Kargo Şirkəti -->
+  <div id="modal-carrier" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+          <span>🚚 Yeni Kargo Şirkəti Əlavə Et</span>
+        </h3>
+        <button type="button" onclick="closeCarrierModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
 
+      <form id="carrier-form" onsubmit="event.preventDefault(); submitCarrier();" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kargo Şirkətinin Adı</label>
+          <input type="text" id="carr-name" placeholder="Məs: KargoPilot Ekspres" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">İstiqamət Ölkəsi</label>
+            <select id="carr-country" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+              <option value="TR" selected>Türkiyə (TR)</option>
+              <option value="US">ABŞ (US)</option>
+              <option value="CN">Çin (CN)</option>
+              <option value="EU">Avropa (EU)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Tarif (USD/kq)</label>
+            <input type="number" step="0.05" id="carr-rate" value="2.80" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Maye Əlavəsi ($)</label>
+            <input type="number" step="0.5" id="carr-liquid" value="1.0" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Elektronika Əlavəsi ($)</label>
+            <input type="number" step="0.5" id="carr-elec" value="1.5" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Çatdırılma Müddəti (gün)</label>
+            <div class="flex items-center gap-1">
+              <input type="number" id="carr-days-min" value="3" class="w-1/2 px-2 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white text-center font-mono">
+              <span class="text-slate-500">-</span>
+              <input type="number" id="carr-days-max" value="5" class="w-1/2 px-2 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white text-center font-mono">
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Filial Ünvanı</label>
+            <input type="text" id="carr-branch" value="Mərkəzi Filial" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeCarrierModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700">Bağla</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold">Əlavə Et ✓</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: + Yeni Ailə FİN Profili -->
+  <div id="modal-family-fin" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+          <span>👨‍👩‍👧‍👦 Yeni Ailə FİN Profili Əlavə Et</span>
+        </h3>
+        <button type="button" onclick="closeFamilyFinModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <form id="family-fin-form" onsubmit="event.preventDefault(); submitFamilyFin();" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ad və Qohumluq Əlaqəsi</label>
+          <input type="text" id="ffin-name" placeholder="Məs: Aygün Məcidli (Həyat yoldaşı)" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">FİN Kod (Dəqiq 7 simvol)</label>
+          <input type="text" id="ffin-code" maxlength="7" placeholder="7AY2026" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono uppercase focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Aylıq Limit (USD)</label>
+            <input type="number" step="10" id="ffin-limit" value="300" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Cari Xərc (USD)</label>
+            <input type="number" step="5" id="ffin-spent" value="0" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeFamilyFinModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700">Bağla</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold">Əlavə Et ✓</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Şifrəni Dəyişdir -->
+  <div id="modal-password" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+          <span>🔑 Şifrəni Yenilə</span>
+        </h3>
+        <button type="button" onclick="closePasswordModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <form id="password-form" onsubmit="event.preventDefault(); submitPasswordChange();" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Cari Şifrə</label>
+          <input type="password" id="pw-current" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yeni Şifrə (Min. 8 simvol)</label>
+          <input type="password" id="pw-new" minlength="8" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yeni Şifrənin Təkrarı</label>
+          <input type="password" id="pw-confirm" minlength="8" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closePasswordModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700">Bağla</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold">Şifrəni Dəyiş ✓</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    let currentParcels = [];
+    let currentStores = [];
+    let currentCarriers = [];
+    let currentFamilyFins = [];
+
+    // --- Tab Switcher ---
+    function switchTab(tabId) {
+      const tabs = ['overview', 'ecosystem', 'arbitrage', 'ai', 'profile', 'server'];
+      tabs.forEach(t => {
+        const pane = document.getElementById(`tab-pane-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tabId) {
+          if (pane) pane.classList.remove('hidden');
+          if (btn) btn.classList.add('active');
+        } else {
+          if (pane) pane.classList.add('hidden');
+          if (btn) btn.classList.remove('active');
+        }
+      });
+      if (tabId === 'ai') {
+        const thread = document.getElementById('ai-chat-thread');
+        if (thread) thread.scrollTop = thread.scrollHeight;
+      }
+    }
+
+    // --- Toast Helper ---
     function showToast(msg, isSuccess = true) {
       const toast = document.getElementById('toast');
       const toastMsg = document.getElementById('toast-msg');
@@ -725,270 +1013,61 @@
       const toastBody = document.getElementById('toast-body');
 
       toastMsg.innerText = msg;
-      toastIcon.innerText = isSuccess ? '✓' : '⚠️';
-      toastBody.className = isSuccess 
-        ? 'px-4 py-3 rounded-2xl bg-slate-900 border border-cyan-500/40 text-xs font-bold text-white shadow-2xl flex items-center gap-2'
-        : 'px-4 py-3 rounded-2xl bg-slate-900 border border-rose-500/40 text-xs font-bold text-rose-300 shadow-2xl flex items-center gap-2';
+      if (isSuccess) {
+        toastIcon.innerText = '✓';
+        toastBody.className = 'px-4 py-3 rounded-2xl bg-slate-900 border border-emerald-500/40 text-xs font-bold text-white shadow-2xl flex items-center gap-2';
+      } else {
+        toastIcon.innerText = '✕';
+        toastBody.className = 'px-4 py-3 rounded-2xl bg-slate-900 border border-rose-500/40 text-xs font-bold text-white shadow-2xl flex items-center gap-2';
+      }
 
-      toast.classList.remove('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
+      toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
       setTimeout(() => {
-        toast.classList.add('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
-      }, 3500);
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-[-100px]', 'opacity-0');
+      }, 4000);
     }
 
-    function calculateAznEquivalent() {
-      const usd = parseFloat(document.getElementById('p-amount-usd').value) || 0;
-      const azn = (usd * 1.70).toFixed(2);
-      document.getElementById('p-amount-azn-display').value = azn + ' AZN';
-    }
-
-    function openOrderModal() {
-      document.getElementById('order-modal').classList.remove('hidden');
-      document.getElementById('order-modal').classList.add('flex');
-    }
-
-    function closeOrderModal() {
-      document.getElementById('order-modal').classList.add('hidden');
-      document.getElementById('order-modal').classList.remove('flex');
-    }
-
-    function openProfileModal() {
-      document.getElementById('profile-modal').classList.remove('hidden');
-      document.getElementById('profile-modal').classList.add('flex');
-    }
-
-    function closeProfileModal() {
-      document.getElementById('profile-modal').classList.add('hidden');
-      document.getElementById('profile-modal').classList.remove('flex');
-    }
-
+    // --- Load Profile ---
     async function loadProfile() {
       try {
         const res = await fetch('/api/v1/user/profile');
         if (res.ok) {
-          const data = await res.json();
-          document.getElementById('header-user-name').innerText = data.full_name;
-          document.getElementById('header-user-email').innerText = data.email;
-          document.getElementById('welcome-title').innerText = `Salam, ${data.full_name.split(' ')[0]}! 👋`;
-          document.getElementById('card-branch-name').innerText = data.default_branch || '28 May Filialı';
-          document.getElementById('mesh-user-name').innerText = `${data.full_name} (Siz)`;
-          document.getElementById('mesh-user-fin').innerText = data.fin || '814CRM4';
+          const u = await res.json();
+          document.getElementById('header-user-name').innerText = u.full_name;
+          document.getElementById('header-user-email').innerText = u.email;
+          document.getElementById('welcome-title').innerText = `Salam, ${u.full_name.split(' ')[0]}! 👋`;
+          document.getElementById('stat-user-fin').innerText = u.fin;
+          document.getElementById('stat-user-branch').innerText = u.default_branch;
 
-          // Pre-populate form
-          document.getElementById('prof-fullname').value = data.full_name;
-          document.getElementById('prof-fin').value = data.fin;
-          document.getElementById('prof-phone').value = data.phone || '';
-          document.getElementById('prof-branch').value = data.default_branch || '28 May Filialı';
-          document.getElementById('prof-notif-wa').checked = data.notification_whatsapp;
-          document.getElementById('prof-notif-email').checked = data.notification_email;
+          // Populate form fields
+          document.getElementById('prof-fullname').value = u.full_name;
+          document.getElementById('prof-fin').value = u.fin;
+          document.getElementById('prof-phone').value = u.phone || '';
+          document.getElementById('prof-branch').value = u.default_branch;
+          document.getElementById('prof-notif-wa').checked = u.notification_whatsapp;
+          document.getElementById('prof-notif-em').checked = u.notification_email;
+          document.getElementById('prof-notif-sms').checked = u.notification_sms;
+          document.getElementById('prof-notif-tg').checked = u.notification_telegram;
         }
       } catch (err) {
-        console.warn('Profile fetch skipped or unauthenticated:', err);
+        console.warn('Profile load err:', err);
       }
     }
 
-    async function loadQuota() {
-      try {
-        const res = await fetch('/api/v1/user/quota');
-        if (res.ok) {
-          const q = await res.json();
-          document.getElementById('quota-spent-usd').innerText = `$${q.total_spent_usd.toFixed(2)}`;
-          document.getElementById('quota-remaining-usd').innerText = `$${q.remaining_usd.toFixed(2)} USD`;
-          document.getElementById('mesh-user-spent').innerText = `$${q.total_spent_usd.toFixed(2)} / $300`;
-
-          const pct = Math.min(100, Math.round((q.total_spent_usd / 300) * 100));
-          const pBar = document.getElementById('quota-progress-bar');
-          pBar.style.width = `${pct}%`;
-
-          const badge = document.getElementById('quota-status-badge');
-          if (q.status === 'safe') {
-            badge.innerText = 'Təhlükəsiz';
-            badge.className = 'text-emerald-400 font-bold font-mono';
-            pBar.className = 'h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-500';
-          } else if (q.status === 'warning') {
-            badge.innerText = 'Xəbərdarlıq';
-            badge.className = 'text-amber-400 font-bold font-mono';
-            pBar.className = 'h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-500';
-          } else {
-            badge.innerText = 'Limit Aşıldı';
-            badge.className = 'text-rose-400 font-bold font-mono';
-            pBar.className = 'h-full bg-gradient-to-r from-rose-500 to-red-600 rounded-full transition-all duration-500';
-          }
-        }
-      } catch (err) {
-        console.warn('Quota fetch failed:', err);
-      }
-    }
-
-    async function loadParcels() {
-      const container = document.getElementById('parcels-container');
-      try {
-        const res = await fetch('/api/v1/user/parcels');
-        if (res.ok) {
-          allParcels = await res.json();
-          renderParcels(allParcels);
-          document.getElementById('active-parcels-count').innerText = allParcels.length;
-          document.getElementById('parcels-count-badge').innerText = `${allParcels.length} Bağlama`;
-        } else {
-          renderFallbackParcels();
-        }
-      } catch (err) {
-        renderFallbackParcels();
-      }
-    }
-
-    function renderParcels(parcels) {
-      const container = document.getElementById('parcels-container');
-      if (!parcels || parcels.length === 0) {
-        container.innerHTML = `
-          <div class="p-10 text-center flex flex-col items-center justify-center space-y-3">
-            <span class="text-3xl">📭</span>
-            <div class="text-sm font-bold text-white">Hələ ki heç bir bağlamanız yoxdur</div>
-            <p class="text-xs text-slate-400 max-w-sm">Trendyol, Temu və ya Amazon sifarişlərinizi əlavə edin, KargoPilot otopilotu bağlamanızı avtomatik izləsin.</p>
-            <button type="button" onclick="openOrderModal()" class="mt-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition">
-              + İlk Bağlamanı Əlavə Et
-            </button>
-          </div>
-        `;
-        return;
-      }
-
-      let html = '';
-      parcels.forEach(p => {
-        let badgeColor = 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30';
-        if (p.status.includes('Bəyan')) badgeColor = 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30';
-        if (p.status.includes('Gömrük')) badgeColor = 'bg-amber-500/15 text-amber-300 border-amber-500/30';
-
-        let platformBadge = 'TEMU';
-        let platColor = 'text-cyan-400';
-        if (p.platform.toLowerCase().includes('trendyol')) { platformBadge = 'TY'; platColor = 'text-amber-400'; }
-        else if (p.platform.toLowerCase().includes('amazon')) { platformBadge = 'AMZN'; platColor = 'text-indigo-400'; }
-        else if (p.platform.toLowerCase().includes('zara')) { platformBadge = 'ZARA'; platColor = 'text-rose-400'; }
-
-        html += `
-          <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-800/30 transition">
-            <div class="flex items-start gap-3">
-              <span class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs ${platColor} shrink-0">
-                ${platformBadge}
-              </span>
-              <div>
-                <div class="text-xs sm:text-sm font-bold text-white">${p.title}</div>
-                <div class="text-[11px] text-slate-400 mt-0.5 flex flex-wrap items-center gap-2">
-                  <span>İzləmə: <code class="text-slate-200 font-mono font-bold">${p.tracking_number}</code></span>
-                  <span>•</span>
-                  <span>Daşıyıcı: <b class="text-slate-300">${p.carrier}</b></span>
-                  <span>•</span>
-                  <span>${p.platform}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
-              <div class="text-right">
-                <div class="text-xs font-bold text-white font-mono tabular-nums">${p.invoice_amount_azn.toFixed(2)} AZN</div>
-                <div class="text-[10px] text-slate-400 font-mono">≈ $${p.invoice_amount_usd.toFixed(2)} USD</div>
-              </div>
-              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${badgeColor}">
-                ${p.status}
-              </span>
-              <button type="button" onclick="deleteParcel('${p.id}')" title="Bağlamanı sil" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-slate-800 transition">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-              </button>
-            </div>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-    }
-
-    function renderFallbackParcels() {
-      // Demo preview if not logged in
-      renderParcels([
-        { id: 'sample-1', platform: 'Temu', tracking_number: 'DW5341635', carrier: 'STAREX', title: 'PO-014-10523162 · 4 Məhsul', invoice_amount_usd: 28.68, invoice_amount_azn: 48.75, status: 'Bəyan edilib ✓' },
-        { id: 'sample-2', platform: 'Trendyol', tracking_number: 'TRK-992014', carrier: 'CAMEX', title: 'TY-98410234 · Geyim və Ayaqqabı', invoice_amount_usd: 44.80, invoice_amount_azn: 76.16, status: 'Bəyan edilib ✓' },
-        { id: 'sample-3', platform: 'Amazon', tracking_number: '1Z9999999', carrier: 'LIMAK', title: 'AZ-2026-4410 · Elektronika Kabeli', invoice_amount_usd: 21.00, invoice_amount_azn: 35.70, status: 'Yoldadır ✈️' }
-      ]);
-    }
-
-    function filterParcels() {
-      const selected = document.getElementById('platform-filter').value;
-      if (selected === 'ALL') {
-        renderParcels(allParcels);
-      } else {
-        const filtered = allParcels.filter(p => p.platform.toLowerCase() === selected.toLowerCase());
-        renderParcels(filtered);
-      }
-    }
-
-    async function submitParcel(event) {
-      event.preventDefault();
-      const btn = document.getElementById('submit-parcel-btn');
-      btn.disabled = true;
-      btn.innerText = 'Əlavə edilir...';
-
+    async function saveProfile() {
       const payload = {
-        tracking_number: document.getElementById('p-tracking').value.trim(),
-        platform: document.getElementById('p-platform').value,
-        carrier: document.getElementById('p-carrier').value,
-        title: document.getElementById('p-title').value.trim(),
-        invoice_amount_usd: parseFloat(document.getElementById('p-amount-usd').value),
-      };
-
-      try {
-        const res = await fetch('/api/v1/user/parcels', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-          showToast('Bağlama uğurla əlavə edildi və otopilot izləməsinə qoşuldu! ✓');
-          closeOrderModal();
-          document.getElementById('create-parcel-form').reset();
-          document.getElementById('p-amount-azn-display').value = '0.00 AZN';
-          await loadParcels();
-          await loadQuota();
-        } else {
-          const err = await res.json();
-          alert('Xəta: ' + (err.detail || 'Sifariş əlavə edilə bilmədi.'));
-        }
-      } catch (err) {
-        alert('Serverlə əlaqə qurularkən xəta baş verdi.');
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Əlavə Et & İzlə';
-      }
-    }
-
-    async function deleteParcel(parcelId) {
-      if (!confirm('Bu bağlamanı izləmədən silmək istədiyinizə əminsiniz?')) return;
-      try {
-        const res = await fetch(`/api/v1/user/parcels/${parcelId}`, { method: 'DELETE' });
-        if (res.ok) {
-          showToast('Bağlama uğurla silindi.');
-          await loadParcels();
-          await loadQuota();
-        } else {
-          alert('Bağlama silinə bilmədi.');
-        }
-      } catch (err) {
-        alert('Şəbəkə xətası.');
-      }
-    }
-
-    async function submitProfile(event) {
-      event.preventDefault();
-      const btn = document.getElementById('save-profile-btn');
-      btn.disabled = true;
-      btn.innerText = 'Saxlanılır...';
-
-      const payload = {
-        full_name: document.getElementById('prof-fullname').value.trim(),
-        fin: document.getElementById('prof-fin').value.trim().toUpperCase(),
-        phone: document.getElementById('prof-phone').value.trim(),
+        full_name: document.getElementById('prof-fullname').value,
+        fin: document.getElementById('prof-fin').value,
+        phone: document.getElementById('prof-phone').value,
         default_branch: document.getElementById('prof-branch').value,
+        default_carrier: document.getElementById('prof-default-carrier').value,
         notification_whatsapp: document.getElementById('prof-notif-wa').checked,
-        notification_email: document.getElementById('prof-notif-email').checked,
+        notification_email: document.getElementById('prof-notif-em').checked,
+        notification_sms: document.getElementById('prof-notif-sms').checked,
+        notification_telegram: document.getElementById('prof-notif-tg').checked,
       };
 
       try {
@@ -997,211 +1076,646 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-
         if (res.ok) {
-          showToast('Profil və FİN məlumatları uğurla yeniləndi! ✓');
-          closeProfileModal();
-          await loadProfile();
-          await loadQuota();
+          showToast('Profil məlumatları uğurla yadda saxlanıldı! ✓');
+          loadProfile();
         } else {
           const err = await res.json();
-          alert('Xəta: ' + (err.detail || 'Profil yenilənə bilmədi.'));
+          showToast(err.detail || 'Xəta baş verdi', false);
         }
       } catch (err) {
-        alert('Serverlə əlaqə qurularkən xəta baş verdi.');
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Yadda Saxla';
+        showToast('Şəbəkə xətası baş verdi.', false);
       }
     }
 
-    function openLoydAssistant() {
-      const bubble = document.getElementById('loyd-response-bubble');
-      bubble.scrollIntoView({ behavior: 'smooth' });
-      askLoyd('Bu ay nə qədər limitim qalıb?');
-    }
-
-    function askLoyd(prompt) {
-      const bubble = document.getElementById('loyd-response-bubble');
-      bubble.innerHTML = `<span class="inline-block animate-pulse">Loyd AI düşünür...</span>`;
-      
-      setTimeout(() => {
-        if (prompt.includes('limitim')) {
-          const spent = document.getElementById('quota-spent-usd').innerText;
-          const rem = document.getElementById('quota-remaining-usd').innerText;
-          bubble.innerHTML = `Sizin bu ay üzrə istifadə etdiyiniz məbləğ <b>${spent}</b>, qalan rüsumsuz ehtiyatınız isə <b>${rem}</b> təşkil edir. Otopilot bütün sifarişlərinizi izləyir.`;
-        } else if (prompt.includes('rüsum')) {
-          bubble.innerHTML = `300 USD fərdi limit aşıldıqda bağlamanız saxlanılmır. Yalnız 300 USD-dən artıq qalan fərq hissəsinə 36% rüsum və 15 AZN xidmət haqqı hesablanır.`;
-        } else {
-          bubble.innerHTML = `Sifarişiniz SmartCustoms sisteminə avtomatik göndərilir. İzləmə kodu ilə daşıyıcı anbarına daxil olan kimi bəyannaməniz təsdiqlənəcəkdir.`;
-        }
-      }, 400);
-    }
-
-    function openSovereigntyModal() {
-      document.getElementById('sovereignty-modal').classList.remove('hidden');
-      document.getElementById('sovereignty-modal').classList.add('flex');
-    }
-
-    function closeSovereigntyModal() {
-      document.getElementById('sovereignty-modal').classList.add('hidden');
-      document.getElementById('sovereignty-modal').classList.remove('flex');
-    }
-
-    async function downloadExportJson() {
-      const btn = document.getElementById('btn-export-json');
-      btn.disabled = true;
-      btn.innerText = 'Hazırlanır...';
+    // --- Load Quota ---
+    async function loadQuota() {
       try {
-        const res = await fetch('/api/v1/user/export');
-        if (!res.ok) throw new Error('İxrac sorğusu uğursuz oldu.');
-        const data = await res.json();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const fin = (data.user_profile && data.user_profile.fin) ? data.user_profile.fin : 'KP';
-        const dateStr = new Date().toISOString().slice(0, 10);
-        a.href = url;
-        a.download = `kargopilot_export_${fin}_${dateStr}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('Məlumatlarınız tam şəkildə JSON faylına ixrac edildi! ✓');
+        const res = await fetch('/api/v1/user/quota');
+        if (res.ok) {
+          const q = await res.json();
+          document.getElementById('stat-remaining-usd').innerText = `$${q.remaining_usd.toFixed(2)}`;
+          document.getElementById('stat-spent-usd').innerText = `$${q.total_spent_usd.toFixed(2)} USD`;
+          document.getElementById('stat-spent-azn').innerText = `${q.spent_azn.toFixed(2)} AZN`;
+
+          const pct = Math.min(100, Math.round((q.total_spent_usd / 300.0) * 100));
+          const bar = document.getElementById('stat-quota-bar');
+          const pill = document.getElementById('quota-status-pill');
+
+          bar.style.width = `${pct}%`;
+          if (q.status === 'safe') {
+            bar.className = 'h-full bg-emerald-400 rounded-full transition-all duration-500';
+            pill.innerText = 'Təhlükəsiz ✓';
+            pill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
+          } else if (q.status === 'warning') {
+            bar.className = 'h-full bg-amber-400 rounded-full transition-all duration-500';
+            pill.innerText = 'Xəbərdarlıq ⚠️';
+            pill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30';
+          } else {
+            bar.className = 'h-full bg-rose-500 rounded-full transition-all duration-500';
+            pill.innerText = 'Limit Aşıldı 🚨';
+            pill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/15 text-rose-300 border border-rose-500/30';
+          }
+
+          document.getElementById('stat-duty-estimate').innerText = `${q.duty_estimate_azn.toFixed(2)} AZN`;
+          if (q.duty_estimate_azn > 0) {
+            document.getElementById('stat-duty-estimate').className = 'text-2xl sm:text-3xl font-extrabold font-mono text-rose-400';
+          } else {
+            document.getElementById('stat-duty-estimate').className = 'text-2xl sm:text-3xl font-extrabold font-mono text-emerald-400';
+          }
+        }
       } catch (err) {
-        alert('İxrac xətası: ' + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'İxrac Et (JSON)';
+        console.warn('Quota load err:', err);
       }
     }
 
-    async function uploadImportJson() {
-      const fileInput = document.getElementById('import-json-file');
-      const btn = document.getElementById('btn-import-json');
-      if (!fileInput.files || fileInput.files.length === 0) {
-        showToast('Zəhmət olmasa KargoPilot JSON faylını seçin.', false);
+    // --- Load Parcels ---
+    async function loadParcels() {
+      try {
+        const res = await fetch('/api/v1/user/parcels');
+        if (res.ok) {
+          currentParcels = await res.json();
+          renderParcelsTable(currentParcels);
+          document.getElementById('stat-active-orders').innerText = currentParcels.length;
+          document.getElementById('stat-total-orders').innerText = currentParcels.length;
+          document.getElementById('parcels-count-badge').innerText = currentParcels.length;
+        }
+      } catch (err) {
+        console.warn('Parcels load err:', err);
+      }
+    }
+
+    function renderParcelsTable(parcels) {
+      const tbody = document.getElementById('parcels-table-body');
+      if (!parcels || parcels.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center py-10 text-slate-500 text-xs">
+              Hələ heç bir bağlama qeydiyyatdan keçməyib. "+ Əlavə Et" düyməsi ilə ilk sifarişinizi daxil edin.
+            </td>
+          </tr>
+        `;
         return;
       }
-      const file = fileInput.files[0];
-      btn.disabled = true;
-      btn.innerText = 'İdxal edilir...';
+
+      tbody.innerHTML = parcels.map(p => `
+        <tr class="hover:bg-slate-800/40 transition">
+          <td class="py-3 px-3">
+            <div class="font-bold text-white">${p.title}</div>
+            <div class="text-[10px] text-slate-400 font-mono">ID: ${p.id.substring(0, 8)}</div>
+          </td>
+          <td class="py-3 px-3">
+            <span class="px-2 py-0.5 rounded-lg bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-200">
+              ${p.platform}
+            </span>
+          </td>
+          <td class="py-3 px-3 font-mono font-bold text-cyan-300">${p.tracking_number}</td>
+          <td class="py-3 px-3 font-semibold text-slate-300">${p.carrier}</td>
+          <td class="py-3 px-3 text-right font-mono">
+            <div class="font-bold text-white">$${p.invoice_amount_usd.toFixed(2)}</div>
+            <div class="text-[10px] text-slate-400">${p.invoice_amount_azn.toFixed(2)} AZN</div>
+          </td>
+          <td class="py-3 px-3 text-center">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+              ${p.status}
+            </span>
+          </td>
+          <td class="py-3 px-3 text-right text-slate-400 font-mono text-[11px]">${p.created_at.split(' ')[0]}</td>
+          <td class="py-3 px-3 text-center">
+            <button type="button" onclick="deleteParcel('${p.id}')" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition cursor-pointer" title="Bağlamanı Sil">
+              ✕
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterParcelsTable() {
+      const q = document.getElementById('parcel-search-input').value.toLowerCase().trim();
+      if (!q) {
+        renderParcelsTable(currentParcels);
+        return;
+      }
+      const filtered = currentParcels.filter(p => 
+        p.title.toLowerCase().includes(q) ||
+        p.tracking_number.toLowerCase().includes(q) ||
+        p.carrier.toLowerCase().includes(q) ||
+        p.platform.toLowerCase().includes(q)
+      );
+      renderParcelsTable(filtered);
+    }
+
+    async function deleteParcel(parcelId) {
+      if (!confirm('Bu bağlamanı silmək istədiyinizə əminsiniz?')) return;
       try {
-        const text = await file.text();
-        const payload = JSON.parse(text);
-        const res = await fetch('/api/v1/user/import', {
+        const res = await fetch(`/api/v1/user/parcels/${parcelId}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Bağlama uğurla silindi! ✓');
+          loadParcels();
+          loadQuota();
+        } else {
+          showToast('Silinmə zamanı xəta baş verdi', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    // --- Load Stores ---
+    async function loadStores() {
+      try {
+        const res = await fetch('/api/v1/user/stores');
+        if (res.ok) {
+          currentStores = await res.json();
+          document.getElementById('stores-count-badge').innerText = currentStores.length;
+          renderStoresGrid(currentStores);
+          populateStoreDropdowns(currentStores);
+        }
+      } catch (err) {
+        console.warn('Stores load err:', err);
+      }
+    }
+
+    function renderStoresGrid(stores) {
+      const grid = document.getElementById('stores-grid');
+      if (!stores || stores.length === 0) {
+        grid.innerHTML = '<div class="col-span-4 text-center py-8 text-slate-500 text-xs">Satıcı saytı tapılmadı.</div>';
+        return;
+      }
+
+      grid.innerHTML = stores.map(s => `
+        <div class="p-4 rounded-2xl bg-slate-950/80 border border-white/5 hover:border-cyan-500/30 transition flex flex-col justify-between space-y-3 group shadow-md">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${s.icon_badge || '🛍️'}</span>
+              <div>
+                <h4 class="text-xs font-bold text-white group-hover:text-cyan-300 transition">${s.name}</h4>
+                <span class="text-[10px] text-slate-400">${s.category || 'Ümumi'}</span>
+              </div>
+            </div>
+            ${s.is_standard ? 
+              '<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">Standart</span>' : 
+              `<button type="button" onclick="deleteStore('${s.id}')" class="text-slate-500 hover:text-rose-400 text-xs cursor-pointer" title="Sil">✕</button>`
+            }
+          </div>
+
+          <div class="flex items-center justify-between text-[11px] pt-1 border-t border-white/5">
+            <span class="font-mono text-cyan-400 font-semibold">${s.country_code} • ${s.default_currency}</span>
+            <a href="${s.domain_url}" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white transition flex items-center gap-1">
+              <span>Keç</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function populateStoreDropdowns(stores) {
+      const select = document.getElementById('p-platform');
+      if (!select) return;
+      select.innerHTML = stores.map(s => `
+        <option value="${s.name}">${s.icon_badge || '🛍️'} ${s.name} (${s.country_code})</option>
+      `).join('');
+    }
+
+    async function deleteStore(storeId) {
+      if (!confirm('Bu mağaza saytını silmək istəyirsiniz?')) return;
+      try {
+        const res = await fetch(`/api/v1/user/stores/${storeId}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Satıcı saytı silindi! ✓');
+          loadStores();
+        } else {
+          showToast('Silinmə xətası', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    // --- Load Carriers ---
+    async function loadCarriers() {
+      try {
+        const res = await fetch('/api/v1/user/carriers');
+        if (res.ok) {
+          currentCarriers = await res.json();
+          document.getElementById('carriers-count-badge').innerText = currentCarriers.length;
+          renderCarriersGrid(currentCarriers);
+          populateCarrierDropdowns(currentCarriers);
+        }
+      } catch (err) {
+        console.warn('Carriers load err:', err);
+      }
+    }
+
+    function renderCarriersGrid(carriers) {
+      const grid = document.getElementById('carriers-grid');
+      if (!carriers || carriers.length === 0) {
+        grid.innerHTML = '<div class="col-span-3 text-center py-8 text-slate-500 text-xs">Kargo şirkəti tapılmadı.</div>';
+        return;
+      }
+
+      grid.innerHTML = carriers.map(c => `
+        <div class="p-4 rounded-2xl bg-slate-950/80 border border-white/5 hover:border-cyan-500/30 transition flex flex-col justify-between space-y-3 shadow-md">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-bold text-xs flex items-center justify-center">
+                ${c.name.substring(0, 2).toUpperCase()}
+              </span>
+              <div>
+                <h4 class="text-xs font-bold text-white">${c.name}</h4>
+                <span class="text-[10px] text-slate-400 font-mono">${c.origin_country} istiqaməti</span>
+              </div>
+            </div>
+            ${c.is_standard ? 
+              '<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">Standart</span>' : 
+              `<button type="button" onclick="deleteCarrier('${c.id}')" class="text-slate-500 hover:text-rose-400 text-xs cursor-pointer" title="Sil">✕</button>`
+            }
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-900/60 p-2 rounded-xl">
+            <div>
+              <span class="text-[9px] text-slate-400 block">Tarif (kq):</span>
+              <span class="font-mono font-bold text-white">$${c.rate_per_kg_usd.toFixed(2)} USD</span>
+            </div>
+            <div>
+              <span class="text-[9px] text-slate-400 block">Müddət:</span>
+              <span class="text-slate-200 font-semibold">${c.delivery_days_min}-${c.delivery_days_max} gün</span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-[11px] pt-1 border-t border-white/5 text-slate-400">
+            <span>Filial: <b class="text-slate-300">${c.branch_address || 'Mərkəz'}</b></span>
+            ${c.website_url ? `<a href="${c.website_url}" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Sayt ↗</a>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function populateCarrierDropdowns(carriers) {
+      const orderSelect = document.getElementById('p-carrier');
+      const profSelect = document.getElementById('prof-default-carrier');
+      
+      const options = carriers.map(c => `
+        <option value="${c.name.toUpperCase()}">${c.name} (${c.origin_country} - $${c.rate_per_kg_usd.toFixed(2)}/kq)</option>
+      `).join('');
+
+      if (orderSelect) orderSelect.innerHTML = options;
+      if (profSelect) profSelect.innerHTML = options;
+    }
+
+    async function deleteCarrier(carrierId) {
+      if (!confirm('Bu kargo şirkətini silmək istəyirsiniz?')) return;
+      try {
+        const res = await fetch(`/api/v1/user/carriers/${carrierId}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Kargo şirkəti silindi! ✓');
+          loadCarriers();
+        } else {
+          showToast('Silinmə xətası', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    // --- Load Family FINs ---
+    async function loadFamilyFins() {
+      try {
+        const res = await fetch('/api/v1/user/family-fins');
+        if (res.ok) {
+          currentFamilyFins = await res.json();
+          document.getElementById('family-fin-count-badge').innerText = currentFamilyFins.length;
+          document.getElementById('stat-family-fin-count').innerText = `${currentFamilyFins.length} profil`;
+          renderFamilyFins(currentFamilyFins);
+        }
+      } catch (err) {
+        console.warn('Family fins load err:', err);
+      }
+    }
+
+    function renderFamilyFins(fins) {
+      const list = document.getElementById('family-fins-list');
+      if (!fins || fins.length === 0) {
+        list.innerHTML = `
+          <div class="p-6 rounded-2xl bg-slate-950/60 border border-slate-800 text-center text-xs text-slate-500">
+            Hələ heç bir ailə üzvü FİN kodu əlavə edilməyib. "+ FİN Əlavə Et" düyməsi ilə aylıq 300$ kvotanızı ailə daxilində artırın.
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = fins.map(f => `
+        <div class="p-4 rounded-2xl bg-slate-950/80 border border-white/5 flex items-center justify-between gap-3 shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-mono font-bold text-xs flex items-center justify-center">
+              ${f.fin.substring(0, 3)}
+            </div>
+            <div>
+              <div class="text-xs font-bold text-white flex items-center gap-2">
+                <span>${f.name_relation}</span>
+                <span class="px-2 py-0.5 rounded bg-slate-800 font-mono text-[10px] text-cyan-300 font-bold">${f.fin}</span>
+              </div>
+              <div class="text-[10px] text-slate-400 mt-0.5">
+                Limit: <b class="font-mono text-slate-200">$${f.monthly_limit_usd.toFixed(2)}</b> • Xərclənib: <b class="font-mono text-slate-300">$${f.spent_usd.toFixed(2)}</b>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-mono">
+              Qalıq: $${f.remaining_usd.toFixed(2)}
+            </span>
+            <button type="button" onclick="deleteFamilyFin('${f.id}')" class="text-slate-500 hover:text-rose-400 text-xs cursor-pointer" title="Sil">✕</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function deleteFamilyFin(finId) {
+      if (!confirm('Bu ailə FİN profilini silmək istəyirsiniz?')) return;
+      try {
+        const res = await fetch(`/api/v1/user/family-fins/${finId}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Ailə FİN profili silindi! ✓');
+          loadFamilyFins();
+        } else {
+          showToast('Silinmə xətası', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    // --- Modal Toggles ---
+    function openOrderModal() { document.getElementById('modal-order').classList.remove('hidden'); }
+    function closeOrderModal() { document.getElementById('modal-order').classList.add('hidden'); }
+    function openStoreModal() { document.getElementById('modal-store').classList.remove('hidden'); }
+    function closeStoreModal() { document.getElementById('modal-store').classList.add('hidden'); }
+    function openCarrierModal() { document.getElementById('modal-carrier').classList.remove('hidden'); }
+    function closeCarrierModal() { document.getElementById('modal-carrier').classList.add('hidden'); }
+    function openFamilyFinModal() { document.getElementById('modal-family-fin').classList.remove('hidden'); }
+    function closeFamilyFinModal() { document.getElementById('modal-family-fin').classList.add('hidden'); }
+    function openPasswordModal() { document.getElementById('modal-password').classList.remove('hidden'); }
+    function closePasswordModal() { document.getElementById('modal-password').classList.add('hidden'); }
+
+    function calculateAznEquivalent() {
+      const usdVal = parseFloat(document.getElementById('p-amount-usd').value) || 0;
+      document.getElementById('p-amount-azn').value = (usdVal * 1.70).toFixed(2);
+    }
+
+    // --- Form Submissions ---
+    async function submitOrder() {
+      const payload = {
+        platform: document.getElementById('p-platform').value,
+        title: document.getElementById('p-title').value,
+        tracking_number: document.getElementById('p-tracking').value,
+        carrier: document.getElementById('p-carrier').value,
+        invoice_amount_usd: parseFloat(document.getElementById('p-amount-usd').value),
+        invoice_amount_azn: parseFloat(document.getElementById('p-amount-azn').value),
+      };
+
+      try {
+        const res = await fetch('/api/v1/user/parcels', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        const result = await res.json();
         if (res.ok) {
-          showToast(result.message || 'Məlumatlar uğurla idxal edildi! ✓');
-          fileInput.value = '';
-          closeSovereigntyModal();
-          await loadParcels();
-          await loadQuota();
+          closeOrderModal();
+          showToast('Bağlama uğurla əlavə edildi! ✓');
+          document.getElementById('order-form').reset();
+          loadParcels();
+          loadQuota();
         } else {
-          alert('İdxal xətası: ' + (result.detail || 'Fayl oxunarkən xəta baş verdi.'));
+          const err = await res.json();
+          showToast(err.detail || 'Xəta baş verdi', false);
         }
       } catch (err) {
-        alert('Fayl formatı düzgün deyil və ya serverlə əlaqə kəsildi: ' + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Yüklə & İdxal Et';
+        showToast('Şəbəkə xətası', false);
       }
     }
 
-    async function testCustomNode() {
-      const urlInput = document.getElementById('custom-node-url');
-      const spinner = document.getElementById('custom-node-spinner');
-      const btn = document.getElementById('btn-test-custom-node');
-      const feedback = document.getElementById('custom-node-feedback');
-
-      const targetUrl = urlInput.value.trim();
-      if (!targetUrl) {
-        showToast('Zəhmət olmasa server ünvanını daxil edin', false);
-        return;
-      }
-      spinner.classList.remove('hidden');
-      btn.disabled = true;
+    async function submitStore() {
+      const payload = {
+        name: document.getElementById('store-name').value,
+        domain_url: document.getElementById('store-url').value,
+        country_code: document.getElementById('store-country').value,
+        default_currency: document.getElementById('store-currency').value,
+        category: document.getElementById('store-category').value,
+        icon_badge: document.getElementById('store-icon').value,
+      };
 
       try {
-        const res = await fetch('/api/v1/system/verify-node', {
+        const res = await fetch('/api/v1/user/stores', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ target_url: targetUrl })
+          body: JSON.stringify(payload)
         });
-        const data = await res.json();
-        feedback.classList.remove('hidden');
-        if (data.healthy) {
-          feedback.className = 'p-3 rounded-xl border border-emerald-500/30 bg-emerald-950/20 text-emerald-300 text-[11px] leading-relaxed';
-          feedback.innerHTML = `✓ <b>Aktiv:</b> ${data.service} (${data.edition || 'Sovereign'} v${data.version || '4.5.0'}) · Gecikmə: <b>${data.latency_ms} ms</b>`;
-          showToast('Sovereign düyünü aktivdir! ✓');
+        if (res.ok) {
+          closeStoreModal();
+          showToast('Satıcı saytı uğurla əlavə edildi! ✓');
+          document.getElementById('store-form').reset();
+          loadStores();
         } else {
-          feedback.className = 'p-3 rounded-xl border border-rose-500/30 bg-rose-950/20 text-rose-300 text-[11px] leading-relaxed';
-          feedback.innerHTML = `⚠️ <b>Əlaqə xətası:</b> ${data.message || 'Server cavab vermədi.'}`;
+          const err = await res.json();
+          showToast(err.detail || 'Xəta baş verdi', false);
         }
       } catch (err) {
-        feedback.classList.remove('hidden');
-        feedback.className = 'p-3 rounded-xl border border-rose-500/30 bg-rose-950/20 text-rose-300 text-[11px] leading-relaxed';
-        feedback.innerText = 'Yoxlama zamanı şəbəkə xətası baş verdi.';
-      } finally {
-        spinner.classList.add('hidden');
-        btn.disabled = false;
+        showToast('Şəbəkə xətası', false);
       }
     }
 
-    function applyCustomNode() {
-      const targetUrl = document.getElementById('custom-node-url').value.trim();
-      if (!targetUrl) return;
-      localStorage.setItem('kargopilot_node_url', targetUrl);
-      localStorage.setItem('kargopilot_node_mode', 'sovereign');
-      updateServerBadge();
-      showToast(`Sovereign Server seçildi (${targetUrl})! ✓`);
-      closeSovereigntyModal();
-    }
-
-    async function confirmWipeData() {
-      const confirmed = confirm(
-        'DİQQƏT: Buluddakı bütün şəxsi bağlamalarınız və gömrük qeydləriniz həmişəlik silinəcəkdir!\n\n' +
-        'Bu əməliyyat geri qaytarılmır. Əgər məlumatlarınızı ixrac etməmisinizsə, əvvəlcə "İxrac Et" düyməsini sıxın.\n\n' +
-        'Silməyə davam edilsin?'
-      );
-      if (!confirmed) return;
+    async function submitCarrier() {
+      const payload = {
+        name: document.getElementById('carr-name').value,
+        origin_country: document.getElementById('carr-country').value,
+        rate_per_kg_usd: parseFloat(document.getElementById('carr-rate').value),
+        liquid_surcharge_usd: parseFloat(document.getElementById('carr-liquid').value) || 0,
+        electronics_surcharge_usd: parseFloat(document.getElementById('carr-elec').value) || 0,
+        delivery_days_min: parseInt(document.getElementById('carr-days-min').value) || 3,
+        delivery_days_max: parseInt(document.getElementById('carr-days-max').value) || 5,
+        branch_address: document.getElementById('carr-branch').value,
+      };
 
       try {
-        const res = await fetch('/api/v1/user/account-data?confirm_wipe=true', { method: 'DELETE' });
-        const result = await res.json();
+        const res = await fetch('/api/v1/user/carriers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
         if (res.ok) {
-          showToast('Bütün şəxsi bağlama məlumatlarınız bulud serverindən silindi.');
-          closeSovereigntyModal();
-          await loadParcels();
-          await loadQuota();
+          closeCarrierModal();
+          showToast('Kargo şirkəti uğurla əlavə edildi! ✓');
+          document.getElementById('carrier-form').reset();
+          loadCarriers();
         } else {
-          alert('Xəta: ' + (result.detail || 'Məlumatlar silinə bilmədi.'));
+          const err = await res.json();
+          showToast(err.detail || 'Xəta baş verdi', false);
         }
       } catch (err) {
-        alert('Şəbəkə xətası.');
+        showToast('Şəbəkə xətası', false);
       }
     }
 
-    function updateServerBadge() {
-      const mode = localStorage.getItem('kargopilot_node_mode');
-      const url = localStorage.getItem('kargopilot_node_url');
-      const badgeText = document.getElementById('server-badge-text');
-      const badgeDot = document.getElementById('server-badge-dot');
-      if (mode === 'sovereign' && url) {
-        const cleanHost = url.replace(/^https?:\/\//, '').split('/')[0];
-        badgeText.innerText = `🖥️ ${cleanHost}`;
-        badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
+    async function submitFamilyFin() {
+      const payload = {
+        name_relation: document.getElementById('ffin-name').value,
+        fin: document.getElementById('ffin-code').value,
+        monthly_limit_usd: parseFloat(document.getElementById('ffin-limit').value) || 300,
+        spent_usd: parseFloat(document.getElementById('ffin-spent').value) || 0,
+      };
+
+      try {
+        const res = await fetch('/api/v1/user/family-fins', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          closeFamilyFinModal();
+          showToast('Ailə FİN profili əlavə edildi! ✓');
+          document.getElementById('family-fin-form').reset();
+          loadFamilyFins();
+        } else {
+          const err = await res.json();
+          showToast(err.detail || 'Xəta baş verdi', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    async function submitPasswordChange() {
+      const cur = document.getElementById('pw-current').value;
+      const nw = document.getElementById('pw-new').value;
+      const conf = document.getElementById('pw-confirm').value;
+
+      if (nw !== conf) {
+        showToast('Yeni şifrələr bir-birinə uyğun gəlmir!', false);
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/v1/user/profile/password', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ current_password: cur, new_password: nw })
+        });
+        if (res.ok) {
+          closePasswordModal();
+          showToast('Şifrəniz uğurla yeniləndi! ✓');
+          document.getElementById('password-form').reset();
+        } else {
+          const err = await res.json();
+          showToast(err.detail || 'Cari şifrə yanlışdır', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    // --- AI Copilot Chat Logic ---
+    async function submitAiMessage() {
+      const input = document.getElementById('ai-chat-input');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      appendAiMessage('user', msg);
+      input.value = '';
+
+      const btn = document.getElementById('ai-chat-send-btn');
+      const spinner = document.getElementById('ai-chat-spinner');
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/v1/user/ai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          appendAiMessage('assistant', data.reply);
+        } else {
+          appendAiMessage('assistant', 'Üzr istəyirəm, cavab hazırlayarkən xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.');
+        }
+      } catch (err) {
+        appendAiMessage('assistant', 'Şəbəkə xətası baş verdi.');
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+      }
+    }
+
+    function sendQuickAiMessage(text) {
+      document.getElementById('ai-chat-input').value = text;
+      submitAiMessage();
+    }
+
+    function appendAiMessage(role, text) {
+      const thread = document.getElementById('ai-chat-thread');
+      const div = document.createElement('div');
+      if (role === 'user') {
+        div.className = 'flex items-start justify-end gap-2.5 max-w-[85%] ml-auto';
+        div.innerHTML = `
+          <div class="p-3.5 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 text-xs text-white shadow-md leading-relaxed">
+            ${text}
+          </div>
+          <span class="w-7 h-7 rounded-lg bg-cyan-500 text-slate-950 font-bold flex items-center justify-center text-xs shrink-0">Siz</span>
+        `;
       } else {
-        badgeText.innerText = '☁️ Bulud Serveri';
-        badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse';
+        div.className = 'flex items-start gap-2.5 max-w-[85%]';
+        div.innerHTML = `
+          <span class="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-sm shrink-0">🤖</span>
+          <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-slate-200 shadow-md leading-relaxed whitespace-pre-line">
+            ${text}
+          </div>
+        `;
+      }
+      thread.appendChild(div);
+      thread.scrollTop = thread.scrollHeight;
+    }
+
+    async function loadAiHistory() {
+      try {
+        const res = await fetch('/api/v1/user/ai/history');
+        if (res.ok) {
+          const history = await res.json();
+          if (history.length > 0) {
+            const thread = document.getElementById('ai-chat-thread');
+            thread.innerHTML = '';
+            history.forEach(m => appendAiMessage(m.role, m.content));
+          }
+        }
+      } catch (err) {
+        console.warn('AI history load err:', err);
       }
     }
 
-    // --- Etap 4: Smart Arbitrage Calculator ---
+    async function clearAiHistory() {
+      if (!confirm('Bütün AI söhbət tarixçəsini silmək istəyirsiniz?')) return;
+      try {
+        const res = await fetch('/api/v1/user/ai/history', { method: 'DELETE' });
+        if (res.ok) {
+          const thread = document.getElementById('ai-chat-thread');
+          thread.innerHTML = `
+            <div class="flex items-start gap-2.5 max-w-[85%]">
+              <span class="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-sm shrink-0">🤖</span>
+              <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-slate-200 shadow-md leading-relaxed">
+                Söhbət tarixçəsi təmizləndi. İstənilən sualınızı yenidən verə bilərsiniz!
+              </div>
+            </div>
+          `;
+          showToast('Söhbət tarixçəsi təmizləndi! ✓');
+        }
+      } catch (err) {
+        showToast('Xəta baş verdi', false);
+      }
+    }
+
+    // --- Arbitrage & Customs Engines ---
     async function calculateArbitrage() {
       const btn = document.getElementById('btn-calc-arb');
       const spinner = document.getElementById('arb-calc-spinner');
@@ -1237,9 +1751,7 @@
           body: JSON.stringify(payload)
         });
 
-        if (!res.ok) {
-          throw new Error('Tarif hesablana bilmədi.');
-        }
+        if (!res.ok) throw new Error('Tarif hesablana bilmədi.');
 
         const data = await res.json();
         savingsBadge.classList.remove('hidden');
@@ -1281,7 +1793,7 @@
                   <div class="text-xs font-bold font-mono text-white">${c.rate_usd.toFixed(2)} USD</div>
                   <div class="text-[10px] font-mono text-slate-400">${c.rate_azn.toFixed(2)} AZN</div>
                 </div>
-                <button type="button" onclick="applyArbitrageToOrder('${c.carrier_code}', '${c.carrier_name}', ${c.rate_usd})" class="px-2.5 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500 text-cyan-300 hover:text-slate-950 border border-cyan-500/30 text-[10px] font-bold transition cursor-pointer" title="Bu daşıyıcı ilə sifariş yarat">
+                <button type="button" onclick="applyArbitrageToOrder('${c.carrier_code}', '${c.carrier_name}', ${c.rate_usd})" class="px-2.5 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500 text-cyan-300 hover:text-slate-950 border border-cyan-500/30 text-[10px] font-bold transition cursor-pointer">
                   Seç ↳
                 </button>
               </div>
@@ -1289,17 +1801,9 @@
           `;
         });
 
-        resultsBox.innerHTML = `
-          <div class="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
-            ${rowsHtml}
-          </div>
-        `;
+        resultsBox.innerHTML = `<div class="space-y-1.5 max-h-[220px] overflow-y-auto pr-1 custom-scroll">${rowsHtml}</div>`;
       } catch (err) {
-        resultsBox.innerHTML = `
-          <div class="p-3 rounded-xl bg-rose-950/20 border border-rose-500/30 text-xs text-rose-300">
-            Xəta baş verdi: ${err.message}
-          </div>
-        `;
+        resultsBox.innerHTML = `<div class="p-3 rounded-xl bg-rose-950/20 border border-rose-500/30 text-xs text-rose-300">Xəta: ${err.message}</div>`;
       } finally {
         btn.disabled = false;
         spinner.classList.add('hidden');
@@ -1323,10 +1827,9 @@
           carrierSelect.add(opt);
         }
       }
-      showToast(`${carrierName} daşıyıcısı seçildi. Sifariş məlumatlarını daxil edin. ✓`);
+      showToast(`${carrierName} seçildi. ✓`);
     }
 
-    // --- Etap 4: DGK 300$ Customs Supervisor Simulator ---
     async function simulateCustoms() {
       const btn = document.getElementById('btn-calc-sim');
       const spinner = document.getElementById('sim-calc-spinner');
@@ -1335,7 +1838,7 @@
 
       const priceVal = parseFloat(document.getElementById('sim-price-usd').value);
       if (isNaN(priceVal) || priceVal < 0) {
-        showToast('Zəhmət olmasa düzgün məhsul qiyməti daxil edin.', false);
+        showToast('Düzgün məhsul qiyməti daxil edin.', false);
         return;
       }
       const shippingVal = parseFloat(document.getElementById('sim-shipping-usd').value) || 0.0;
@@ -1347,19 +1850,11 @@
         const res = await fetch('/api/v1/user/customs/simulate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            item_price_usd: priceVal,
-            shipping_fee_usd: shippingVal,
-          })
+          body: JSON.stringify({ item_price_usd: priceVal, shipping_fee_usd: shippingVal })
         });
-
-        if (!res.ok) {
-          throw new Error('Gömrük simulyasiyası uğursuz oldu.');
-        }
+        if (!res.ok) throw new Error('Gömrük simulyasiyası uğursuz oldu.');
 
         const data = await res.json();
-
-        // Update badge
         if (data.status === 'safe') {
           statusBadge.innerText = 'Təhlükəsiz ✓';
           statusBadge.className = 'text-[10px] font-bold px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
@@ -1371,90 +1866,182 @@
           statusBadge.className = 'text-[10px] font-bold px-2 py-1 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30';
         }
 
-        let recsHtml = '';
-        data.recommendations.forEach(r => {
-          recsHtml += `<li>• ${r}</li>`;
-        });
-
-        let dutyHighlight = '';
-        if (data.exceeds_limit) {
-          dutyHighlight = `
-            <div class="p-3 rounded-xl bg-rose-950/30 border border-rose-500/40 text-xs space-y-1">
-              <div class="flex items-center justify-between font-bold text-rose-300">
-                <span>36% Vahid Gömrük Rüsumu:</span>
-                <span class="font-mono text-sm">${data.duty_azn.toFixed(2)} AZN ($${data.duty_usd.toFixed(2)} USD)</span>
-              </div>
-              <div class="text-[11px] text-slate-300">
-                Aşılmış məbləğ: <b class="font-mono text-white">$${data.over_limit_amount_usd.toFixed(2)} USD</b> (${data.over_limit_amount_azn.toFixed(2)} AZN)
-              </div>
+        let dutyHighlight = data.exceeds_limit ? `
+          <div class="p-3 rounded-xl bg-rose-950/30 border border-rose-500/40 text-xs space-y-1">
+            <div class="flex items-center justify-between font-bold text-rose-300">
+              <span>36% Vahid Gömrük Rüsumu:</span>
+              <span class="font-mono text-sm">${data.duty_azn.toFixed(2)} AZN ($${data.duty_usd.toFixed(2)} USD)</span>
             </div>
-          `;
-        } else {
-          dutyHighlight = `
-            <div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/40 text-xs flex items-center justify-between text-emerald-300 font-bold">
-              <span>0% Rüsumsuz Keçid:</span>
-              <span class="font-mono text-xs">Qalan ehtiyat: $${data.remaining_allowance_usd.toFixed(2)} USD (${data.remaining_allowance_azn.toFixed(2)} AZN)</span>
+            <div class="text-[11px] text-slate-300">
+              Aşılmış məbləğ: <b class="font-mono text-white">$${data.over_limit_amount_usd.toFixed(2)} USD</b> (${data.over_limit_amount_azn.toFixed(2)} AZN)
             </div>
-          `;
-        }
+          </div>
+        ` : `
+          <div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/40 text-xs flex items-center justify-between text-emerald-300 font-bold">
+            <span>0% Rüsumsuz Keçid:</span>
+            <span class="font-mono text-xs">Qalan ehtiyat: $${data.remaining_allowance_usd.toFixed(2)} USD (${data.remaining_allowance_azn.toFixed(2)} AZN)</span>
+          </div>
+        `;
 
         resultsBox.innerHTML = `
           <div class="space-y-2.5">
             <div class="grid grid-cols-2 gap-2 text-xs">
-              <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-                <span class="text-[10px] text-slate-400 block">Cari Ay Xərci</span>
+              <div class="p-2 rounded-xl bg-slate-950 border border-slate-800">
+                <span class="text-[10px] text-slate-400 block">Cari Ay Xərci:</span>
                 <span class="font-bold font-mono text-white">$${data.current_spent_usd.toFixed(2)} USD</span>
               </div>
-              <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-                <span class="text-[10px] text-slate-400 block">Proqnozlaşdırılan Cəm</span>
+              <div class="p-2 rounded-xl bg-slate-950 border border-slate-800">
+                <span class="text-[10px] text-slate-400 block">Proqnozlaşdırılan Cəm:</span>
                 <span class="font-bold font-mono ${data.exceeds_limit ? 'text-rose-400' : 'text-cyan-400'}">$${data.projected_total_usd.toFixed(2)} USD</span>
               </div>
             </div>
-
             ${dutyHighlight}
-
             <div class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80 text-[11px] text-slate-300 space-y-1">
               <span class="font-bold text-white block">Tövsiyələr:</span>
-              <ul class="space-y-0.5 text-slate-400">
-                ${recsHtml}
-              </ul>
+              <ul class="space-y-0.5 text-slate-400">${data.recommendations.map(r => `<li>• ${r}</li>`).join('')}</ul>
             </div>
-
-            <div class="pt-1 flex justify-end">
-              <button type="button" onclick="applyCustomsToOrder(${data.item_price_usd})" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold transition cursor-pointer">
-                Bu Məbləğlə Sifariş Formasını Aç ↳
-              </button>
-            </div>
+            <button type="button" onclick="applyCustomsToOrder(${data.item_price_usd})" class="w-full py-2 px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-bold text-xs transition cursor-pointer flex items-center justify-center gap-1.5">
+              <span>Bu Məbləğlə Sifariş Formasını Aç ↳</span>
+            </button>
           </div>
         `;
       } catch (err) {
-        resultsBox.innerHTML = `
-          <div class="p-3 rounded-xl bg-rose-950/20 border border-rose-500/30 text-xs text-rose-300">
-            Xəta baş verdi: ${err.message}
-          </div>
-        `;
+        resultsBox.innerHTML = `<div class="p-3 rounded-xl bg-rose-950/20 border border-rose-500/30 text-xs text-rose-300">Xəta: ${err.message}</div>`;
       } finally {
         btn.disabled = false;
         spinner.classList.add('hidden');
       }
     }
 
-    function applyCustomsToOrder(itemPriceUsd) {
+    function applyCustomsToOrder(price) {
       openOrderModal();
-      const amountInput = document.getElementById('p-amount-usd');
-      if (amountInput) {
-        amountInput.value = itemPriceUsd.toFixed(2);
+      const input = document.getElementById('p-amount-usd');
+      if (input) {
+        input.value = parseFloat(price).toFixed(2);
         calculateAznEquivalent();
       }
-      showToast(`$${itemPriceUsd.toFixed(2)} məbləği sifariş formasına köçürüldü. ✓`);
+      showToast(`$${parseFloat(price).toFixed(2)} məbləği sifariş formasına köçürüldü. ✓`);
     }
 
-    // Auto-init on page load
+    // --- Node Reachability Verifier ---
+    async function testNodeReachability() {
+      const url = document.getElementById('target-node-url').value;
+      const statusBox = document.getElementById('node-status-text');
+      const btn = document.getElementById('btn-test-node');
+      const spinner = document.getElementById('node-test-spinner');
+
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/v1/user/verify-node', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target_url: url })
+        });
+        const data = await res.json();
+        if (data.healthy) {
+          statusBox.innerText = `Aktiv ✓ (${data.latency_ms} ms - ${data.service} v${data.version})`;
+          statusBox.className = 'text-emerald-400 font-bold font-mono text-xs';
+          showToast('Müstəqil düyün uğurla təsdiqləndi! ✓');
+        } else {
+          statusBox.innerText = `Bağlantı xətası: ${data.message}`;
+          statusBox.className = 'text-rose-400 font-bold font-mono text-xs';
+          showToast(data.message, false);
+        }
+      } catch (err) {
+        statusBox.innerText = 'Şəbəkə xətası baş verdi.';
+        statusBox.className = 'text-rose-400 font-bold font-mono text-xs';
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+      }
+    }
+
+    // --- Data Sovereignty: Export, Import, Wipe ---
+    async function exportDataJson() {
+      try {
+        const res = await fetch('/api/v1/user/export');
+        if (res.ok) {
+          const data = await res.json();
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `kargopilot_export_${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          showToast('Məlumatlarınız JSON olaraq uğurla ixrac edildi! ✓');
+        } else {
+          showToast('İxrac zamanı xəta baş verdi', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    async function handleFileImport(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(evt) {
+        try {
+          const json = JSON.parse(evt.target.result);
+          const res = await fetch('/api/v1/user/import', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(json)
+          });
+          const result = await res.json();
+          if (res.ok) {
+            showToast(result.message || 'Məlumatlar uğurla idxal edildi! ✓');
+            loadProfile();
+            loadParcels();
+            loadQuota();
+            loadStores();
+            loadCarriers();
+            loadFamilyFins();
+          } else {
+            showToast(result.detail || 'İdxal xətası', false);
+          }
+        } catch (err) {
+          showToast('JSON faylı oxuna bilmədi.', false);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function wipeAccountData() {
+      const confirmText = prompt('Bütün şəxsi bağlamalarınızı, fərdi kargo və satıcılarınızı silmək istəyirsinizsə, "SIL" yazın:');
+      if (confirmText !== 'SIL') return;
+
+      try {
+        const res = await fetch('/api/v1/user/account-data?confirm_wipe=true', { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Bütün məlumatlarınız silindi! ✓');
+          loadParcels();
+          loadQuota();
+          loadStores();
+          loadCarriers();
+          loadFamilyFins();
+        } else {
+          showToast('Silinmə xətası', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    // Init on Page Load
     document.addEventListener('DOMContentLoaded', () => {
       loadProfile();
       loadQuota();
       loadParcels();
-      updateServerBadge();
+      loadStores();
+      loadCarriers();
+      loadFamilyFins();
+      loadAiHistory();
     });
   </script>
 </body>
