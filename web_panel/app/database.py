@@ -152,6 +152,8 @@ def init_db() -> None:
         cur.execute("ALTER TABLE orders ADD COLUMN fx_rate_to_usd REAL DEFAULT 0.5882")
     if "invoice_amount_usd" not in order_cols:
         cur.execute("ALTER TABLE orders ADD COLUMN invoice_amount_usd REAL")
+    if "user_id" not in order_cols:
+        cur.execute("ALTER TABLE orders ADD COLUMN user_id TEXT")
 
     # Ensure all required columns exist in order_items table
     item_cols = [r[1] for r in cur.execute("PRAGMA table_info(order_items)").fetchall()]
@@ -247,6 +249,17 @@ def _ensure_users_and_auth_tables(conn: sqlite3.Connection) -> None:
         metadata JSON DEFAULT '{}'
     );
     """)
+
+    # Ensure profile columns exist in users table
+    user_cols = [r[1] for r in cur.execute("PRAGMA table_info(users)").fetchall()]
+    if "fin" not in user_cols:
+        cur.execute("ALTER TABLE users ADD COLUMN fin TEXT DEFAULT '814CRM4'")
+    if "default_branch" not in user_cols:
+        cur.execute("ALTER TABLE users ADD COLUMN default_branch TEXT DEFAULT '28 May'")
+    if "notification_whatsapp" not in user_cols:
+        cur.execute("ALTER TABLE users ADD COLUMN notification_whatsapp BOOLEAN DEFAULT 1")
+    if "notification_email" not in user_cols:
+        cur.execute("ALTER TABLE users ADD COLUMN notification_email BOOLEAN DEFAULT 1")
 
     # Seed Superadmin if not exists
     superadmin_id = "00000000-0000-4000-8000-000000000001"

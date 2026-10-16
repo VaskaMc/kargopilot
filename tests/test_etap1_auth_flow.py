@@ -3,10 +3,13 @@ Cloud/Managed Registration, Login, Web Routes & User Dashboard.
 """
 
 import os
+import sys
 import sqlite3
 import pytest
 from pathlib import Path
 from fastapi.testclient import TestClient
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "web_panel"))
 
 from web_panel.app.main import create_app
 from web_panel.app.database import init_db, get_connection

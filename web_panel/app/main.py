@@ -188,6 +188,18 @@ def create_app() -> FastAPI:
         except Exception as exc:
             logger.warning("Could not mount auth_web router: %s", exc)
 
+    try:
+        from app.routers import user_api as user_api_router
+        app.include_router(user_api_router.router)
+        logger.info("Mounted /api/v1/user personal logistics and quota router")
+    except Exception:
+        try:
+            from routers import user_api as user_api_router
+            app.include_router(user_api_router.router)
+            logger.info("Mounted /api/v1/user personal logistics and quota router via fallback")
+        except Exception as exc:
+            logger.warning("Could not mount user_api router: %s", exc)
+
     @app.get("/showcase", response_class=HTMLResponse)
     async def showcase_page():
         showcase_file = BASE_DIR / "app" / "templates" / "showcase.html"

@@ -74,7 +74,7 @@ async def register_page(request: Request, plan: Optional[str] = "cloud"):
 @router.get("/user/dashboard", response_class=HTMLResponse)
 @router.get("/my-dashboard", response_class=HTMLResponse)
 async def user_dashboard_page(request: Request):
-    """Renders the User Dashboard skeleton for regular registered users."""
+    """Renders the User Dashboard with real user data and dynamic quota calculations."""
     current_user = get_authenticated_user_from_cookie(request)
     if not current_user:
         # Fall back to default guest profile if running in demo / development mode
@@ -85,9 +85,30 @@ async def user_dashboard_page(request: Request):
             "role": "CUSTOMER",
             "tier": "cloud_managed",
             "phone": "+994776346310",
+            "fin": "814CRM4",
+            "default_branch": "28 May",
         }
 
-    quota_data = calculate_monthly_quota()
+    user_id = current_user.get("id")
+    user_spent_usd = 0.0
+    orders_count = 0
+    try:
+        with get_connection() as conn:
+            spent_row = conn.execute(
+                "SELECT COALESCE(SUM(invoice_amount_usd), 0.0) FROM orders WHERE user_id = ?",
+                (user_id,),
+            ).fetchone()
+            user_spent_usd = float(spent_row[0]) if spent_row and spent_row[0] is not None else 0.0
+
+            count_row = conn.execute(
+                "SELECT COUNT(*) FROM orders WHERE user_id = ?",
+                (user_id,),
+            ).fetchone()
+            orders_count = int(count_row[0]) if count_row and count_row[0] is not None else 0
+    except Exception as exc:
+        logger.warning("Could not calculate dynamic user quota: %s", exc)
+
+    remaining_usd = max(0.0, 300.0 - user_spent_usd)
 
     return templates.TemplateResponse(
         request=request,
@@ -96,11 +117,11 @@ async def user_dashboard_page(request: Request):
             "request": request,
             "user": current_user,
             "quota": {
-                "used_usd": f"{quota_data.get('total_spent_usd', 142.50):.2f}",
-                "remaining_usd": f"{quota_data.get('remaining_usd', 157.50):.2f}",
-                "spent_azn": f"{quota_data.get('total_spent_azn', 242.25):.2f}",
+                "used_usd": f"{user_spent_usd:.2f}",
+                "remaining_usd": f"{remaining_usd:.2f}",
+                "spent_azn": f"{user_spent_usd * 1.70:.2f}",
             },
-            "active_orders_count": 3,
+            "active_orders_count": orders_count,
             "page_title": "Şəxsi Kabinet — KargoPilot",
         },
     )
