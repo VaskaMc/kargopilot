@@ -1,4 +1,4 @@
-"""KargoPilot v4.5 Enterprise Admin Panel Router.
+"""KargoPilot v6.5 Enterprise Admin Panel Router.
 
 Provides dedicated administrative intelligence, user governance, customs review queue,
 multi-carrier margin adjustments, and security audit trail for operators and superadmins.
@@ -83,7 +83,7 @@ async def admin_dashboard(request: Request, db: sqlite3.Connection = Depends(get
     return templates.TemplateResponse(
         request=request,
         name="admin/dashboard.html",
-        context={"stats": stats, "page_title": "Admin Cockpit | KargoPilot v4.5"}
+        context={"stats": stats, "page_title": "Admin Cockpit | KargoPilot v6.5"}
     )
 
 

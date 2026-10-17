@@ -1,30 +1,48 @@
 {
   "manifest_version": 3,
-  "name": "PCS Live Overlay — Omni-Commerce Brain",
-  "version": "4.0.0",
-  "description": "Taobao, 1688, Trendyol və Temu üçün canlı Bakı Maya Dəyəri, Arbitraj və 1-Kliklə Ünvan Avtodoldurma",
-  "action": {
-    "default_title": "PCS Omni-Commerce Cockpit",
-    "default_popup": "popup.html"
-  },
-  "permissions": ["storage", "activeTab"],
+  "name": "KargoPilot v6.5 — 1-Klik Quick-Bridge Sessiya Körpüsü",
+  "short_name": "KargoPilot v6.5",
+  "version": "6.5.0",
+  "description": "Trendyol, Temu, Starex və SmartCustoms (Bəyannaməsiz Read-Only 300$ Kvota) sessiyalarını 1 kliklə Bulud və ya Öz Serverinizə (Self-Hosted) bağlayın.",
+  "permissions": [
+    "cookies",
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
   "host_permissions": [
-    "*://*.taobao.com/*",
-    "*://*.1688.com/*",
     "*://*.trendyol.com/*",
     "*://*.temu.com/*",
-    "http://127.0.0.1:48481/*"
+    "*://*.amazon.com/*",
+    "*://*.aliexpress.com/*",
+    "*://*.starex.az/*",
+    "*://*.camex.az/*",
+    "*://*.limak.az/*",
+    "*://*.dynamex.az/*",
+    "*://*.customs.gov.az/*",
+    "http://127.0.0.1:48481/*",
+    "http://localhost:48481/*",
+    "https://kargopilot.az/*"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "KargoPilot v6.5 Quick-Bridge",
+    "default_popup": "popup.html"
+  },
   "content_scripts": [
     {
       "matches": [
-        "*://*.taobao.com/*",
-        "*://*.1688.com/*",
         "*://*.trendyol.com/*",
-        "*://*.temu.com/*"
+        "*://*.temu.com/*",
+        "*://*.starex.az/*",
+        "*://*.camex.az/*",
+        "*://*.limak.az/*",
+        "*://*.dynamex.az/*",
+        "*://*.customs.gov.az/*"
       ],
       "js": ["content.js"],
-      "css": ["overlay.css"],
       "run_at": "document_idle"
     }
   ]

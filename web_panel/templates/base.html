@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }} · KargoPilot v4.0 İdarəetmə Mərkəzi</title>
-    <meta name="description" content="KargoPilot v4.0 Mərkəzi İdarəetmə Paneli · 4-Kargo Tarif Müqayisəsi, SmartCustoms $300 Kvota Mühafizəsi və Loyd WhatsApp AI Mühərriki.">
+    <title>{{ page_title }} · KargoPilot v6.5 İdarəetmə Mərkəzi</title>
+    <meta name="description" content="KargoPilot v6.5 Mərkəzi İdarəetmə Paneli · 4-Kargo Tarif Müqayisəsi, SmartCustoms $300 Kvota Mühafizəsi və Loyd WhatsApp AI Mühərriki.">
     <meta name="theme-color" content="#0b0f19">
     <link rel="canonical" href="https://vaskamc.github.io/kargopilot/">
     <link rel="alternate" type="text/plain" title="LLM Documentation (llms.txt)" href="/llms.txt">
@@ -19,13 +19,13 @@
     <meta property="og:site_name" content="KargoPilot">
     <meta property="og:locale" content="az_AZ">
     <meta property="og:url" content="https://vaskamc.github.io/kargopilot/">
-    <meta property="og:title" content="{{ page_title }} · KargoPilot v4.0 İdarəetmə Mərkəzi">
+    <meta property="og:title" content="{{ page_title }} · KargoPilot v6.5 İdarəetmə Mərkəzi">
     <meta property="og:description" content="Azərbaycan üçün avtonom transsərhəd kargo, 4-daşıyıcı tarif müqayisəsi və SmartCustoms $300 kvota mühafizəsi.">
     <meta property="og:image" content="/static/img/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ page_title }} · KargoPilot v4.0">
+    <meta name="twitter:title" content="{{ page_title }} · KargoPilot v6.5">
     <meta name="twitter:description" content="Azərbaycan üçün avtonom transsərhəd kargo, 4-daşıyıcı tarif müqayisəsi və SmartCustoms $300 kvota mühafizəsi.">
     <meta name="twitter:image" content="/static/img/og-image.jpg">
 
@@ -61,7 +61,7 @@
             window.dataLayer.push({
                 'gtm.start': new Date().getTime(),
                 'event': 'gtm.js',
-                'kp_version': '4.5.0',
+                'kp_version': '6.5.0',
                 'kp_surface': 'local_tunnel_panel'
             });
         })();
@@ -83,10 +83,10 @@
         {
           "@type": "SoftwareApplication",
           "@id": "https://vaskamc.github.io/kargopilot/#software",
-          "name": "KargoPilot v4.5 Central Web Panel",
+          "name": "KargoPilot v6.5 Central Web Panel",
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Linux, Windows, macOS",
-          "softwareVersion": "4.5.0",
+          "softwareVersion": "6.5.0",
           "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" }
         }
       ]
@@ -96,7 +96,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS CDN configured with KargoPilot v4.5 Obsidian / Cyber Cyan / Emerald / Amber / Crimson palette -->
+    <!-- Tailwind CSS CDN configured with KargoPilot v6.5 Obsidian / Cyber Cyan / Emerald / Amber / Crimson palette -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -167,7 +167,7 @@
         .font-mono, .num, table td, table th {
             font-variant-numeric: tabular-nums;
         }
-        /* KargoPilot v4.5 Cyber Cyan CTA Buttons */
+        /* KargoPilot v6.5 Cyber Cyan CTA Buttons */
         .bg-indigo-600 {
             background-color: #00d2ff !important;
             color: #0b0f19 !important;
@@ -243,7 +243,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="font-extrabold text-base tracking-tight text-white">KargoPilot</span>
-                        <span class="px-2 py-0.5 rounded text-[11px] font-bold font-mono bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">v4.5</span>
+                        <span class="px-2 py-0.5 rounded text-[11px] font-bold font-mono bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">v6.5</span>
                     </div>
                     <span class="text-xs font-medium text-slate-400 block truncate max-w-[170px] sm:max-w-none">Sərhədsiz Kargo və Gömrük Otopilotu</span>
                 </div>
@@ -271,6 +271,11 @@
                 <span class="text-slate-400" aria-hidden="true">·</span>
                 <span class="text-cyan-300">1 CNY = 0.2380 ₼</span>
             </div>
+
+            <a href="/user/dashboard" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 font-bold rounded-lg transition">
+                <i data-lucide="layers" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>4-Kanallı Kabinet v6.5</span>
+            </a>
 
             <a href="/showcase" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-100 font-semibold rounded-lg transition">
                 <i data-lucide="compass" class="w-3.5 h-3.5 text-cyan-400"></i>
@@ -321,6 +326,14 @@
                 <a href="/system" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold {% if active_tab == 'system' %}bg-cyan-500/20 text-cyan-400 border border-cyan-500/30{% else %}text-slate-300 hover:text-white hover:bg-white/5{% endif %}" {% if active_tab == 'system' %}aria-current="page"{% endif %}>
                     <i data-lucide="cpu" class="w-4 h-4"></i>
                     <span>Sistem &amp; Ehtiyat Nüsxə</span>
+                </a>
+                <a href="/user/dashboard" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-bold text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-500/20">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+                    <span>4-Kanallı Kabinet v6.5</span>
+                </a>
+                <a href="/self-hosted" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold text-emerald-300 hover:text-white hover:bg-white/5">
+                    <i data-lucide="server" class="w-4 h-4 text-emerald-400"></i>
+                    <span>Öz Serverim (Sovereign)</span>
                 </a>
                 <a href="/showcase" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5" {% if active_tab == 'showcase' %}aria-current="page"{% endif %}>
                     <i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i>
@@ -442,7 +455,7 @@
         const KP_MODAL_DATA = {
             terms: {
                 title: 'İstifadə Şərtləri (Terms of Service)',
-                html: '<p><strong>1. Müstəqil Platforma:</strong> KargoPilot v4.5 fərdi istifadəçilərin öz sifarişlərini və gömrük kvotasını idarə etməsi üçün yaradılmış universal sistemdir.</p><p><strong>2. Bəyannamə Məsuliyyəti:</strong> Hazırlanan PDF invoyslar və rüsum hesablamaları AR Gömrük Məcəlləsinə uyğun tərtib edilir; SmartCustoms bəyannaməsinin yekun təsdiqinə istifadəçi cavabdehdir.</p>'
+                html: '<p><strong>1. Müstəqil Platforma:</strong> KargoPilot v6.5 fərdi istifadəçilərin öz sifarişlərini və gömrük kvotasını idarə etməsi üçün yaradılmış universal sistemdir.</p><p><strong>2. Bəyannamə Məsuliyyəti:</strong> Hazırlanan PDF invoyslar və rüsum hesablamaları AR Gömrük Məcəlləsinə uyğun tərtib edilir; SmartCustoms bəyannaməsinin yekun təsdiqinə istifadəçi cavabdehdir.</p>'
             },
             privacy: {
                 title: 'Məxfilik Siyasəti (Privacy Policy)',
