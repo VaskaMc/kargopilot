@@ -15,7 +15,15 @@
   
   <style>
     body { font-family: 'Inter', sans-serif; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .font-mono, .tabular-nums { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+    .kp-glass-card {
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 40px -15px rgba(2, 6, 23, 0.7);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
   </style>
 </head>
 <body class="min-h-full flex items-center justify-center p-4 bg-[#0b0f19] text-slate-100 relative overflow-hidden">
@@ -33,7 +41,7 @@
         <div class="text-left">
           <div class="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
             <span>KargoPilot</span>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">v4.5</span>
+            <span class="text-[10px] font-mono tabular-nums px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">v6.0</span>
           </div>
           <div class="text-xs text-slate-400">Bulud Otopilot Qeydiyyatı</div>
         </div>
@@ -41,7 +49,7 @@
     </div>
 
     <!-- Register Card -->
-    <div class="bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+    <div class="kp-glass-card bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
       
       <!-- Card Title -->
       <div class="mb-5">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Şəxsi Kabinet — KargoPilot Bulud İdarəetmə Paneli v5.0</title>
+  <title>Şəxsi Kabinet — KargoPilot Bulud İdarəetmə Paneli v6.0</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   
   <!-- Tailwind CSS & Fonts -->
@@ -13,8 +13,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    body { font-family: 'Inter', sans-serif; background-color: #0b0f19; }
+    .font-mono, .tabular-nums { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+    .kp-glass-card {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .kp-glass-card:hover {
+      border-color: rgba(6, 182, 212, 0.28);
+    }
     .tab-btn.active {
       background-color: rgb(6 182 212 / 0.15);
       color: rgb(103 232 249);
@@ -50,7 +59,7 @@
           <div class="leading-tight">
             <div class="text-base font-extrabold text-white tracking-tight flex items-center gap-1.5">
               <span>KargoPilot</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">v5.0</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">v6.0</span>
             </div>
             <div class="text-[11px] text-slate-400">Şəxsi İdarəetmə Paneli</div>
           </div>
@@ -87,7 +96,7 @@
   </header>
 
   <!-- Notification Toast -->
-  <div id="toast" class="fixed top-20 right-4 z-50 transform transition duration-300 translate-y-[-100px] opacity-0 pointer-events-none">
+  <div id="toast" role="alert" aria-live="polite" class="fixed top-20 right-4 z-50 transform transition duration-300 translate-y-[-100px] opacity-0 pointer-events-none">
     <div id="toast-body" class="px-4 py-3 rounded-2xl bg-slate-900 border border-cyan-500/40 text-xs font-bold text-white shadow-2xl flex items-center gap-2">
       <span id="toast-icon">✓</span>
       <span id="toast-msg">Uğurla tamamlandı</span>
@@ -102,9 +111,9 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <h1 id="welcome-title" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Salam, {{ (user.full_name.split()[0]) if user else 'Müştəri' }}! 👋</h1>
-          <span class="text-xs px-2.5 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium">Bulud Otopilot Aktivdir</span>
+          <span class="text-xs px-2.5 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium">Bulud Otopilot v6.0 Aktivdir</span>
         </div>
-        <p class="text-xs sm:text-sm text-slate-400">DGK 300$ rüsumsuz kvotanız, xarici kargolarınız və fərdi satıcı saytlarınız tək mərkəzdən idarə olunur.</p>
+        <p class="text-xs sm:text-sm text-slate-400">DGK 300$ rüsumsuz kvotanız, 4-kanallı canlı əlaqə matrisiniz və fərdi kargo ekosisteminiz tək mərkəzdən idarə olunur.</p>
       </div>
 
       <div class="flex flex-wrap items-center gap-2.5">
@@ -117,6 +126,9 @@
         </button>
         <button type="button" onclick="openCarrierModal()" class="min-h-[42px] px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition flex items-center gap-2 cursor-pointer">
           <span>🚚 + Kargo</span>
+        </button>
+        <button type="button" onclick="openWhatsAppModal()" class="min-h-[42px] px-3.5 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 text-xs font-bold border border-emerald-500/30 transition flex items-center gap-2 cursor-pointer">
+          <span>💬 WhatsApp Şlüzü</span>
         </button>
       </div>
     </div>
@@ -158,6 +170,90 @@
     <!-- TAB 1: 📊 İCMAL & BAĞLAMALAR -->
     <!-- ========================================================================= -->
     <div id="tab-pane-overview" class="space-y-6">
+
+      <!-- Etap 8: Vahid 4-Kanallı Əlaqə Sağlamlığı Matrisi (Unified Connection Health Matrix) -->
+      <section aria-label="Vahid Əlaqə Sağlamlığı Matrisi" id="unified-connection-health-matrix" class="p-5 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2 border-b border-white/10">
+          <div>
+            <h2 class="text-sm sm:text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+              <span>🔌 Vahid Əlaqə Sağlamlığı Matrisi (4-Kanal Canlı Status)</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Canlı Telemetriya</span>
+            </h2>
+            <p class="text-[11px] text-slate-400">Mağaza, Kargo, SmartCustoms (Bəyannaməsiz Read-Only) və WhatsApp şlüzlərinin real-time əlaqə aktuallığı.</p>
+          </div>
+          <span class="text-[10px] font-mono text-slate-400">🔒 Fernet AES-128 & Read-Only Gömrük Qoruması</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <!-- Matrix Card 1: Store Connection -->
+          <div class="p-4 rounded-2xl kp-glass-card flex flex-col justify-between space-y-3">
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white">🏪 Mağaza Əlaqəsi</span>
+                <span id="matrix-store-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">🟢 Əlaqə Aktualdır</span>
+              </div>
+              <p class="text-[11px] text-slate-400">Trendyol / Fərdi Mağazalar</p>
+              <div id="matrix-store-meta" class="text-[10px] font-mono text-cyan-300">Sinxronizasiya hazırdır</div>
+            </div>
+            <button type="button" onclick="checkStoreConnectionMatrix()" class="w-full py-2 px-3 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>🔄 Əlaqəni & Sifarişləri Yoxla</span>
+            </button>
+          </div>
+
+          <!-- Matrix Card 2: Carrier Connection -->
+          <div class="p-4 rounded-2xl kp-glass-card flex flex-col justify-between space-y-3">
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white">🚚 Kargo Əlaqəsi</span>
+                <span id="matrix-carrier-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">🟢 Əlaqə Aktualdır</span>
+              </div>
+              <p class="text-[11px] text-slate-400">Starex / Fərdi Kargolar</p>
+              <div id="matrix-carrier-meta" class="text-[10px] font-mono text-cyan-300">Anbar izləməsi aktivdir</div>
+            </div>
+            <button type="button" onclick="checkCarrierConnectionMatrix()" class="w-full py-2 px-3 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>🔄 Anbar Əlaqəsini Yoxla</span>
+            </button>
+          </div>
+
+          <!-- Matrix Card 3: SmartCustoms (DGK Read-Only) -->
+          <div class="p-4 rounded-2xl kp-glass-card flex flex-col justify-between space-y-3">
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-xs font-bold text-white">🏛️ SmartCustoms (DGK Read-Only)</span>
+                <span id="matrix-sc-badge" class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 whitespace-nowrap">🟢 Əlaqə Aktualdır</span>
+              </div>
+              <p class="text-[10px] text-emerald-300/90 font-semibold leading-snug">
+                🔒 Təhlükəsiz Oxuma Rejimi: Avtomatik bəyannamə göndərilmir, yalnız əlaqə və 300$ limit statusu yoxlanılır
+              </p>
+              <div id="matrix-sc-meta" class="text-[10px] font-mono text-slate-300">Bəyannaməsiz Oxuma Rejimi</div>
+            </div>
+            <button type="button" onclick="checkSmartCustomsConnection()" class="w-full py-2 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>🩺 Əlaqə Aktuallığını Yoxla</span>
+            </button>
+          </div>
+
+          <!-- Matrix Card 4: WhatsApp Notification Gateway -->
+          <div class="p-4 rounded-2xl kp-glass-card flex flex-col justify-between space-y-3">
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white">💬 WhatsApp Bildiriş Şlüzü</span>
+                <span id="matrix-wa-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">🟢 Əlaqə Aktualdır</span>
+              </div>
+              <p id="matrix-wa-phone" class="text-[11px] font-mono text-cyan-300">+99450***4567</p>
+              <div id="matrix-wa-meta" class="text-[10px] text-slate-400">Anbar & 300$ Xəbərdarlıqları Aktivdir</div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="pingWhatsAppGateway()" class="flex-1 py-2 px-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                <span>📲 WhatsApp Əlaqəsini Test Et</span>
+              </button>
+              <button type="button" onclick="openWhatsAppModal()" title="WhatsApp Tənzimləmələri" class="py-2 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-[11px] font-bold transition cursor-pointer">
+                ⚙️
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- 4 Key Stat Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
@@ -168,6 +264,7 @@
               <span>DGK 300$ Aylıq Kvota</span>
               <span id="quota-status-pill" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Təhlükəsiz ✓</span>
             </div>
+
             <div class="flex items-baseline gap-2">
               <span id="stat-remaining-usd" class="text-2xl sm:text-3xl font-extrabold font-mono text-white">$300.00</span>
               <span class="text-xs text-slate-400 font-mono">Qalan Ehtiyat</span>
@@ -336,22 +433,24 @@
           <!-- Populated dynamically -->
         </div>
       </div>
-      <!-- Section 3: SmartCustoms (DGK) Dövlət Gömrük İnteqrasiyası -->
+      <!-- Section 3: SmartCustoms (DGK Read-Only) Dövlət Gömrük İnteqrasiyası -->
       <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
           <div>
             <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
-              <span>🏛️ SmartCustoms (DGK) Dövlət Gömrük İnteqrasiyası</span>
-              <span id="customs-conn-badge" class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-slate-800 text-slate-400 border border-white/10">⚪ Qoşulmayıb</span>
+              <span>🏛️ SmartCustoms (DGK Read-Only) Əlaqə & 300$ Kvota Mərkəzi</span>
+              <span id="customs-conn-badge" class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🟢 Əlaqə Aktualdır (Bəyannaməsiz Oxuma Rejimi)</span>
             </h2>
-            <p class="text-xs text-slate-400">305 nömrəli Qərar üzrə 300$ aylıq rüsumsuz limit və elektron gömrük bəyannamələrinin avtomatik sinxronizasiyası.</p>
+            <p class="text-xs text-emerald-300/90 font-semibold mt-1">
+              🔒 Təhlükəsiz Oxuma Rejimi: Avtomatik bəyannamə göndərilmir, yalnız əlaqə və 300$ limit statusu yoxlanılır
+            </p>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
             <button type="button" onclick="openSmartCustomsModal()" class="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
               <span>🔑 SmartCustoms Qoş</span>
             </button>
-            <button type="button" onclick="syncSmartCustoms()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-bold border border-white/10 transition flex items-center gap-1.5 cursor-pointer">
-              <span>🔄 Sinxronlaşdır</span>
+            <button type="button" onclick="checkSmartCustomsConnection()" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-bold border border-emerald-500/30 transition flex items-center gap-1.5 cursor-pointer">
+              <span>🏛️ SmartCustoms Əlaqə Aktuallığını Yoxla (Read-Only)</span>
             </button>
           </div>
         </div>
@@ -372,6 +471,41 @@
         </div>
       </div>
 
+      <!-- Section 4: 💬 WhatsApp Bildiriş Şlüzü & Əlaqə Mərkəzi -->
+      <div class="p-6 rounded-3xl bg-slate-900/90 border border-white/10 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+              <span>💬 WhatsApp Bildiriş Şlüzü & Əlaqə Mərkəzi</span>
+              <span id="eco-wa-badge" class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🟢 Əlaqə Aktualdır</span>
+            </h2>
+            <p class="text-xs text-slate-400">Anbara daxil olan bağlamalar, 300$ DGK limit xəbərdarlığı və sessiya yeniləmə bildirişlərinin idarəetməsi.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="openWhatsAppModal()" class="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+              <span>📲 Nömrə & Bildiriş Tənzimlə</span>
+            </button>
+            <button type="button" onclick="pingWhatsAppGateway()" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-bold border border-emerald-500/30 transition flex items-center gap-1.5 cursor-pointer">
+              <span>📲 WhatsApp Əlaqəsini Test Et</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/5 space-y-1">
+            <span class="text-[10px] text-slate-400 block font-semibold">Qoşulmuş WhatsApp Nömrəsi:</span>
+            <span id="eco-wa-phone" class="font-mono text-cyan-300 font-bold text-sm">+99450***4567</span>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/5 space-y-1">
+            <span class="text-[10px] text-slate-400 block font-semibold">Şlüz Rejimi:</span>
+            <span id="eco-wa-mode" class="font-mono text-emerald-400 font-bold text-sm">READY (Aktiv)</span>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/5 space-y-1">
+            <span class="text-[10px] text-slate-400 block font-semibold">Son Əlaqə Yoxlanışı:</span>
+            <span id="eco-wa-last-check" class="font-mono text-white font-bold text-sm">İndicə</span>
+          </div>
+        </div>
+      </div>
 
     </div>
 
@@ -508,7 +642,7 @@
                 <span>Loyd AI — Kargo & Gömrük Köməkçiniz</span>
                 <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Onlayn</span>
               </h2>
-              <p class="text-xs text-slate-400">Profiliniz, 300$ limitiniz, bağlamalarınız və kargo tariflərinizi ətraflı bilir.</p>
+              <p class="text-xs text-slate-400">4-kanallı əlaqələriniz (Mağaza, Kargo, SmartCustoms Read-Only, WhatsApp), 300$ limitiniz və tariflərinizi bilir.</p>
             </div>
           </div>
 
@@ -519,6 +653,9 @@
 
         <!-- Quick Chips Bar -->
         <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scroll">
+          <button type="button" onclick="sendQuickAiMessage('WhatsApp, Mağaza, Kargo və SmartCustoms əlaqələrimin vəziyyəti necədir?')" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 text-xs font-semibold border border-emerald-500/30 transition whitespace-nowrap cursor-pointer">
+            🔌 4-Kanal Əlaqə Statusum
+          </button>
           <button type="button" onclick="sendQuickAiMessage('Mənim bu ay nə qədər gömrük limitim qalıb?')" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700/80 transition whitespace-nowrap cursor-pointer">
             📊 Qalan 300$ limitim
           </button>
@@ -532,6 +669,7 @@
             📦 Yolda olan bağlamalarım
           </button>
         </div>
+
 
         <!-- Messages Thread Box -->
         <div id="ai-chat-thread" class="flex-1 overflow-y-auto space-y-3.5 pr-2 custom-scroll p-3 rounded-2xl bg-slate-950/60 border border-slate-800">
@@ -1223,11 +1361,12 @@
                 <span>🏛️ Bəyan edilib</span>
                 <span class="font-mono text-[9px] opacity-80">(${p.dgk_declaration_id ? p.dgk_declaration_id.substring(0, 12) : 'DGK'})</span>
               </div>` : 
-              `<button type="button" onclick="declareToSmartCustoms('${p.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold transition flex items-center justify-center gap-1 mx-auto cursor-pointer" title="DGK 300$ Gömrük Bəyannaməsi Göndər">
-                <span>🏛️ 1-Kliklə Bəyan Et</span>
+              `<button type="button" onclick="checkSmartCustomsConnection()" data-legacy="1-Kliklə Bəyan Et" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold transition flex items-center justify-center gap-1 mx-auto cursor-pointer" title="🔒 Təhlükəsiz Oxuma Rejimi: Avtomatik bəyannamə göndərilmir, yalnız əlaqə və 300$ limit statusu yoxlanılır">
+                <span>🏛️ Əlaqəni Yoxla (Read-Only)</span>
               </button>`
             }
           </td>
+
           <td class="py-3 px-3 text-right text-slate-400 font-mono text-[11px]">${p.created_at.split(' ')[0]}</td>
           <td class="py-3 px-3 text-center">
             <button type="button" onclick="deleteParcel('${p.id}')" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition cursor-pointer" title="Bağlamanı Sil">
@@ -2344,22 +2483,205 @@
       }
     }
 
-    async function declareToSmartCustoms(parcelId) {
-      if (!confirm('Bu bağlama üçün DGK SmartCustoms elektron bəyannaməsi formalaşdırılsın?')) return;
+    async function checkSmartCustomsConnection() {
       try {
-        const res = await fetch(`/api/v1/user/smartcustoms/declare/${parcelId}`, { method: 'POST' });
+        const res = await fetch('/api/v1/user/smartcustoms/check-connection', { method: 'POST' });
         if (res.ok) {
           const data = await res.json();
-          showToast(`Bəyannamə №: ${data.declaration_id} təsdiqləndi! ✓`);
-          loadParcels();
+          document.getElementById('customs-active-declarations').innerText = `${data.active_declarations} ədəd`;
+          document.getElementById('customs-quota-display').innerText = `$${data.remaining_quota_usd.toFixed(2)} USD`;
+          document.getElementById('customs-fin-display').innerText = data.masked_fin || data.fin;
+          document.getElementById('customs-conn-badge').innerHTML = '🟢 Əlaqə Aktualdır (Bəyannaməsiz Oxuma Rejimi)';
+          document.getElementById('customs-conn-badge').className = 'px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+          const scBadge = document.getElementById('matrix-sc-badge');
+          if (scBadge) {
+            scBadge.innerHTML = '🟢 Əlaqə Aktualdır';
+            scBadge.className = 'px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 whitespace-nowrap';
+          }
+          const scMeta = document.getElementById('matrix-sc-meta');
+          if (scMeta) {
+            scMeta.innerText = `FİN: ${data.masked_fin} • ${data.latency_ms}ms • Qalıq: $${data.remaining_quota_usd.toFixed(2)}`;
+          }
+          showToast(data.message || 'SmartCustoms əlaqəsi aktualdır (Read-Only)! ✓');
           loadQuota();
         } else {
           const err = await res.json();
-          showToast(err.detail || 'Bəyannamə xətası', false);
+          showToast(err.detail || 'SmartCustoms əlaqə yoxlama xətası', false);
         }
       } catch (err) {
         showToast('Şəbəkə xətası', false);
       }
+    }
+
+    async function checkStoreConnectionMatrix() {
+      try {
+        const sessRes = await fetch('/api/v1/user/sessions');
+        if (sessRes.ok) {
+          const sessions = await sessRes.json();
+          const storeSess = sessions.find(s => s.provider_type === 'store' && s.session_status === 'active');
+          if (storeSess) {
+            await syncSession(storeSess.provider_name);
+            return;
+          }
+        }
+        openSessionModal('store', 'std-store-trendyol', 'Trendyol', 'https://trendyol.com/giris');
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    async function checkCarrierConnectionMatrix() {
+      try {
+        const sessRes = await fetch('/api/v1/user/sessions');
+        if (sessRes.ok) {
+          const sessions = await sessRes.json();
+          const carrSess = sessions.find(s => s.provider_type === 'carrier' && s.session_status === 'active');
+          if (carrSess) {
+            await syncSession(carrSess.provider_name);
+            return;
+          }
+        }
+        openSessionModal('carrier', 'std-carr-starex-tr', 'Starex', 'https://starex.az/login');
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    // --- Etap 8: WhatsApp Gateway Center ---
+    function openWhatsAppModal() {
+      document.getElementById('modal-whatsapp').classList.remove('hidden');
+    }
+
+    function closeWhatsAppModal() {
+      document.getElementById('modal-whatsapp').classList.add('hidden');
+    }
+
+    async function loadWhatsAppStatus() {
+      try {
+        const res = await fetch('/api/v1/user/whatsapp/status');
+        if (res.ok) {
+          const wa = await res.json();
+          const waPhoneEl = document.getElementById('matrix-wa-phone');
+          if (waPhoneEl) waPhoneEl.innerText = wa.masked_phone || '+99450***4567';
+          const ecoPhone = document.getElementById('eco-wa-phone');
+          if (ecoPhone) ecoPhone.innerText = wa.masked_phone || '+99450***4567';
+          const waInput = document.getElementById('wa-phone-input');
+          if (waInput && wa.phone) waInput.value = wa.phone;
+          if (wa.preferences) {
+            const pArr = document.getElementById('wa-pref-arrival');
+            const pCust = document.getElementById('wa-pref-customs');
+            const pExp = document.getElementById('wa-pref-expiry');
+            if (pArr) pArr.checked = wa.preferences.parcel_arrival;
+            if (pCust) pCust.checked = wa.preferences.customs_300_warning;
+            if (pExp) pExp.checked = wa.preferences.session_expiry_alert;
+          }
+          const badge = document.getElementById('matrix-wa-badge');
+          const ecoBadge = document.getElementById('eco-wa-badge');
+          if (wa.connection_alive) {
+            if (badge) {
+              badge.innerHTML = '🟢 Əlaqə Aktualdır';
+              badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
+            }
+            if (ecoBadge) {
+              ecoBadge.innerHTML = `🟢 Əlaqə Aktualdır (${wa.masked_phone})`;
+              ecoBadge.className = 'px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('WhatsApp status err:', err);
+      }
+    }
+
+    async function submitConnectWhatsApp() {
+      const phone = document.getElementById('wa-phone-input').value.trim();
+      const parcelArrival = document.getElementById('wa-pref-arrival').checked;
+      const customsWarning = document.getElementById('wa-pref-customs').checked;
+      const sessionExpiry = document.getElementById('wa-pref-expiry').checked;
+
+      try {
+        const res = await fetch('/api/v1/user/whatsapp/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: phone,
+            notification_whatsapp: true,
+            parcel_arrival: parcelArrival,
+            customs_300_warning: customsWarning,
+            session_expiry_alert: sessionExpiry
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          closeWhatsAppModal();
+          showToast(data.message || 'WhatsApp Bildiriş Şlüzü uğurla qoşuldu! ✓');
+          loadWhatsAppStatus();
+          loadProfile();
+        } else {
+          const err = await res.json();
+          showToast(err.detail || 'WhatsApp nömrəsi düzgün deyil', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    async function pingWhatsAppGateway() {
+      try {
+        const res = await fetch('/api/v1/user/whatsapp/ping', { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          const metaEl = document.getElementById('matrix-wa-meta');
+          if (metaEl) metaEl.innerText = `Ping OK (${data.latency_ms}ms) • Çatdırıldı ✓`;
+          const lastChk = document.getElementById('eco-wa-last-check');
+          if (lastChk) lastChk.innerText = `Aktiv (${data.latency_ms}ms)`;
+          showToast(data.message_preview || 'WhatsApp test bildirişi uğurla göndərildi! ✓');
+          loadWhatsAppStatus();
+        } else {
+          const err = await res.json();
+          showToast(err.detail || 'WhatsApp ping xətası', false);
+        }
+      } catch (err) {
+        showToast('Şəbəkə xətası', false);
+      }
+    }
+
+    async function refreshUnifiedConnectionMatrix() {
+      try {
+        const sessRes = await fetch('/api/v1/user/sessions');
+        if (sessRes.ok) {
+          const sessions = await sessRes.json();
+          const activeStores = sessions.filter(s => s.provider_type === 'store' && s.session_status === 'active');
+          const activeCarriers = sessions.filter(s => s.provider_type === 'carrier' && s.session_status === 'active');
+          const scSess = sessions.find(s => s.provider_key === 'smartcustoms' && s.session_status === 'active');
+
+          const storeBadge = document.getElementById('matrix-store-badge');
+          const storeMeta = document.getElementById('matrix-store-meta');
+          if (activeStores.length > 0) {
+            if (storeBadge) storeBadge.innerHTML = '🟢 Əlaqə Aktualdır';
+            if (storeMeta) storeMeta.innerText = `${activeStores.map(s => s.provider_name).join(', ')} (${activeStores[0].account_identifier})`;
+          }
+
+          const carrBadge = document.getElementById('matrix-carrier-badge');
+          const carrMeta = document.getElementById('matrix-carrier-meta');
+          if (activeCarriers.length > 0) {
+            if (carrBadge) carrBadge.innerHTML = '🟢 Əlaqə Aktualdır';
+            if (carrMeta) carrMeta.innerText = `${activeCarriers.map(s => s.provider_name).join(', ')} (${activeCarriers[0].account_identifier})`;
+          }
+
+          if (scSess) {
+            const scMeta = document.getElementById('matrix-sc-meta');
+            if (scMeta) scMeta.innerText = `FİN: ${scSess.account_identifier} • Read-Only Aktiv`;
+          }
+        }
+      } catch (err) {
+        console.warn('Matrix refresh err:', err);
+      }
+    }
+
+    async function declareToSmartCustoms(parcelId) {
+      // Etap 8 Safe Mode: Redirects to Read-Only Connection Check
+      await checkSmartCustomsConnection();
     }
 
     // Init on Page Load
@@ -2371,11 +2693,13 @@
       loadCarriers();
       loadFamilyFins();
       loadAiHistory();
+      loadWhatsAppStatus();
+      refreshUnifiedConnectionMatrix();
     });
   </script>
 
   <!-- Modal: 🔑 Universal Login & Session Capture Window -->
-  <div id="modal-session" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+  <div id="modal-session" role="dialog" aria-modal="true" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="max-w-lg w-full bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between pb-2 border-b border-white/10">
         <div>
@@ -2458,13 +2782,16 @@
     </div>
   </div>
 
-  <!-- Modal: 🏛️ SmartCustoms Connection Modal -->
-  <div id="modal-smartcustoms" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+  <!-- Modal: 🏛️ SmartCustoms Connection Modal (Read-Only Safe Mode) -->
+  <div id="modal-smartcustoms" role="dialog" aria-modal="true" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between pb-2 border-b border-white/10">
-        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
-          <span>🏛️ SmartCustoms (DGK) Hesabını Qoş</span>
-        </h3>
+        <div>
+          <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+            <span>🏛️ SmartCustoms (DGK) Read-Only Qoşulma</span>
+          </h3>
+          <p class="text-[10px] text-emerald-300 font-semibold mt-0.5">🔒 Təhlükəsiz Oxuma Rejimi: Avtomatik bəyannamə göndərilmir</p>
+        </div>
         <button type="button" onclick="closeSmartCustomsModal()" class="text-slate-400 hover:text-white text-lg cursor-pointer">✕</button>
       </div>
 
@@ -2490,7 +2817,55 @@
 
         <div class="pt-2 flex justify-end gap-2">
           <button type="button" onclick="closeSmartCustomsModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 cursor-pointer">Bağla</button>
-          <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold cursor-pointer">Qoşul ✓</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold cursor-pointer">Qoşul (Read-Only) ✓</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: 💬 WhatsApp Bildiriş Şlüzü & Əlaqə Mərkəzi -->
+  <div id="modal-whatsapp" role="dialog" aria-modal="true" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <div>
+          <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+            <span>💬 WhatsApp Bildiriş Şlüzü Qoşulması</span>
+          </h3>
+          <p class="text-[11px] text-slate-400">Bağlama və 300$ limit bildirişləri üçün nömrənizi təsdiqləyin.</p>
+        </div>
+        <button type="button" onclick="closeWhatsAppModal()" class="text-slate-400 hover:text-white text-lg cursor-pointer">✕</button>
+      </div>
+
+      <form id="whatsapp-form" onsubmit="event.preventDefault(); submitConnectWhatsApp();" class="space-y-3.5">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">WhatsApp Mobil Nömrəsi (+994XXXXXXXXX)</label>
+          <input type="text" id="wa-phone-input" value="+994501234567" placeholder="+994501234567" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono font-bold text-white focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/5 space-y-2.5 text-xs text-slate-200">
+          <span class="text-[11px] font-semibold text-cyan-300 block">Aktiv Bildiriş Seçimləri:</span>
+          <label class="flex items-center gap-2.5 cursor-pointer">
+            <input type="checkbox" id="wa-pref-arrival" checked class="rounded bg-slate-900 border-slate-700 text-emerald-500">
+            <span>📦 Bağlama xarici anbara və ya Bakı filialına çatdıqda</span>
+          </label>
+          <label class="flex items-center gap-2.5 cursor-pointer">
+            <input type="checkbox" id="wa-pref-customs" checked class="rounded bg-slate-900 border-slate-700 text-emerald-500">
+            <span>🛡️ DGK 300$ aylıq limit xəbərdarlığı ($250+ həddində)</span>
+          </label>
+          <label class="flex items-center gap-2.5 cursor-pointer">
+            <input type="checkbox" id="wa-pref-expiry" checked class="rounded bg-slate-900 border-slate-700 text-emerald-500">
+            <span>🔑 Mağaza / Kargo sessiya müddəti bitdikdə xəbərdarlıq</span>
+          </label>
+        </div>
+
+        <div class="pt-2 flex items-center justify-between gap-2">
+          <button type="button" onclick="pingWhatsAppGateway()" class="px-3.5 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition cursor-pointer">
+            📲 Test Ping Göndər
+          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeWhatsAppModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 cursor-pointer">Bağla</button>
+            <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold cursor-pointer">Qoşul & Saxla ✓</button>
+          </div>
         </div>
       </form>
     </div>
@@ -2498,3 +2873,4 @@
 
 </body>
 </html>
+

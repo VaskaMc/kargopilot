@@ -444,6 +444,16 @@ def _ensure_etap7_tables(conn: sqlite3.Connection) -> None:
     if "auth_method" not in carr_cols:
         cur.execute("ALTER TABLE user_carriers ADD COLUMN auth_method VARCHAR(32) DEFAULT 'credentials_otp'")
 
+    # 5. Etap 8: Add WhatsApp notification preferences and liveness timestamp to users
+    user_cols_e8 = [c[1] for c in cur.execute("PRAGMA table_info(users)").fetchall()]
+    if "whatsapp_preferences_json" not in user_cols_e8:
+        cur.execute(
+            """ALTER TABLE users ADD COLUMN whatsapp_preferences_json TEXT DEFAULT '{"parcel_arrival": true, "customs_300_warning": true, "session_expiry_alert": true}'"""
+        )
+    if "whatsapp_last_checked_at" not in user_cols_e8:
+        cur.execute("ALTER TABLE users ADD COLUMN whatsapp_last_checked_at DATETIME")
+
+
 
 def _ensure_platform_sessions(conn: sqlite3.Connection) -> None:
     cur = conn.cursor()

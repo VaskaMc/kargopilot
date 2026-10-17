@@ -204,7 +204,7 @@ INSERT INTO external_sessions (
 )
 """, (f"demo-sess-strx-{uuid.uuid4().hex[:6]}", user_id, now_str, now_str, now_str))
 
-# Seed SmartCustoms Session
+# Seed SmartCustoms Session (Read-Only Safe Mode)
 conn.execute("""
 INSERT INTO external_sessions (
     id, user_id, provider_type, provider_key, provider_name, login_url,
@@ -213,19 +213,42 @@ INSERT INTO external_sessions (
 ) VALUES (
     ?, ?, 'smartcustoms', 'smartcustoms', 'Dövlət Gömrük Komitəsi (SmartCustoms)', 'https://e.customs.gov.az',
     '7KP2026', 'sima', 'ENCRYPTED_SMARTCUSTOMS_SIMA_TOKEN',
-    'active', ?, datetime('now', '+30 days'), '{"active_declarations": 1}', ?, ?
+    'active', ?, datetime('now', '+30 days'), '{"active_declarations": 1, "read_only_safe_mode": true, "connection_alive": true}', ?, ?
 )
 """, (f"demo-sess-sc-{uuid.uuid4().hex[:6]}", user_id, now_str, now_str, now_str))
+
+# Seed WhatsApp Notification Gateway Session (Etap 8)
+conn.execute("""
+INSERT INTO external_sessions (
+    id, user_id, provider_type, provider_key, provider_name, login_url,
+    account_identifier, auth_method, session_payload_encrypted, session_status,
+    last_synced_at, expires_at, sync_summary_json, created_at, updated_at
+) VALUES (
+    ?, ?, 'whatsapp', 'whatsapp_gateway', 'WhatsApp Bildiriş Şlüzü', 'https://web.whatsapp.com',
+    '+994501234567', 'whatsapp_gateway', 'ENCRYPTED_WHATSAPP_GATEWAY_TOKEN',
+    'active', ?, datetime('now', '+30 days'), '{"parcel_arrival": true, "customs_300_warning": true, "session_expiry_alert": true, "gateway_reachable": true}', ?, ?
+)
+""", (f"demo-sess-wa-{uuid.uuid4().hex[:6]}", user_id, now_str, now_str, now_str))
+
+try:
+    conn.execute("""
+    UPDATE users SET
+        whatsapp_preferences_json = '{"parcel_arrival": true, "customs_300_warning": true, "session_expiry_alert": true}',
+        whatsapp_last_checked_at = ?
+    WHERE id = ? OR LOWER(email) = ?
+    """, (now_str, user_id, email.lower()))
+except Exception as e:
+    print(f"Warning updating whatsapp columns: {e}")
 
 conn.commit()
 conn.close()
 print("[OK] Demo Account seeded successfully:")
 print(f"  Email: {email}")
-print(f"  Password: KargoPilot2026!")
+print(f"  Password: KargoPilot2026! / KargoPilotDemo2026!")
 print(f"  FIN: {fin}")
 print(f"  Parcels: 2 ($85.00 + $175.00 = $260.00 USD, Warning status, 1 Declared)")
 print("  Custom Store: Morhipo VIP (TR)")
 print("  Custom Carrier: KargoPilot Super Ekspres TR ($2.75/kq)")
 print("  Family FIN: 7AY2026 - Aygun Mecidli ($260 qaliq)")
 print("  AI Copilot: Welcome conversation history primed.")
-print("  Etap 7 Sessions: Trendyol (store: active), Starex (carrier: active), SmartCustoms (active).")
+print("  Etap 8 4-Channel Sessions: Trendyol (store: active), Starex (carrier: active), SmartCustoms (Read-Only active), WhatsApp (+994501234567 active).")
