@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Şəxsi Kabinet — KargoPilot Bulud İdarəetmə Paneli v6.0</title>
+  <title>Şəxsi Kabinet — KargoPilot Bulud İdarəetmə Paneli v6.5</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   
   <!-- Tailwind CSS & Fonts -->
@@ -59,7 +59,7 @@
           <div class="leading-tight">
             <div class="text-base font-extrabold text-white tracking-tight flex items-center gap-1.5">
               <span>KargoPilot</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">v6.0</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold">v6.5</span>
             </div>
             <div class="text-[11px] text-slate-400">Şəxsi İdarəetmə Paneli</div>
           </div>
@@ -111,7 +111,7 @@
       <div>
         <div class="flex items-center gap-2 mb-1">
           <h1 id="welcome-title" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Salam, {{ (user.full_name.split()[0]) if user else 'Müştəri' }}! 👋</h1>
-          <span class="text-xs px-2.5 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium">Bulud Otopilot v6.0 Aktivdir</span>
+          <span class="text-xs px-2.5 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium">Bulud Otopilot v6.5 Aktivdir</span>
         </div>
         <p class="text-xs sm:text-sm text-slate-400">DGK 300$ rüsumsuz kvotanız, 4-kanallı canlı əlaqə matrisiniz və fərdi kargo ekosisteminiz tək mərkəzdən idarə olunur.</p>
       </div>
@@ -857,7 +857,7 @@
             <div class="w-10 h-10 rounded-2xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-lg mb-2">
               📦
             </div>
-            <h3 class="text-sm font-extrabold text-white">Məlumatların Tam İxracı (Export v5.0)</h3>
+            <h3 class="text-sm font-extrabold text-white">Məlumatların Tam İxracı (Export v6.5)</h3>
             <p class="text-xs text-slate-400">Bütün profiliniz, bağlamalarınız, satıcı saytlarınız, kargolarınız və ailə FİN şəbəkəniz standart JSON faylında yüklənir.</p>
           </div>
           <button type="button" onclick="exportDataJson()" class="w-full py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-bold transition cursor-pointer">
@@ -871,7 +871,7 @@
             <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-lg mb-2">
               📥
             </div>
-            <h3 class="text-sm font-extrabold text-white">Məlumatların İdxalı (Import v5.0)</h3>
+            <h3 class="text-sm font-extrabold text-white">Məlumatların İdxalı (Import v6.5)</h3>
             <p class="text-xs text-slate-400">İxrac edilmiş KargoPilot JSON faylını yükləyərək bütün tarixçənizi və ekosisteminizi bərpa edin.</p>
           </div>
           <div>

@@ -56,7 +56,7 @@ HTML_ROUTE_ALIASES = {
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup and shutdown lifecycle manager."""
-    logger.info("Initializing KargoPilot v4.0 Central Web Management Panel...")
+    logger.info("Initializing KargoPilot v6.5 Central Web Management Panel...")
     init_db()
     try:
         from app.carriers.forwarding_hub import ForwardingHub
@@ -75,8 +75,8 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     """Creates and configures the FastAPI instance."""
     app = FastAPI(
-        title="KargoPilot v4.5 Enterprise Multi-Tenant Logistics & Customs AI",
-        version="4.5.0",
+        title="KargoPilot v6.5 Enterprise Multi-Tenant Logistics & Customs AI",
+        version="6.5.0",
         docs_url="/docs",
         redoc_url=None,
         lifespan=lifespan,
@@ -135,6 +135,10 @@ def create_app() -> FastAPI:
     if img_dir.exists():
         app.mount("/assets", StaticFiles(directory=str(img_dir)), name="assets")
         app.mount("/kargopilot/assets", StaticFiles(directory=str(img_dir)), name="kp_assets")
+
+    ext_dir = BASE_DIR.parent / "extension_v4"
+    if ext_dir.exists():
+        app.mount("/extension_v4", StaticFiles(directory=str(ext_dir), html=True), name="extension_v4")
 
     # Include Routers
     app.include_router(dashboard.router)
@@ -265,7 +269,7 @@ def create_app() -> FastAPI:
         )
         return {
             "status": "healthy",
-            "version": "4.5.0",
+            "version": "6.5.0",
             "edition": edition,
             "service": "kargopilot-core",
             "dual_hosting_ready": True,
@@ -299,7 +303,7 @@ def create_app() -> FastAPI:
 
         return JSONResponse(
             content={
-                "project": "KargoPilot v4.5 Enterprise",
+                "project": "KargoPilot v6.5 Enterprise",
                 "export_version": "1.0",
                 "exported_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 "edition": os.environ.get("KARGOPILOT_EDITION", "sovereign"),

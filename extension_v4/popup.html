@@ -1,134 +1,274 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="az" class="bg-[#0b0f19]">
 <head>
   <meta charset="UTF-8">
-  <title>PCS Cockpit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KargoPilot v6.5 Quick-Bridge</title>
   <style>
+    :root {
+      --bg-obsidian: #0b0f19;
+      --bg-card: rgba(15, 23, 42, 0.85);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #00d2ff;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      width: 320px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0f172a;
-      color: #f8fafc;
+      width: 380px;
+      min-height: 520px;
+      background-color: var(--bg-obsidian);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .font-mono, .tabular-nums {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .kp-glass-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      padding: 12px 14px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 14px 28px -10px rgba(2, 6, 23, 0.7);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 10px;
-      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-glass);
     }
-    .title {
-      font-size: 14px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #38bdf8, #818cf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .status-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 8px #10b981;
-    }
-    .card {
-      background: rgba(30, 41, 59, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    .brand-badge {
+      width: 32px;
+      height: 32px;
       border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 10px;
+      background: linear-gradient(135deg, #00d2ff 0%, #6366f1 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 13px;
+      color: #020617;
     }
-    .quota-title {
+    .version-pill {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(0, 210, 255, 0.16);
+      color: #67e8f9;
+      border: 1px solid rgba(0, 210, 255, 0.35);
+      font-weight: 700;
+    }
+    .mode-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .mode-btn {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-glass);
+      background: rgba(2, 6, 23, 0.6);
+      color: var(--text-muted);
       font-size: 11px;
-      color: #94a3b8;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .mode-btn.active {
+      background: rgba(0, 210, 255, 0.15);
+      color: #67e8f9;
+      border-color: rgba(0, 210, 255, 0.45);
+    }
+    .input-field, .select-field {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(2, 6, 23, 0.75);
+      color: #f8fafc;
+      font-size: 11px;
+      margin-top: 6px;
+      outline: none;
+    }
+    .input-field:focus, .select-field:focus {
+      border-color: var(--accent-cyan);
+    }
+    .label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
       display: flex;
       justify-content: space-between;
-      margin-bottom: 6px;
-    }
-    .progress-bar {
-      height: 6px;
-      background: #334155;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      width: 15%;
-      background: linear-gradient(90deg, #10b981, #38bdf8);
-      border-radius: 3px;
-    }
-    .family-badge {
-      display: inline-block;
-      font-size: 10px;
-      padding: 2px 6px;
-      background: rgba(56, 189, 248, 0.15);
-      color: #38bdf8;
-      border-radius: 4px;
-      margin-top: 6px;
-    }
-    .btn {
-      width: 100%;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      display: block;
-      text-align: center;
-      text-decoration: none;
-      margin-top: 6px;
-      transition: all 0.2s;
+      align-items: center;
     }
     .btn-primary {
-      background: #0284c7;
-      color: white;
+      width: 100%;
+      min-height: 44px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #00d2ff 0%, #10b981 100%);
+      color: #020617;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px rgba(0, 210, 255, 0.25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .btn-primary:hover {
-      background: #0369a1;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(0, 210, 255, 0.38);
     }
-    .btn-secondary {
-      background: #1e293b;
-      color: #94a3b8;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    .readonly-banner {
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+      font-size: 10px;
+      line-height: 1.45;
+      font-weight: 600;
     }
-    .btn-secondary:hover {
-      background: #334155;
-      color: white;
+    .channel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .channel-pill {
+      padding: 7px 9px;
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px solid var(--border-glass);
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .status-box {
+      padding: 9px 11px;
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.8);
+      border: 1px solid var(--border-glass);
+      font-size: 11px;
+      color: #cbd5e1;
+      line-height: 1.4;
     }
   </style>
 </head>
 <body>
+  <!-- Top Brand Header -->
   <div class="header">
-    <div class="title">⚡ PCS Omni-Commerce v4.0</div>
-    <div title="Core Online (127.0.0.1:48481)" class="status-dot"></div>
+    <div class="brand">
+      <div class="brand-badge">KP</div>
+      <div>
+        <div style="font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+          <span>KargoPilot</span>
+          <span class="version-pill font-mono tabular-nums">v6.5</span>
+        </div>
+        <div style="font-size: 10px; color: var(--text-muted);">1-Klik Quick-Bridge Sessiya Körpüsü</div>
+      </div>
+    </div>
+    <span id="ext-node-badge" class="version-pill font-mono tabular-nums">Sovereign</span>
   </div>
 
-  <div class="card">
-    <div class="quota-title">
-      <span>Aylıq Gömrük Limiti (DGK $300)</span>
-      <span id="quota-val">~$45.20 / $300</span>
+  <!-- 1. Dual-Hosting Node Target Selector -->
+  <div class="kp-glass-card">
+    <div class="label">
+      <span>Hədəf Server Rejimi (Dual-Hosting)</span>
+      <span id="node-ping-ms" class="font-mono tabular-nums" style="color: #10b981;">127.0.0.1:48481</span>
     </div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="quota-fill"></div>
+    <div class="mode-switch">
+      <button type="button" id="btn-mode-cloud" class="mode-btn" data-mode="cloud">☁️ Bulud Serveri</button>
+      <button type="button" id="btn-mode-sovereign" class="mode-btn active" data-mode="self-hosted">🖥️ Öz Serverim</button>
     </div>
-    <div class="family-badge">👤 FİN: 7A123BC (Vasif M.) | $300 Rüsumsuz Limit</div>
+    <input type="text" id="ext-server-url" class="input-field font-mono tabular-nums" value="http://127.0.0.1:48481" placeholder="http://127.0.0.1:48481">
+    <input type="password" id="ext-auth-token" class="input-field font-mono" placeholder="Giriş Tokeni (Bearer JWT - seçməli)">
   </div>
 
-  <button class="btn btn-primary" id="open-panel-btn">🚀 İdarəetmə Panelini Aç</button>
-  <button class="btn btn-secondary" id="open-carriers-btn">📦 Kargo Ünvanları və Filiallar</button>
+  <!-- 2. Active Site / Provider Detection & 1-Click Quick-Bridge -->
+  <div class="kp-glass-card">
+    <div class="label">
+      <span>Aktiv Sayt / Kanal</span>
+      <span id="detected-provider-badge" class="font-mono" style="color: #67e8f9;">Avto-Aşkarlama</span>
+    </div>
 
-  <script>
-    document.getElementById("open-panel-btn").addEventListener("click", () => {
-      chrome.tabs.create({ url: "http://127.0.0.1:48481" });
-    });
-    document.getElementById("open-carriers-btn").addEventListener("click", () => {
-      chrome.tabs.create({ url: "http://127.0.0.1:48481/carriers" });
-    });
-  </script>
+    <select id="ext-provider-select" class="select-field">
+      <option value="store:trendyol:Trendyol">🏪 Trendyol (Satıcı Mağaza)</option>
+      <option value="store:temu:Temu">🏪 Temu Global (Satıcı Mağaza)</option>
+      <option value="carrier:starex:Starex">🚚 Starex Kargo (Daşıyıcı)</option>
+      <option value="carrier:camex:Camex">🚚 Camex Kargo (Daşıyıcı)</option>
+      <option value="carrier:limak:Limak">🚚 Limak Kargo (Daşıyıcı)</option>
+      <option value="carrier:dynamex:Dynamex">🚚 Dynamex Kargo (Daşıyıcı)</option>
+      <option value="smartcustoms:smartcustoms:SmartCustoms (DGK Read-Only)">🏛️ SmartCustoms (DGK Read-Only)</option>
+    </select>
+
+    <input type="text" id="ext-account-id" class="input-field font-mono" placeholder="Hesab İdentifikatoru (məs: E-poçt, Müştəri Kodu və ya FİN)">
+
+    <!-- Mandatory SmartCustoms Read-Only Safe Mode Notice -->
+    <div id="sc-readonly-lock" class="readonly-banner" style="margin-top: 8px;">
+      🔒 <b>Təhlükəsiz Oxuma Rejimi (read_only_safe_mode: True):</b> SmartCustoms üzrə qətiyyən avtomatik bəyannamə göndərilmir (<code class="font-mono tabular-nums">declarations_created: 0</code>), yalnız əlaqə və <span class="tabular-nums">$300</span> DGK kvotası yoxlanılır.
+    </div>
+
+    <button type="button" id="btn-quick-bridge" class="btn-primary" style="margin-top: 10px;">
+      <span>⚡ Quick-Bridge ilə 1-Klik Sessiyanı Qoş</span>
+    </button>
+  </div>
+
+  <!-- 3. 4-Channel Unified Health Summary Matrix -->
+  <div class="kp-glass-card">
+    <div class="label">
+      <span>4-Kanallı Əlaqə Sağlamlığı</span>
+      <button type="button" id="btn-refresh-health" style="background:none;border:none;color:#00d2ff;font-size:10px;font-weight:700;cursor:pointer;">↻ Yenilə</button>
+    </div>
+    <div class="channel-grid">
+      <div class="channel-pill">
+        <span>🏪 Mağaza</span>
+        <span id="ch-store-status" class="font-mono tabular-nums" style="color:#10b981;">Hazır</span>
+      </div>
+      <div class="channel-pill">
+        <span>🚚 Kargo</span>
+        <span id="ch-carrier-status" class="font-mono tabular-nums" style="color:#10b981;">Hazır</span>
+      </div>
+      <div class="channel-pill">
+        <span>🏛️ DGK Read-Only</span>
+        <span id="ch-sc-status" class="font-mono tabular-nums" style="color:#10b981;">$300.00</span>
+      </div>
+      <div class="channel-pill">
+        <span>💬 WhatsApp</span>
+        <span id="ch-wa-status" class="font-mono tabular-nums" style="color:#10b981;">Aktiv</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Output -->
+  <div id="ext-status-box" class="status-box font-mono tabular-nums">
+    🟢 KargoPilot v6.5 Quick-Bridge hazırdır.
+  </div>
+
+  <script src="popup.js"></script>
 </body>
 </html>

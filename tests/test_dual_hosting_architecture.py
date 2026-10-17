@@ -35,7 +35,7 @@ def test_health_and_discovery_endpoints(client: TestClient):
         assert response.status_code == 200, f"Failed on path {path}"
         data = response.json()
         assert data["status"] == "healthy"
-        assert data["version"] == "4.5.0"
+        assert data["version"] == "6.5.0"
         assert data["service"] == "kargopilot-core"
         assert data["dual_hosting_ready"] is True
         assert "capabilities" in data
@@ -65,7 +65,7 @@ def test_user_data_export_endpoint(client: TestClient):
     assert response.status_code == 200
     data = response.json()
 
-    assert data["project"] == "KargoPilot v4.5 Enterprise"
+    assert data["project"] == "KargoPilot v6.5 Enterprise"
     assert data["export_version"] == "1.0"
     assert "exported_at" in data
     assert "edition" in data

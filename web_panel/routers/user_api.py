@@ -2078,7 +2078,7 @@ async def verify_node_connection(target_url: str) -> VerifyNodeResponse:
                     target_url=clean_url,
                     service=data.get("service", "kargopilot-core"),
                     edition=data.get("edition", "sovereign"),
-                    version=data.get("version", "4.5.0"),
+                    version=data.get("version", "6.5.0"),
                     latency_ms=latency_ms,
                     message="KargoPilot düyünü uğurla aşkarlandı və aktivdir.",
                 )
@@ -3149,7 +3149,7 @@ async def ping_whatsapp_gateway(
 
         masked = mask_identifier(u_phone)
         preview = (
-            f"✅ [KargoPilot v6.0 WhatsApp Ping] Salam {u_name}! "
+            f"✅ [KargoPilot v6.5 WhatsApp Ping] Salam {u_name}! "
             f"WhatsApp Bildiriş Şlüzünüz aktivdir ({masked}). "
             f"Cari aktiv bağlama: {parcel_cnt} ədəd | Aylıq 300$ DGK qalıq limiti: ${rem_usd:.2f}."
         )

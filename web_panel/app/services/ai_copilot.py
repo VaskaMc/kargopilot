@@ -1,4 +1,4 @@
-"""KargoPilot v5.0 AI Copilot Engine: Context-Aware Conversational Logistics Assistant.
+"""KargoPilot v6.5 AI Copilot Engine: Context-Aware Conversational Logistics Assistant.
 
 Features:
 - Ingests full user context: profile, active parcels, DGK 300$ quota status, standard and custom carriers, stores, and family FINs.
@@ -60,7 +60,7 @@ def _generate_deterministic_response(clean_query: str, raw_query: str, ctx: Dict
         wa_phone = channels.get("whatsapp_phone_masked", "+99450***4567")
 
         return (
-            f"Hörmətli {user_name}, **4-Kanallı Canlı Əlaqə Sağlamlığı Matrisiniz (KargoPilot v6.0)** üzrə cari vəziyyət:\n\n"
+            f"Hörmətli {user_name}, **4-Kanallı Canlı Əlaqə Sağlamlığı Matrisiniz (KargoPilot v6.5)** üzrə cari vəziyyət:\n\n"
             f"1. 🏪 **Mağaza Əlaqəsi ({stores_list}):** {'🟢 Əlaqə Aktualdır (Sinxronizasiyaya hazırdır)' if store_ok else '⚪ Qoşulmayıb (Paneldən qoşa bilərsiniz)'}\n"
             f"2. 🚚 **Kargo Əlaqəsi ({carriers_list}):** {'🟢 Əlaqə Aktualdır (Anbar izləməsi aktivdir)' if carrier_ok else '⚪ Qoşulmayıb (Paneldən qoşa bilərsiniz)'}\n"
             f"3. 🏛️ **SmartCustoms (DGK Read-Only — FİN: `{sc_fin}`):** {'🟢 Əlaqə Aktualdır' if sc_ok else '🟢 Read-Only Hazırdır'} — 🔒 *Təhlükəsiz Oxuma Rejimi aktivdir (avtomatik bəyannamə göndərilmir, yalnız əlaqə və 300$ limit statusu yoxlanılır).* Cari 300$ qalıq kvotanız: **${remaining_usd:.2f} USD** ({remaining_azn:.2f} AZN).\n"

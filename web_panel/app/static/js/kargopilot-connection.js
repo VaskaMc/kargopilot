@@ -1,5 +1,5 @@
 /**
- * KargoPilot v4.5 Enterprise Universal Dual-Hosting Connection Adapter
+ * KargoPilot v6.5 Enterprise Universal Dual-Hosting Connection Adapter
  * Manages dynamic runtime switching between Managed Cloud and Self-Hosted Sovereign editions,
  * health testing, live ping telemetry, and client-side data export.
  */
@@ -94,7 +94,7 @@
             ok: true,
             status: 'online',
             latencyMs: latencyMs,
-            version: data.version || '4.5.0',
+            version: data.version || '6.5.0',
             edition: data.edition || (data.service ? 'sovereign' : 'cloud'),
             service: data.service || 'kargopilot-core',
             url: rawUrl,
