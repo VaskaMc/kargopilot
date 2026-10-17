@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# KargoPilot v6.0.0 - 1-Kliklə Müstəqil Server (Self-Hosted) Quraşdırıcısı
+# KargoPilot v6.5.0 - 1-Kliklə Müstəqil Server (Self-Hosted) Quraşdırıcısı
 # ==============================================================================
 set -euo pipefail
 
@@ -12,7 +12,7 @@ NC='\033[0m'
 
 echo -e "${CYAN}"
 echo "=================================================================="
-echo "      KargoPilot v6.0.0 Müstəqil Server (Self-Hosted) Rejimi      "
+echo "      KargoPilot v6.5.0 Müstəqil Server (Self-Hosted) Rejimi      "
 echo "        100% On-Premise | Sıfır Telemetriya | Tam Məxfilik        "
 echo "=================================================================="
 echo -e "${NC}"
@@ -54,7 +54,7 @@ echo -e "${CYAN}[4/4] Sistem sağlamlığı yoxlanılır (http://127.0.0.1:48481
 for i in {1..15}; do
     if curl -s http://127.0.0.1:48481/healthz | grep -q "healthy"; then
         echo -e "${GREEN}=================================================================="
-        echo " ✓ KargoPilot v6.0.0 Müstəqil Server (Self-Hosted) Uğurla Quraşdırıldı!"
+        echo " ✓ KargoPilot v6.5.0 Müstəqil Server (Self-Hosted) Uğurla Quraşdırıldı!"
         echo " URL: http://127.0.0.1:48481/user/dashboard"
         echo " FİN Şəbəkəsi & DGK SmartCustoms (Read-Only) yerli serverinizdə qorunur."
         echo " Heç bir məlumat KargoPilot mərkəzi serverlərinə ötürülmür."

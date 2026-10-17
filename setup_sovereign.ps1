@@ -1,9 +1,9 @@
 # ==============================================================================
-# KargoPilot v6.0.0 - 1-Kliklə Müstəqil Server (Self-Hosted) PowerShell Quraşdırıcısı
+# KargoPilot v6.5.0 - 1-Kliklə Müstəqil Server (Self-Hosted) PowerShell Quraşdırıcısı
 # ==============================================================================
 
 Write-Host "==================================================================" -ForegroundColor Cyan
-Write-Host "      KargoPilot v6.0.0 Müstəqil Server (Self-Hosted) Rejimi      " -ForegroundColor Cyan
+Write-Host "      KargoPilot v6.5.0 Müstəqil Server (Self-Hosted) Rejimi      " -ForegroundColor Cyan
 Write-Host "        100% On-Premise | Sıfır Telemetriya | Tam Məxfilik        " -ForegroundColor Cyan
 Write-Host "==================================================================" -ForegroundColor Cyan
 
@@ -41,6 +41,6 @@ Write-Host "[3/4] Konteynerlər başladılır..." -ForegroundColor Cyan
 docker compose -f docker-compose.sovereign.yml up -d --build
 
 Write-Host "==================================================================" -ForegroundColor Green
-Write-Host " ✓ KargoPilot v6.0.0 Müstəqil Server (Self-Hosted) Quraşdırıldı!" -ForegroundColor Green
+Write-Host " ✓ KargoPilot v6.5.0 Müstəqil Server (Self-Hosted) Quraşdırıldı!" -ForegroundColor Green
 Write-Host " İdarəetmə Paneli: http://127.0.0.1:48481/user/dashboard" -ForegroundColor Green
 Write-Host "==================================================================" -ForegroundColor Green

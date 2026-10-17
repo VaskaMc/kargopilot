@@ -1,5 +1,5 @@
 # ==============================================================================
-# KargoPilot v6.0 Managed Cloud Production Docker Compose Specification
+# KargoPilot v6.5 Managed Cloud Production Docker Compose Specification
 # Multi-tenant, 7/24 high availability, 4-channel connection matrix & Fernet vault.
 # ==============================================================================
 
@@ -10,7 +10,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: kargopilot:v6.0-cloud
+    image: kargopilot:v6.5-cloud
     container_name: kargopilot_cloud_web
     restart: always
     env_file:
@@ -35,7 +35,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: kargopilot:v6.0-cloud
+    image: kargopilot:v6.5-cloud
     container_name: kargopilot_cloud_worker
     restart: always
     env_file:
