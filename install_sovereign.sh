@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# KargoPilot v4.5 - 1-Click Sovereign Self-Hosted Installer
+# KargoPilot v6.0.0 - 1-Kliklə Müstəqil Server (Self-Hosted) Quraşdırıcısı
 # ==============================================================================
 set -euo pipefail
 
@@ -12,7 +12,7 @@ NC='\033[0m'
 
 echo -e "${CYAN}"
 echo "=================================================================="
-echo "         KargoPilot v4.5 Sovereign Self-Hosted Edition           "
+echo "      KargoPilot v6.0.0 Müstəqil Server (Self-Hosted) Rejimi      "
 echo "        100% On-Premise | Sıfır Telemetriya | Tam Məxfilik        "
 echo "=================================================================="
 echo -e "${NC}"
@@ -30,7 +30,7 @@ mkdir -p "${DATA_DIR}/invoices" "${DATA_DIR}/logs" "${DATA_DIR}/wa_sessions"
 
 # Generate Cryptographic Keys if .env.sovereign doesn't exist
 if [ ! -f .env.sovereign ]; then
-    echo -e "${CYAN}[2/4] .env.sovereign üçün kriptoqrafik açarlar generasiya edilir...${NC}"
+    echo -e "${CYAN}[2/4] Müstəqil Server (.env.sovereign) üçün kriptoqrafik açarlar generasiya edilir...${NC}"
     JWT_SECRET=$(openssl rand -hex 32 2>/dev/null || python3 -c 'import secrets; print(secrets.token_hex(32))')
     REFRESH_SECRET=$(openssl rand -hex 32 2>/dev/null || python3 -c 'import secrets; print(secrets.token_hex(32))')
     VAULT_KEY=$(openssl rand -hex 32 2>/dev/null || python3 -c 'import secrets; print(secrets.token_hex(32))')
@@ -39,7 +39,7 @@ if [ ! -f .env.sovereign ]; then
     sed -i "s/change_me_with_openssl_rand_hex_32_jwt_key/${JWT_SECRET}/" .env.sovereign
     sed -i "s/change_me_with_openssl_rand_hex_32_refresh_key/${REFRESH_SECRET}/" .env.sovereign
     sed -i "s/change_me_with_openssl_rand_hex_32_aes256_key/${VAULT_KEY}/" .env.sovereign
-    echo -e "${GREEN}[OK] .env.sovereign 256-bit AES və Argon2id açarları ilə hazırlandı.${NC}"
+    echo -e "${GREEN}[OK] Müstəqil Server konfiqurasiyası 256-bit AES və Argon2id açarları ilə hazırlandı.${NC}"
 else
     echo -e "${AMBER}[INFO] Mövcud .env.sovereign faylı aşkarlandı, toxunulmadı.${NC}"
 fi
@@ -54,9 +54,9 @@ echo -e "${CYAN}[4/4] Sistem sağlamlığı yoxlanılır (http://127.0.0.1:48481
 for i in {1..15}; do
     if curl -s http://127.0.0.1:48481/healthz | grep -q "healthy"; then
         echo -e "${GREEN}=================================================================="
-        echo " ✓ KargoPilot v4.5 Sovereign Uğurla Quraşdırıldı və İcra Olunur!"
-        echo " URL: http://127.0.0.1:48481/admin"
-        echo " FİN Şəbəkəsi & DGK SmartCustoms yerli serverinizdə qorunur."
+        echo " ✓ KargoPilot v6.0.0 Müstəqil Server (Self-Hosted) Uğurla Quraşdırıldı!"
+        echo " URL: http://127.0.0.1:48481/user/dashboard"
+        echo " FİN Şəbəkəsi & DGK SmartCustoms (Read-Only) yerli serverinizdə qorunur."
         echo " Heç bir məlumat KargoPilot mərkəzi serverlərinə ötürülmür."
         echo -e "==================================================================${NC}"
         exit 0

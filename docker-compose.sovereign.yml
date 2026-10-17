@@ -1,6 +1,6 @@
 # ==============================================================================
-# KargoPilot v4.5 Sovereign Self-Hosted Docker Compose Specification
-# Zero-telemetry, single-tenant, full data sovereignty.
+# KargoPilot v6.0 Müstəqil Server (Self-Hosted) Docker Compose Specification
+# Zero-telemetry, single-tenant, full local data ownership & Read-Only DGK check.
 # ==============================================================================
 
 version: '3.8'
@@ -10,13 +10,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: kargopilot:v4.5-sovereign
+    image: kargopilot:v6.0-self-hosted
     container_name: kargopilot_sovereign_app
     restart: unless-stopped
     env_file:
       - .env.sovereign
     environment:
       - DEPLOYMENT_MODE=sovereign
+      - READ_ONLY_SAFE_MODE=true
       - TELEMETRY_ENABLED=false
       - ALLOW_EXTERNAL_REPORTING=false
       - WA_SIDECAR_URL=http://kargopilot-wa-sidecar:3100
