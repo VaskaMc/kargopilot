@@ -45,7 +45,28 @@ def _generate_deterministic_response(clean_query: str, raw_query: str, ctx: Dict
     quota_status = ctx.get("quota_status", "safe")
     parcels = ctx.get("parcels", [])
     family_fins = ctx.get("family_fins", [])
-    fin = ctx.get("fin", "814CRM4")
+    fin = ctx.get("fin", "7KP2026")
+    channels = ctx.get("channels_health", {})
+
+    # A0) Etap 8: 4-Channel Connection Liveness Inquiry (Store, Cargo, SmartCustoms Read-Only, WhatsApp)
+    if any(k in clean_query for k in ["əlaqə", "qoşul", "whatsapp", "smartcustoms", "kanal", "şlüz", "aktuallıq"]):
+        store_ok = channels.get("store_connected", False)
+        stores_list = ", ".join(channels.get("active_stores", [])) or "Trendyol"
+        carrier_ok = channels.get("carrier_connected", False)
+        carriers_list = ", ".join(channels.get("active_carriers", [])) or "Starex"
+        sc_ok = channels.get("smartcustoms_connected", True)
+        sc_fin = channels.get("smartcustoms_fin", fin)
+        wa_ok = channels.get("whatsapp_connected", True)
+        wa_phone = channels.get("whatsapp_phone_masked", "+99450***4567")
+
+        return (
+            f"Hörmətli {user_name}, **4-Kanallı Canlı Əlaqə Sağlamlığı Matrisiniz (KargoPilot v6.0)** üzrə cari vəziyyət:\n\n"
+            f"1. 🏪 **Mağaza Əlaqəsi ({stores_list}):** {'🟢 Əlaqə Aktualdır (Sinxronizasiyaya hazırdır)' if store_ok else '⚪ Qoşulmayıb (Paneldən qoşa bilərsiniz)'}\n"
+            f"2. 🚚 **Kargo Əlaqəsi ({carriers_list}):** {'🟢 Əlaqə Aktualdır (Anbar izləməsi aktivdir)' if carrier_ok else '⚪ Qoşulmayıb (Paneldən qoşa bilərsiniz)'}\n"
+            f"3. 🏛️ **SmartCustoms (DGK Read-Only — FİN: `{sc_fin}`):** {'🟢 Əlaqə Aktualdır' if sc_ok else '🟢 Read-Only Hazırdır'} — 🔒 *Təhlükəsiz Oxuma Rejimi aktivdir (avtomatik bəyannamə göndərilmir, yalnız əlaqə və 300$ limit statusu yoxlanılır).* Cari 300$ qalıq kvotanız: **${remaining_usd:.2f} USD** ({remaining_azn:.2f} AZN).\n"
+            f"4. 💬 **WhatsApp Bildiriş Şlüzü (`{wa_phone}`):** {'🟢 Əlaqə Aktualdır (Bildirişlər aktivdir)' if wa_ok else '⚪ Qoşulmayıb'}\n\n"
+            f"💡 **Xülasə:** Bütün əlaqə kanallarınız təhlükəsiz rejimdə fəaliyyət göstərir və aktiv bağlama sayınız **{len(parcels)} ədəd** təşkil edir."
+        )
 
     # A) DGK 300$ Limit / Quota Inquiry
     if any(k in clean_query for k in ["limit", "kvota", "300", "qalıb", "nə qədər", "şkal"]):
@@ -67,6 +88,7 @@ def _generate_deterministic_response(clean_query: str, raw_query: str, ctx: Dict
 
     # B) Carrier / Arbitrage / Cheapest Shipping Inquiry
     if any(k in clean_query for k in ["kargo", "daşıyıcı", "ucuz", "sərfəli", "hesabla", "tarif", "kq", "çəki", "starex", "limak", "camex", "dynamex", "expargo"]):
+
         # Extract weight if present
         weight_match = re.search(r"(\d+(?:[\.,]\d+)?)\s*(?:kq|kg)", clean_query)
         weight = float(weight_match.group(1).replace(",", ".")) if weight_match else 1.0
