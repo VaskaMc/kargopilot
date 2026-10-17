@@ -1,5 +1,5 @@
 # ==============================================================================
-# KargoPilot v6.0 Enterprise Container (Dual Architecture: Cloud & Self-Hosted)
+# KargoPilot v6.5 Enterprise Container (Dual Architecture: Cloud & Self-Hosted)
 # ==============================================================================
 
 FROM python:3.11-slim-bookworm AS builder
@@ -19,9 +19,9 @@ RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 FROM python:3.11-slim-bookworm AS runtime
 
 LABEL maintainer="Vasif Məcidli <vasif@kargopilot.az>"
-LABEL org.opencontainers.image.title="KargoPilot v6.0 Enterprise Logistics & Customs AI"
-LABEL org.opencontainers.image.description="Dual-architecture self-hosted & cloud e-commerce, 4-channel health matrix, and SmartCustoms Read-Only quota platform."
-LABEL org.opencontainers.image.version="6.0.0"
+LABEL org.opencontainers.image.title="KargoPilot v6.5 Enterprise Logistics & Customs AI"
+LABEL org.opencontainers.image.description="Dual-architecture self-hosted & cloud e-commerce, 4-channel health matrix, 1-Click Quick-Bridge, and SmartCustoms Read-Only quota platform."
+LABEL org.opencontainers.image.version="6.5.0"
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \

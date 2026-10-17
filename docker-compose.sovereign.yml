@@ -1,5 +1,5 @@
 # ==============================================================================
-# KargoPilot v6.0 Müstəqil Server (Self-Hosted) Docker Compose Specification
+# KargoPilot v6.5 Müstəqil Server (Self-Hosted) Docker Compose Specification
 # Zero-telemetry, single-tenant, full local data ownership & Read-Only DGK check.
 # ==============================================================================
 
@@ -10,7 +10,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: kargopilot:v6.0-self-hosted
+    image: kargopilot:v6.5-self-hosted
     container_name: kargopilot_sovereign_app
     restart: unless-stopped
     env_file:

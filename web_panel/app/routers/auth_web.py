@@ -96,12 +96,12 @@ async def user_dashboard_page(request: Request):
         # Fall back to default guest profile if running in demo / development mode
         current_user = {
             "id": "demo-user-001",
-            "email": "musteri@kargopilot.az",
-            "full_name": "Vasif Məcidli",
+            "email": "demo@kargopilot.az",
+            "full_name": "Demo İstifadəçi",
             "role": "CUSTOMER",
             "tier": "cloud_managed",
-            "phone": "+994776346310",
-            "fin": "814CRM4",
+            "phone": "+994501234567",
+            "fin": "7KP2026",
             "default_branch": "28 May",
         }
 

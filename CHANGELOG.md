@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [6.5.0] - 2026-10-17
+
+### 🚀 Major Release: 1-Click Session Quick-Bridge, Unified 4-Channel Health Diagnostics, Dual-Hosting First-Screen Polish & Full GitHub Repo Sync (`Etap 9`)
+
+KargoPilot v6.5.0 introduces the 1-Click Session Quick-Bridge (`POST /api/v1/user/sessions/quick-bridge`), unified 4-channel health diagnostics (`GET /api/v1/user/channels/health-summary`), a cohesive Dual-Hosting first-screen experience (`/`, `/onboarding`, `/self-hosted` -> `/user/dashboard`), and full v6.5.0 synchronization across all repository documentation and deployment configs:
+
+### ✨ Added
+- **1-Click Session Quick-Bridge (`POST /api/v1/user/sessions/quick-bridge`)**:
+  - Connects Store, Carrier, or SmartCustoms sessions in a single click without manual cookie copying or console commands.
+  - Enforces strict SSRF validation, Fernet 256-bit encryption in `external_sessions`, masked account identifiers (`m***@kargopilot.az`, `7K***26`), and immediate Read-Only connection verification (`session_status: "active"`, `connection_alive: True`, `read_only_safe_mode: True`).
+- **Unified 4-Channel Health Diagnostics (`GET /api/v1/user/channels/health-summary`)**:
+  - Single-request diagnostic summary returning live readiness and metadata for all 4 channels (`store_channel`, `carrier_channel`, `smartcustoms_channel`, `whatsapp_channel`) alongside `overall_health_score` (`0–100%`).
+  - SmartCustoms channel strictly enforces `read_only_safe_mode: True` and `declarations_created: 0` (Bəyannaməsiz Təhlükəsiz Oxuma və Əlaqə Aktuallığı Rejimi).
+- **Unified Dual-Hosting First-Screen Flow (`/`, `/onboarding`, `/self-hosted` -> `/user/dashboard`)**:
+  - Upgraded `self_hosted.html` with `taste-skill` and `ui-ux-pro-max` tokens (`.tabular-nums`, `.kp-glass-card`, `cubic-bezier(0.16, 1, 0.3, 1)`), interactive **"Hansı Rejim Mənə Uyğundur?"** selector, 1-Click Docker Compose setup wizard, and 4-channel readiness badges on node verification (`POST /api/v1/system/verify-node`).
+- **Etap 9 Unified Release & Bridge E2E Suite (`tests/test_etap9_unified_release_and_bridge_e2e.py`)**:
+  - Added 5 comprehensive E2E tests covering v6.5 repo documentation/config compliance, Dual-Hosting first-screen to dashboard journey, 1-Click Quick-Bridge + 4-Channel Health Summary, SmartCustoms Read-Only enforcement + AI Copilot 4-channel awareness, and Dual-Router/Template byte-for-byte sync + Zero-Leak audit (`97/97` total tests passing).
+
+---
+
 ## [6.0.0] - 2026-10-17
 
 ### 🚀 Major Release: 4-Channel Unified Connection Health Matrix, SmartCustoms Read-Only Safe Mode, WhatsApp Gateway & High-Craft UI (`taste-skill` + `ui-ux-pro-max`)

@@ -1,18 +1,19 @@
-# KargoPilot v6.0.0 Enterprise (Dual-Hosting: Cloud Managed & Müstəqil Server / Self-Hosted)
+# KargoPilot v6.5.0 Enterprise (Dual-Hosting: Cloud Managed & Müstəqil Server / Self-Hosted)
 
-> KargoPilot v6.0.0 — Azərbaycan üzrə sərhədsiz e-ticarət (Temu, Trendyol, Taobao, Amazon), 4-Kanallı Əlaqə Sağlamlığı Matrisi (Mağaza, Kargo, SmartCustoms Read-Only, WhatsApp), DGK $300 aylıq gömrük kvota mühafizəsi və daşıyıcı (Starex, Limak, Camex, Dynamex) tarif optimizasiyası üçün açıq mənbəli, ikili arxitekturalı (Bulud və ya Müstəqil Server / Self-Hosted) logistika və gömrük kopilotu.
+> KargoPilot v6.5.0 — Azərbaycan üzrə sərhədsiz e-ticarət (Temu, Trendyol, Taobao, Amazon), 4-Kanallı Əlaqə Sağlamlığı Matrisi (Mağaza, Kargo, SmartCustoms Read-Only, WhatsApp), 1-Kliklə Sürətli Sessiya Körpüsü (`Quick-Bridge`), DGK $300 aylıq gömrük kvota mühafizəsi və daşıyıcı (Starex, Limak, Camex, Dynamex) tarif optimizasiyası üçün açıq mənbəli, ikili arxitekturalı (Bulud və ya Müstəqil Server / Self-Hosted) logistika və gömrük kopilotu.
 
 ## Sistem Haqqında Xülasə
 
-KargoPilot v6.0.0 bağlamaların xarici anbarlardan (Türkiyə, Çin, ABŞ, Avropa) Bakı filiallarınadək hərəkətini izləyir, Mərkəzi Bank (CBAR `1.7000 AZN`) məzənnələri ilə aylıq $300 gömrük kvotasını hesablayır, SmartCustoms üzərindən **Read-Only (Bəyannaməsiz Təhlükəsiz Oxuma Rejimi)** ilə əlaqə aktuallığını və $300 limit balansını yoxlayır və 4-Kanal Məlumatlı Loyd AI Copilot ilə WhatsApp Bildiriş Şlüzü vasitəsilə istifadəçini məlumatlandırır.
+KargoPilot v6.5.0 bağlamaların xarici anbarlardan (Türkiyə, Çin, ABŞ, Avropa) Bakı filiallarınadək hərəkətini izləyir, Mərkəzi Bank (CBAR `1.7000 AZN`) məzənnələri ilə aylıq $300 gömrük kvotasını hesablayır, SmartCustoms üzərindən **Read-Only (Bəyannaməsiz Təhlükəsiz Oxuma Rejimi)** ilə əlaqə aktuallığını və $300 limit balansını yoxlayır və 4-Kanal Məlumatlı Loyd AI Copilot ilə WhatsApp Bildiriş Şlüzü vasitəsilə istifadəçini məlumatlandırır.
 
-## Əsas Modullar və İmkanlar (v6.0.0)
+## Əsas Modullar və İmkanlar (v6.5.0)
 
-- **4-Kanallı Əlaqə Sağlamlığı Matrisi (Unified Connection Health Matrix)**:
-  1. **🏪 Mağaza Əlaqəsi (`store`)**: Trendyol, Temu, Amazon və digər mağaza sessiyalarının OTP doğrulaması, Fernet AES-256 şifrələnməsi və sifariş sinxronizasiyası.
+- **4-Kanallı Əlaqə Sağlamlığı Matrisi və 1-Kliklə Tam Diaqnostika (`/api/v1/user/channels/health-summary`)**:
+  1. **🏪 Mağaza Əlaqəsi (`store`)**: Trendyol, Temu, Amazon və digər mağaza sessiyalarının 1-Kliklə `Quick-Bridge` bağlanması, Fernet AES-256 şifrələnməsi və sifariş sinxronizasiyası.
   2. **🚚 Kargo Əlaqəsi (`carrier`)**: Starex, Limak, Camex, Dynamex xarici anbar sessiyaları və bağlama statuslarının yenilənməsi.
   3. **🏛️ SmartCustoms Read-Only Əlaqə & 300$ Kvota Nəzarəti (`smartcustoms`)**: `read_only_safe_mode: True` (`declarations_created: 0`) — avtomatik bəyannamə göndərilmir, yalnız əlaqənin aktuallığı (`connection_alive`) və cari ay üzrə 300$ DGK rüsumsuz limit statusu yoxlanılır.
   4. **💬 WhatsApp Bildiriş Şlüzü (`whatsapp`)**: `+994XXXXXXXXX` nömrə doğrulaması, bildiriş tənzimləmələri (`parcel_arrival`, `customs_300_warning`, `session_expiry_alert`) və canlı şlüz ping testi (`/api/v1/user/whatsapp/ping`).
+- **⚡ 1-Kliklə Sürətli Sessiya Körpüsü (`POST /api/v1/user/sessions/quick-bridge`)**: Uzun kuki sətirləri kopyalamadan 1 kliklə SSRF süzgəcli, Fernet 256-bit şifrəli sessiya bağlanması.
 - **🤖 4-Kanal Məlumatlı Loyd AI Copilot (`/api/v1/user/ai/chat`)**: İstifadəçinin bütün 4 kanalının canlı qoşulma statusunu, aktiv bağlamalarını və 300$ DGK balansını bilən Azərbaycan dilində süni intellekt köməkçisi.
 - **Canlı 4-Kargo & Gömrük Kalkulyatoru (`Smart Arbitrage`)**: Çəki (kq), həcmi ölçülər (`E × U × H / 6000`), göndəriş ölkəsi (`TR`, `CN`, `US`, `EU`) və məhsul növünə (standart, maye, elektronika) əsasən Starex, Limak, Camex və Dynamex tariflərini müqayisə edir.
 - **DGK $300 Gömrük Kvota Mühafizəsi və 36% Rüsum Simulyatoru (`Customs Supervisor`)**: Azərbaycan Respublikası Nazirlər Kabinetinin 305 nömrəli Qərarına əsasən təqvim ayı ərzində $300 USD güzəştli limiti izləyir və limit aşımı zamanı 36% vahid gömrük rüsumunu simulyasiya edir.
@@ -21,7 +22,7 @@ KargoPilot v6.0.0 bağlamaların xarici anbarlardan (Türkiyə, Çin, ABŞ, Avro
 ## Rəsmi Keçidlər
 
 - [KargoPilot Vebsayt və Canlı Kalkulyator](https://vaskamc.github.io/kargopilot/): İnteraktiv 4-kargo tarif müqayisəsi, gömrük rüsumu simulyatoru və Dual-Hosting portalı.
-- [GitHub Repozitoriyası](https://github.com/VaskaMc/kargopilot): Açıq mənbəli kod bazası (`v6.0.0`), `92/92` avtomatlaşdırılmış test paketi və quraşdırma təlimatı.
+- [GitHub Repozitoriyası](https://github.com/VaskaMc/kargopilot): Açıq mənbəli kod bazası (`v6.5.0`), `97/97` avtomatlaşdırılmış test paketi və quraşdırma təlimatı.
 - [Sistem Xəritəsi (Sitemap)](https://vaskamc.github.io/kargopilot/sitemap.xml): XML sayt xəritəsi.
 
 ## Texniki Yığın (Tech Stack)
