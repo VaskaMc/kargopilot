@@ -1,6 +1,6 @@
 # ==============================================================================
-# KargoPilot v4.5 Managed Cloud Production Docker Compose Specification
-# Multi-tenant, 7/24 high availability, encrypted credentials vault.
+# KargoPilot v6.0 Managed Cloud Production Docker Compose Specification
+# Multi-tenant, 7/24 high availability, 4-channel connection matrix & Fernet vault.
 # ==============================================================================
 
 version: '3.8'
@@ -10,13 +10,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: kargopilot:v4.5-cloud
+    image: kargopilot:v6.0-cloud
     container_name: kargopilot_cloud_web
     restart: always
     env_file:
       - .env
     environment:
       - DEPLOYMENT_MODE=managed_cloud
+      - READ_ONLY_SAFE_MODE=true
       - TELEMETRY_ENABLED=true
     ports:
       - "127.0.0.1:48481:48481"
@@ -34,7 +35,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: kargopilot:v4.5-cloud
+    image: kargopilot:v6.0-cloud
     container_name: kargopilot_cloud_worker
     restart: always
     env_file:
