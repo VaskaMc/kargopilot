@@ -21,9 +21,9 @@ KargoPilot v6.5.0 bağlamaların xarici anbarlardan (Türkiyə, Çin, ABŞ, Avro
 
 ## Rəsmi Keçidlər
 
-- [KargoPilot Vebsayt və Canlı Kalkulyator](https://vaskamc.github.io/kargopilot/): İnteraktiv 4-kargo tarif müqayisəsi, gömrük rüsumu simulyatoru və Dual-Hosting portalı.
+- [KargoPilot Vebsayt və Canlı Kalkulyator](https://kargopilotapp.com/): İnteraktiv 4-kargo tarif müqayisəsi, gömrük rüsumu simulyatoru və Dual-Hosting portalı.
 - [GitHub Repozitoriyası](https://github.com/VaskaMc/kargopilot): Açıq mənbəli kod bazası (`v6.5.0`), `97/97` avtomatlaşdırılmış test paketi və quraşdırma təlimatı.
-- [Sistem Xəritəsi (Sitemap)](https://vaskamc.github.io/kargopilot/sitemap.xml): XML sayt xəritəsi.
+- [Sistem Xəritəsi (Sitemap)](https://kargopilotapp.com/sitemap.xml): XML sayt xəritəsi.
 
 ## Texniki Yığın (Tech Stack)
 

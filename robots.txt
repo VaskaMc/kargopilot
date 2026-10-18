@@ -5,4 +5,4 @@ Allow: /
 # Standard: https://llmstxt.org/
 Allow: /llms.txt
 
-Sitemap: https://vaskamc.github.io/kargopilot/sitemap.xml
+Sitemap: https://kargopilotapp.com/sitemap.xml
