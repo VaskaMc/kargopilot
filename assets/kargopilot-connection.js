@@ -13,6 +13,7 @@
 
   var DEFAULT_CLOUD_URL = window.location.origin;
   var DEFAULT_SOVEREIGN_URL = 'http://127.0.0.1:48481';
+  var badgeRenderCount = 0;
 
   var ConnectionManager = {
     _listeners: [],
@@ -173,29 +174,40 @@
       var mode = this.getMode();
       var baseUrl = this.getBaseUrl();
       var badges = document.querySelectorAll('[data-kp-connection-badge]');
+      var liveRegion = document.getElementById('kp-connection-live');
 
       badges.forEach(function (el) {
-        el.setAttribute('role', 'status');
-        el.setAttribute('aria-live', 'polite');
+        var dot = document.createElement('span');
+        var label = document.createElement('span');
+        var detail = document.createElement('span');
+
+        dot.className = 'connection-dot';
+        dot.setAttribute('aria-hidden', 'true');
+        label.className = 'connection-label';
+        detail.className = 'connection-detail';
+
+        el.setAttribute('aria-haspopup', 'dialog');
+        el.classList.add('connection-badge');
+
         if (mode === 'cloud') {
-          el.setAttribute('aria-label', 'Server bağlantı statusu: Bulud Serveri aktivdir');
-          el.innerHTML =
-            '<span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" aria-hidden="true"></span>' +
-            '<span class="font-bold text-cyan-300">☁️ Bulud Serveri</span>' +
-            '<span class="text-slate-400" aria-hidden="true">·</span>' +
-            '<span class="text-slate-200">Rəsmi (7/24)</span>';
-          el.className = el.className.replace(/border-[a-z0-9\/-]+/g, '') + ' border-cyan-500/30 bg-cyan-950/40';
+          label.textContent = 'Bulud';
+          detail.textContent = '7/24';
         } else {
           var cleanHost = baseUrl.replace(/^https?:\/\//, '');
-          el.setAttribute('aria-label', 'Server bağlantı statusu: Öz Serverim (' + cleanHost + ') aktivdir');
-          el.innerHTML =
-            '<span class="w-2 h-2 rounded-full bg-emerald-400" aria-hidden="true"></span>' +
-            '<span class="font-bold text-emerald-300">🖥️ Öz Serverim</span>' +
-            '<span class="text-slate-400" aria-hidden="true">·</span>' +
-            '<span class="text-slate-200 truncate max-w-[120px]">' + cleanHost + '</span>';
-          el.className = el.className.replace(/border-[a-z0-9\/-]+/g, '') + ' border-emerald-500/30 bg-emerald-950/40';
+          label.textContent = 'Öz serverim';
+          detail.textContent = cleanHost;
         }
+
+        el.setAttribute('aria-label', 'Server bağlantı rejimi: ' + label.textContent + ' ' + detail.textContent + ' aktivdir. Rejimi dəyişmək üçün basın.');
+
+        if (liveRegion && badgeRenderCount > 0) {
+          liveRegion.textContent = 'Bağlantı rejimi: ' + label.textContent + ' ' + detail.textContent + ' aktivdir.';
+        }
+
+        el.replaceChildren(dot, label, document.createTextNode(' '), detail);
       });
+
+      badgeRenderCount++;
     }
   };
 
