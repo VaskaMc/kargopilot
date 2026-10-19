@@ -100,17 +100,141 @@
 
   <!-- Analytics & Telemetry Layer (Strict Consent-First Zero-Footprint Lazy-Loading) -->
   <script type="text/javascript">
-    // Safe stubs to prevent runtime errors before consent
-    window.mixpanel = window.mixpanel || { track: function(){}, opt_in_tracking: function(){}, opt_out_tracking: function(){}, reset: function(){} };
-    window.posthog = window.posthog || { capture: function(){}, opt_in_capturing: function(){}, opt_out_capturing: function(){}, reset: function(){}, startSessionRecording: function(){}, stopSessionRecording: function(){} };
+    // The official Mixpanel/PostHog snippets require an ARRAY queue. Passing a
+    // custom object stub makes their generated methods call a.push(), which
+    // throws "a.push is not a function" and keeps the SDK from booting.
+    window.mixpanel = Array.isArray(window.mixpanel) ? window.mixpanel : [];
+    window.posthog = Array.isArray(window.posthog) ? window.posthog : [];
 
     window.kpAnalyticsLoaded = false;
+
+    // Hard network guard: even if an SDK has an already-queued batch or a
+    // delayed replay flush, vendor requests cannot leave the browser unless
+    // consent is currently granted. This is the last line of defense after a
+    // deny (the SDKs' own opt-out is asynchronous).
+    window.kpTelemetryAllowed = function() {
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem('kp_consent_v2')); } catch (e) {}
+      return !!saved && saved.mode === 'granted';
+    };
+
+    window.kpVendorUrl = function(url) {
+      try {
+        var host = new URL(url, window.location.href).hostname;
+        return /(^|\.)(mixpanel\.com|mxpnl\.com|posthog\.com)$/.test(host);
+      } catch (e) {
+        return false;
+      }
+    };
+
+    (function installVendorGuard() {
+      if (window.__kpVendorGuardInstalled) return;
+      window.__kpVendorGuardInstalled = true;
+
+      var origFetch = window.fetch;
+      if (typeof origFetch === 'function') {
+        window.fetch = function(input, init) {
+          var url = typeof input === 'string' ? input : (input && input.url) || '';
+          if (!window.kpTelemetryAllowed() && window.kpVendorUrl(url)) {
+            return Promise.resolve(new Response('', { status: 204, statusText: 'No Content' }));
+          }
+          return origFetch.apply(this, arguments);
+        };
+      }
+
+      if (window.XMLHttpRequest && window.XMLHttpRequest.prototype) {
+        var origOpen = window.XMLHttpRequest.prototype.open;
+        var origSend = window.XMLHttpRequest.prototype.send;
+        if (typeof origOpen === 'function' && typeof origSend === 'function') {
+          window.XMLHttpRequest.prototype.open = function(method, url) {
+            this.__kpVendorBlocked = !window.kpTelemetryAllowed() && window.kpVendorUrl(url);
+            if (this.__kpVendorBlocked) return;
+            return origOpen.apply(this, arguments);
+          };
+          window.XMLHttpRequest.prototype.send = function() {
+            if (this.__kpVendorBlocked) return;
+            return origSend.apply(this, arguments);
+          };
+        }
+      }
+
+      if (navigator && typeof navigator.sendBeacon === 'function') {
+        var origBeacon = navigator.sendBeacon;
+        navigator.sendBeacon = function(url, data) {
+          if (!window.kpTelemetryAllowed() && window.kpVendorUrl(url)) return true;
+          return origBeacon.call(navigator, url, data);
+        };
+      }
+    })();
+
+    // Vendor storage keys are limited to these prefixes. Never touch the
+    // first-party consent record (kp_consent_v2) or UTM attribution keys.
+    window.kpTelemetryKey = function(name) {
+      return name.indexOf('ph_') === 0 || name.indexOf('mp_') === 0 ||
+             name.indexOf('__ph') === 0 || name.indexOf('__mp') === 0;
+    };
+
+    window.kpCleanTelemetry = function() {
+      // Cookies: host-only, exact host, and parent-domain variants.
+      try {
+        var cookies = document.cookie ? document.cookie.split(';') : [];
+        for (var i = 0; i < cookies.length; i++) {
+          var cName = cookies[i].split('=')[0].trim();
+          if (!cName || !window.kpTelemetryKey(cName)) continue;
+          document.cookie = cName + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; path=/';
+          document.cookie = cName + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; path=/; domain=' + window.location.hostname;
+          document.cookie = cName + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; path=/; domain=.' + window.location.hostname;
+        }
+      } catch (e) {}
+
+      // localStorage + sessionStorage. The SDKs persist asynchronously, so this
+      // helper is called repeatedly for a few seconds after a deny.
+      [window.localStorage, window.sessionStorage].forEach(function(storage) {
+        try {
+          var toRemove = [];
+          for (var i = 0; i < storage.length; i++) {
+            var key = storage.key(i);
+            if (key && window.kpTelemetryKey(key)) toRemove.push(key);
+          }
+          for (var j = 0; j < toRemove.length; j++) storage.removeItem(toRemove[j]);
+        } catch (e) {}
+      });
+    };
+
+    window.kpScheduleTelemetryCleanup = function() {
+      [0, 250, 750, 1500, 3000, 6000, 9000].forEach(function(ms) {
+        setTimeout(function() {
+          var saved = null;
+          try { saved = JSON.parse(localStorage.getItem('kp_consent_v2')); } catch (e) {}
+          if (!saved || saved.mode !== 'denied') return;
+          // A late SDK boot must not resurrect tracking after a deny.
+          window.mixpanel = [];
+          window.posthog = [];
+          window.kpAnalyticsLoaded = false;
+          window.kpCleanTelemetry();
+        }, ms);
+      });
+      if (!window.__kpDeniedPagehideBound) {
+        window.__kpDeniedPagehideBound = true;
+        window.addEventListener('pagehide', function() {
+          var saved = null;
+          try { saved = JSON.parse(localStorage.getItem('kp_consent_v2')); } catch (e) {}
+          if (saved && saved.mode === 'denied') window.kpCleanTelemetry();
+        });
+      }
+    };
 
     window.kpLoadAnalytics = function() {
       if (window.kpAnalyticsLoaded) return;
       window.kpAnalyticsLoaded = true;
 
+      // Restore a real SDK instance after a temporary deny instead of
+      // injecting the loader a second time.
+      if (window.__kpMixpanelSdk) window.mixpanel = window.__kpMixpanelSdk;
+      if (window.__kpPosthogSdk) window.posthog = window.__kpPosthogSdk;
+
       // 1. Lazy-load Mixpanel SDK (EU Endpoint)
+      if (!window.__kpMixpanelSdk) {
       (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");for(h=0;h<i.length;h++)g(a,i[h]);b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
 
       window.mixpanel.init('3631e317d2e1801975834aa438a679c3', {
@@ -119,14 +243,17 @@
         track_pageview: true,
         persistence: 'localStorage'
       });
+      }
 
       // 2. Lazy-load PostHog SDK (EU Cloud)
+      if (!window.__kpPosthogSdk) {
       !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}p||((p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",p.onerror=function(){p=null},(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r));var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="vu pu gu mu init Gu Qu Hu Wu Xu il Vu Yu ju oc ac lc uc cc hc capture getExtension Zu hu gc calculateEventProperties vc register register_once register_for_session unregister unregister_for_session zu mc getFeatureFlag getFeatureFlagPayload getFeatureFlagResult getAllFeatureFlags isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys onActiveMatchingSurveysChanged renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync wc identify setPersonProperties unsetPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset kc shutdown setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty yc nc createPersonProfile setInternalOrTestUser bc xu ku opt_in_capturing opt_out_capturing Su has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing tc debug nl Os getPageViewId captureTraceFeedback captureTraceMetric Du".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
 
       window.posthog.init('phc_rHThF2hE6NYM2JHoAhgp6TEc4BXzNH5eTXov5ZbxHyWS', {
         api_host: 'https://eu.i.posthog.com',
         person_profiles: 'always'
       });
+      }
     };
 
     // If user previously granted consent, load immediately
@@ -134,6 +261,9 @@
       var kpInitConsent = JSON.parse(localStorage.getItem('kp_consent_v2') || 'null');
       if (kpInitConsent && kpInitConsent.mode === 'granted') {
         window.kpLoadAnalytics();
+      } else if (kpInitConsent && kpInitConsent.mode === 'denied') {
+        window.kpCleanTelemetry();
+        window.kpScheduleTelemetryCleanup();
       }
     } catch (e) {}
   </script>
@@ -3058,52 +3188,48 @@
           }
         } else {
           // Strict Deny / Opt-Out
-          if (window.kpAnalyticsLoaded) {
-            // If previously loaded, opt-out gracefully
-            try {
-              if (window.mixpanel && typeof window.mixpanel.opt_out_tracking === 'function') {
-                window.mixpanel.opt_out_tracking();
-              }
-            } catch (e) {}
+          // Stop session replay first, then opt out. Keep references to the
+          // real instances so a later grant can resume without re-injection.
+          try {
+            if (window.posthog && typeof window.posthog.stopSessionRecording === 'function') {
+              window.posthog.stopSessionRecording();
+            }
+          } catch (e) {}
+          try {
+            if (window.posthog && typeof window.posthog.opt_out_capturing === 'function') {
+              window.posthog.opt_out_capturing();
+            }
+          } catch (e) {}
+          try {
+            if (window.mixpanel && typeof window.mixpanel.opt_out_tracking === 'function') {
+              window.mixpanel.opt_out_tracking();
+            }
+          } catch (e) {}
 
-            try {
-              if (window.posthog && typeof window.posthog.opt_out_capturing === 'function') {
-                window.posthog.opt_out_capturing();
-              }
-            } catch (e) {}
-
-            window.kpAnalyticsLoaded = false;
+          if (window.mixpanel && typeof window.mixpanel.get_distinct_id === 'function') {
+            window.__kpMixpanelSdk = window.mixpanel;
+          }
+          if (window.posthog && window.posthog.__loaded === true) {
+            window.__kpPosthogSdk = window.posthog;
           }
 
-          // Stub out instances so no further network requests or /flags calls can fire
-          window.mixpanel = { track: function(){}, opt_in_tracking: function(){}, opt_out_tracking: function(){}, reset: function(){} };
-          window.posthog = { capture: function(){}, opt_in_capturing: function(){}, opt_out_capturing: function(){}, reset: function(){}, startSessionRecording: function(){}, stopSessionRecording: function(){} };
-
-          // Clean up all telemetry cookies across host and root domains
+          // Remove loader tags that have not executed yet, then replace the
+          // globals with empty queues so queued captures cannot fire.
           try {
-            var cookies = document.cookie.split(";");
-            for (var i = 0; i < cookies.length; i++) {
-              var cName = cookies[i].split("=")[0].trim();
-              if (cName.indexOf('ph_') === 0 || cName.indexOf('mp_') === 0 || cName.indexOf('__mp') === 0) {
-                document.cookie = cName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-                document.cookie = cName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                document.cookie = cName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
-              }
+            var vendorScripts = document.querySelectorAll('script[src*="cdn.mxpnl.com"], script[src*="posthog"]');
+            for (var s = 0; s < vendorScripts.length; s++) {
+              vendorScripts[s].parentNode.removeChild(vendorScripts[s]);
             }
           } catch (e) {}
 
-          // Clean up any telemetry localStorage items
-          try {
-            var toRemove = [];
-            for (var k in localStorage) {
-              if (k.indexOf('ph_') === 0 || k.indexOf('mp_') === 0 || k.indexOf('__mp') === 0) {
-                toRemove.push(k);
-              }
-            }
-            for (var j = 0; j < toRemove.length; j++) {
-              localStorage.removeItem(toRemove[j]);
-            }
-          } catch (e) {}
+          window.kpAnalyticsLoaded = false;
+          window.mixpanel = [];
+          window.posthog = [];
+
+          // The SDKs persist asynchronously. Clean now and repeatedly for a few
+          // seconds, including cookies re-created after opt-out.
+          window.kpCleanTelemetry();
+          window.kpScheduleTelemetryCleanup();
         }
 
         if (consentStatusText) {
