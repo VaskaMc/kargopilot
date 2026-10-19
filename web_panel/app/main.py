@@ -74,6 +74,23 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     """Creates and configures the FastAPI instance."""
+    # Sentry Real-Time Error Tracking
+    sentry_dsn = os.getenv(
+        "SENTRY_DSN",
+        "https://0ab0f2abadfa9d2075b3e8190f1f1c7b@o4512279968153600.ingest.de.sentry.io/4512280926421072"
+    )
+    try:
+        import sentry_sdk
+        if sentry_dsn:
+            sentry_sdk.init(
+                dsn=sentry_dsn,
+                traces_sample_rate=1.0,
+                environment=os.getenv("ENVIRONMENT", "production"),
+                send_default_pii=False,
+            )
+    except ImportError:
+        pass
+
     app = FastAPI(
         title="KargoPilot v6.5 Enterprise Multi-Tenant Logistics & Customs AI",
         version="6.5.0",
@@ -250,6 +267,15 @@ def create_app() -> FastAPI:
         ico = BASE_DIR / "app" / "static" / "img" / "favicon.ico"
         if ico.exists():
             return FileResponse(str(ico), media_type="image/x-icon")
+        return Response(status_code=404)
+
+    @app.get("/assets/kargopilot-connection.js")
+    async def assets_kp_connection_js():
+        js_file = BASE_DIR / "app" / "static" / "js" / "kargopilot-connection.js"
+        if not js_file.exists():
+            js_file = BASE_DIR.parent / "assets" / "kargopilot-connection.js"
+        if js_file.exists():
+            return FileResponse(str(js_file), media_type="application/javascript")
         return Response(status_code=404)
 
     @app.get("/404.html", response_class=HTMLResponse)

@@ -119,6 +119,81 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-KARGOPILOT"></script>
 
+  <!-- Mixpanel SDK (EU Endpoint: Token 3631e317d2e1801975834aa438a679c3) -->
+  <script type="text/javascript">
+    (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");for(h=0;h<i.length;h++)g(a,i[h]);b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
+    mixpanel.init('3631e317d2e1801975834aa438a679c3', {
+      api_host: 'https://api-eu.mixpanel.com',
+      autocapture: true,
+      track_pageview: true,
+      persistence: 'localStorage'
+    });
+  </script>
+
+  <!-- PostHog Analytics & Session Replay (EU Cloud: Token phc_rHThF2hE6NYM2JHoAhgp6TEc4BXzNH5eTXov5ZbxHyWS) -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}p||((p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",p.onerror=function(){p=null},(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r));var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="vu pu gu mu init Gu Qu Hu Wu Xu il Vu Yu ju oc ac lc uc cc hc capture getExtension Zu hu gc calculateEventProperties vc register register_once register_for_session unregister unregister_for_session zu mc getFeatureFlag getFeatureFlagPayload getFeatureFlagResult getAllFeatureFlags isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys onActiveMatchingSurveysChanged renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync wc identify setPersonProperties unsetPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset kc shutdown setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty yc nc createPersonProfile setInternalOrTestUser bc xu ku opt_in_capturing opt_out_capturing Su has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing tc debug nl Os getPageViewId captureTraceFeedback captureTraceMetric Du".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_rHThF2hE6NYM2JHoAhgp6TEc4BXzNH5eTXov5ZbxHyWS', {
+      api_host: 'https://eu.i.posthog.com',
+      person_profiles: 'always'
+    });
+  </script>
+
+  <!-- Sentry Real-Time Error Tracking (Browser SDK) -->
+  <script src="https://browser.sentry-cdn.com/8.55.0/bundle.tracing.min.js" crossorigin="anonymous" async></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.Sentry) {
+        window.Sentry.init({
+          dsn: "https://0ab0f2abadfa9d2075b3e8190f1f1c7b@o4512279968153600.ingest.de.sentry.io/4512280926421072",
+          tracesSampleRate: 1.0,
+          environment: "production"
+        });
+      }
+    });
+
+    // Unified Telemetry Hub for KargoPilot Global Platform
+    window.kpTrack = function (eventName, properties) {
+      properties = properties || {};
+      properties.timestamp = new Date().toISOString();
+      properties.domain = window.location.hostname;
+
+      // Mixpanel EU
+      try {
+        if (window.mixpanel && typeof window.mixpanel.track === 'function') {
+          window.mixpanel.track(eventName, properties);
+        }
+      } catch (e) {}
+
+      // PostHog EU
+      try {
+        if (window.posthog && typeof window.posthog.capture === 'function') {
+          window.posthog.capture(eventName, properties);
+        }
+      } catch (e) {}
+
+      // Sentry Breadcrumbs
+      try {
+        if (window.Sentry && typeof window.Sentry.addBreadcrumb === 'function') {
+          window.Sentry.addBreadcrumb({
+            category: 'user_action',
+            message: eventName,
+            data: properties,
+            level: 'info'
+          });
+        }
+      } catch (e) {}
+    };
+
+    // Track First Landing Page View
+    document.addEventListener('DOMContentLoaded', function () {
+      window.kpTrack('Landing Page Viewed', {
+        landing_page: window.location.pathname + window.location.search,
+        referrer: document.referrer || 'direct'
+      });
+    });
+  </script>
+
   <!-- Schema.org Structured Data (@graph: Organization, WebSite, SoftwareApplication, FAQPage, OfferCatalog) -->
   <script type="application/ld+json">
   {
@@ -2665,6 +2740,19 @@
             kp_customs_duty_azn: Number(dutyAzn.toFixed(2)),
             kp_imei_fee_azn: Number(imeiAzn.toFixed(2))
           });
+
+          if (window.kpTrack) {
+            window.kpTrack('Calculator Tariff Computed', {
+              origin: activeOrigin,
+              weight_kg: Number(weight.toFixed(2)),
+              invoice_usd: Number(itemUsd.toFixed(2)),
+              category: category,
+              best_carrier: best.name,
+              best_rate_usd: Number(best.usd.toFixed(2)),
+              landed_cost_azn: Number(totalLandedAzn.toFixed(2)),
+              customs_duty_azn: Number(dutyAzn.toFixed(2))
+            });
+          }
         }
       }
 
@@ -2760,6 +2848,13 @@
             event: 'kp_loyd_command_run',
             kp_command: key
           });
+
+          if (window.kpTrack) {
+            window.kpTrack('Loyd Command Tested', {
+              command: key,
+              command_prompt: data.user
+            });
+          }
         });
       });
 
@@ -3412,6 +3507,7 @@
     var s = document.getElementById('flow-self-container');
     if (c) c.classList.remove('hidden');
     if (s) s.classList.add('hidden');
+    if (window.kpTrack) window.kpTrack('Dual Hosting Mode Selected', { mode: 'cloud' });
     c.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -3420,6 +3516,7 @@
     var s = document.getElementById('flow-self-container');
     if (s) s.classList.remove('hidden');
     if (c) c.classList.add('hidden');
+    if (window.kpTrack) window.kpTrack('Dual Hosting Mode Selected', { mode: 'self-hosted' });
     s.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -3645,6 +3742,17 @@
         showSelfHostedFlow();
       }
     } catch (e) {}
+
+    // Global WhatsApp & Telemetry Click Tracker
+    document.addEventListener('click', function (e) {
+      var waLink = e.target.closest('a[href*="wa.me"], a[href*="whatsapp.com"], [data-wa]');
+      if (waLink && window.kpTrack) {
+        window.kpTrack('WhatsApp Lead Initiated', {
+          target_url: waLink.getAttribute('href') || 'direct_whatsapp',
+          label: waLink.innerText ? waLink.innerText.trim() : 'WhatsApp CTA'
+        });
+      }
+    });
   });
 </script>
 
