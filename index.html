@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KargoPilot v6.5 Enterprise · Sərhədsiz Kargo və Gömrük Otopilotu (Dual-Hosting)</title>
+
+  <!-- Force HTTPS Client-Side Redirect -->
+  <script>
+    if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      window.location.replace('https://' + window.location.hostname + window.location.pathname + window.location.search);
+    }
+  </script>
+
   <meta name="description" content="Azərbaycan üçün ikili arxitekturalı (Managed Bulud və ya Müstəqil Öz Serveriniz) transsərhəd e-ticarət platforması: 4-Kanallı Əlaqə Sağlamlığı Matrisi, 4 kargo tarifi müqayisəsi (Starex, Limak, Camex, Dynamex), SmartCustoms Read-Only 300 USD kvota nəzarəti və Loyd WhatsApp AI.">
   <meta name="author" content="KargoPilot Architecture Team">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -17,9 +25,10 @@
   <link rel="manifest" href="site.webmanifest">
 
   <!-- Favicons & Apple Touch Icon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-  <link rel="shortcut icon" href="assets/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <link rel="preload" as="image" href="assets/logo_concept_6_infinity_loop.jpg" fetchpriority="high">
 
@@ -62,28 +71,9 @@
     };
   </script>
 
-  <!-- Google Consent Mode v2 + Attribution Persistence + GTM Container -->
+  <!-- Attribution Persistence (UTM & Click IDs) -->
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-
-    (function initConsentAndAttribution() {
-      var savedConsent = null;
-      try { savedConsent = JSON.parse(localStorage.getItem('kp_consent_v2')); } catch (e) {}
-      var granted = savedConsent && savedConsent.mode === 'granted';
-      gtag('consent', 'default', {
-        'ad_storage': granted ? 'granted' : 'denied',
-        'analytics_storage': granted ? 'granted' : 'denied',
-        'ad_user_data': granted ? 'granted' : 'denied',
-        'ad_personalization': granted ? 'granted' : 'denied',
-        'functionality_storage': 'granted',
-        'security_storage': 'granted',
-        'wait_for_update': 500
-      });
-      gtag('set', 'ads_data_redaction', !granted);
-      gtag('set', 'url_passthrough', true);
-
-      // Capture & persist UTM / Click IDs (gclid, fbclid, ttclid, utm_*) across cached/extension URLs
+    (function initAttribution() {
       try {
         var params = new URLSearchParams(window.location.search);
         var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'ttclid', 'msclkid'];
@@ -105,37 +95,38 @@
           localStorage.setItem('kp_utm_last', JSON.stringify(captured));
         }
       } catch (e) {}
-
-      var gtmId = (new URLSearchParams(window.location.search)).get('gtm_id') || window.KP_GTM_ID || 'GTM-KARGOPILOT';
-      window.KP_ACTIVE_GTM_ID = gtmId;
-      window.dataLayer.push({
-        'gtm.start': new Date().getTime(),
-        'event': 'gtm.js',
-        'kp_version': '6.5.0',
-        'kp_surface': 'public_web',
-        'kp_gtm_container': gtmId
-      });
     })();
   </script>
-  <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-KARGOPILOT"></script>
 
-  <!-- Mixpanel SDK (EU Endpoint: Token 3631e317d2e1801975834aa438a679c3) -->
+  <!-- Mixpanel SDK (EU Endpoint: Token 3631e317d2e1801975834aa438a679c3) - Consent-First Strict Mode -->
   <script type="text/javascript">
     (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");for(h=0;h<i.length;h++)g(a,i[h]);b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
+
+    // Check GDPR / User Consent state
+    var kpInitialConsent = null;
+    try { kpInitialConsent = JSON.parse(localStorage.getItem('kp_consent_v2')); } catch (e) {}
+    var kpHasUserGranted = kpInitialConsent && kpInitialConsent.mode === 'granted';
+
     mixpanel.init('3631e317d2e1801975834aa438a679c3', {
       api_host: 'https://api-eu.mixpanel.com',
-      autocapture: true,
-      track_pageview: true,
+      autocapture: kpHasUserGranted,
+      track_pageview: kpHasUserGranted,
+      opt_out_tracking_by_default: !kpHasUserGranted,
       persistence: 'localStorage'
     });
   </script>
 
-  <!-- PostHog Analytics & Session Replay (EU Cloud: Token phc_rHThF2hE6NYM2JHoAhgp6TEc4BXzNH5eTXov5ZbxHyWS) -->
+  <!-- PostHog Analytics & Session Replay (EU Cloud) - Consent-First Strict Mode -->
   <script>
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}p||((p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",p.onerror=function(){p=null},(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r));var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="vu pu gu mu init Gu Qu Hu Wu Xu il Vu Yu ju oc ac lc uc cc hc capture getExtension Zu hu gc calculateEventProperties vc register register_once register_for_session unregister unregister_for_session zu mc getFeatureFlag getFeatureFlagPayload getFeatureFlagResult getAllFeatureFlags isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys onActiveMatchingSurveysChanged renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync wc identify setPersonProperties unsetPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset kc shutdown setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty yc nc createPersonProfile setInternalOrTestUser bc xu ku opt_in_capturing opt_out_capturing Su has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing tc debug nl Os getPageViewId captureTraceFeedback captureTraceMetric Du".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+
     posthog.init('phc_rHThF2hE6NYM2JHoAhgp6TEc4BXzNH5eTXov5ZbxHyWS', {
       api_host: 'https://eu.i.posthog.com',
-      person_profiles: 'always'
+      opt_out_capturing_by_default: !kpHasUserGranted,
+      disable_session_recording: !kpHasUserGranted,
+      autocapture: kpHasUserGranted,
+      capture_pageview: kpHasUserGranted,
+      person_profiles: kpHasUserGranted ? 'always' : 'identified_only'
     });
   </script>
 
@@ -152,20 +143,27 @@
       }
     });
 
-    // Unified Telemetry Hub for KargoPilot Global Platform
+    // Unified Telemetry Hub for KargoPilot (Strict Consent Checked)
     window.kpTrack = function (eventName, properties) {
+      // Check explicit consent first!
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem('kp_consent_v2')); } catch (e) {}
+      if (!saved || saved.mode !== 'granted') {
+        return; // Zero tracking without user consent
+      }
+
       properties = properties || {};
       properties.timestamp = new Date().toISOString();
       properties.domain = window.location.hostname;
 
-      // Mixpanel EU
+      // Mixpanel EU (Only if opted in)
       try {
         if (window.mixpanel && typeof window.mixpanel.track === 'function') {
           window.mixpanel.track(eventName, properties);
         }
       } catch (e) {}
 
-      // PostHog EU
+      // PostHog EU (Only if opted in)
       try {
         if (window.posthog && typeof window.posthog.capture === 'function') {
           window.posthog.capture(eventName, properties);
@@ -185,12 +183,16 @@
       } catch (e) {}
     };
 
-    // Track First Landing Page View
+    // Track First Landing Page View ONLY IF consent is already granted
     document.addEventListener('DOMContentLoaded', function () {
-      window.kpTrack('Landing Page Viewed', {
-        landing_page: window.location.pathname + window.location.search,
-        referrer: document.referrer || 'direct'
-      });
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem('kp_consent_v2')); } catch (e) {}
+      if (saved && saved.mode === 'granted') {
+        window.kpTrack('Landing Page Viewed', {
+          landing_page: window.location.pathname + window.location.search,
+          referrer: document.referrer || 'direct'
+        });
+      }
     });
   </script>
 
@@ -2442,12 +2444,12 @@
         </div>
       </div>
 
-      <!-- Cookie Consent Banner (Google Consent Mode v2) -->
+      <!-- Cookie Consent Banner -->
       <div id="cookie-consent-bar" class="consent-banner" data-ui role="region" aria-label="Çerez və Məxfilik Seçimləri">
         <div>
-          <div style="font-weight:700; color:var(--ink-light);">Çerez və Analitika Seçimləri (Google Consent Mode v2)</div>
+          <div style="font-weight:700; color:var(--ink-light);">Çerez və Məxfilik Seçimləri</div>
           <div id="consent-status-text" class="meta-copy" style="margin-top:4px;">
-            KargoPilot yalnız UTM kampaniya atribusiyası və SHA-256 ilə şifrələnmiş Gelişmiş Dönüşüm (Enhanced Conversions) telemetriyası üçün çerezlərdən istifadə edir.
+            KargoPilot veb-təcrübənizi təhlil etmək və xidmət keyfiyyətini artırmaq üçün yalnız sizin razılığınızla anonim analitika çerezlərindən (Mixpanel, PostHog) istifadə edir. "Yalnız Zəruri" seçildikdə heç bir analitika və ya sessiya qeydi aparılmır.
           </div>
         </div>
         <div class="consent-actions">
@@ -2491,10 +2493,11 @@
         2. <strong>Şəbəkə İzolyasiyası:</strong> İdarəetmə paneli xarici internetə açıq deyil (<code>0.0.0.0</code> qadağandır) və yalnız <code>127.0.0.1:48481</code> lokal interfeysində SSH tuneli vasitəsilə işləyir.
       </p>
       <p class="body-copy">
-        3. <strong>GitHub Təhlükəsizliyi və GTM Enhanced Conversions:</strong> Açıq repozitoriyada heç bir şəxsi identifikator saxlanılmır. Vebsaytdakı konfiqurasiya formasında daxil edilən əlaqə məlumatları brauzerdə Web Crypto API vasitəsilə <strong>SHA-256</strong> alqoritmi ilə birtərəfli şifrələnir.
+        3. <strong>Məlumat Təhlükəsizliyi:</strong> Açıq repozitoriyada heç bir şəxsi identifikator saxlanılmır. Əlaqə formalarında daxil edilən məlumatlar brauzerdə Web Crypto API vasitəsilə SHA-256 alqoritmi ilə qorunur.
       </p>
-    </div>
-  </div>
+      <p class="body-copy">
+        4. <strong>Məhsul Analitikası və Sessiya Qeydi:</strong> Yalnız çerez bannerində "Hamısını Qəbul Et" razılığı verildikdə anonim məhsul analitikası (Mixpanel EU) və interfeys xətalarını aşkar etmək üçün anonim ekran yazısı (PostHog EU) aktivləşir. "Yalnız Zəruri" seçildikdə bütün analitika və sessiya qeydi dərhal dayandırılır, çerezlər təmizlənir və heç bir şəbəkə sorğusu göndərilmir.
+      </p>
 
   <!-- Modal 3: DGK $300 Compliance -->
   <div class="modal-backdrop" id="modal-dgk" role="dialog" aria-modal="true" aria-labelledby="title-dgk">
@@ -3005,14 +3008,81 @@
         try {
           localStorage.setItem('kp_consent_v2', JSON.stringify({ mode: mode, updated_at: new Date().toISOString() }));
         } catch (e) {}
-        window.dataLayer.push({
-          event: 'kp_consent_update',
-          kp_consent_mode: mode
-        });
+
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: 'kp_consent_update',
+            kp_consent_mode: mode
+          });
+        }
+
+        if (isGranted) {
+          // Explicit opt-in for Mixpanel EU
+          try {
+            if (window.mixpanel && typeof window.mixpanel.opt_in_tracking === 'function') {
+              window.mixpanel.opt_in_tracking();
+            }
+          } catch (e) {}
+
+          // Explicit opt-in for PostHog EU
+          try {
+            if (window.posthog && typeof window.posthog.opt_in_capturing === 'function') {
+              window.posthog.opt_in_capturing();
+              if (typeof window.posthog.startSessionRecording === 'function') {
+                window.posthog.startSessionRecording();
+              }
+            }
+          } catch (e) {}
+
+          // Send confirmation telemetry
+          if (typeof window.kpTrack === 'function') {
+            window.kpTrack('Consent Granted', { mode: 'granted' });
+          }
+        } else {
+          // Strict Opt-Out & Teardown for Mixpanel EU
+          try {
+            if (window.mixpanel) {
+              if (typeof window.mixpanel.opt_out_tracking === 'function') {
+                window.mixpanel.opt_out_tracking();
+              }
+              if (typeof window.mixpanel.reset === 'function') {
+                window.mixpanel.reset();
+              }
+            }
+          } catch (e) {}
+
+          // Strict Opt-Out & Teardown for PostHog EU
+          try {
+            if (window.posthog) {
+              if (typeof window.posthog.stopSessionRecording === 'function') {
+                window.posthog.stopSessionRecording();
+              }
+              if (typeof window.posthog.opt_out_capturing === 'function') {
+                window.posthog.opt_out_capturing();
+              }
+              if (typeof window.posthog.reset === 'function') {
+                window.posthog.reset();
+              }
+            }
+          } catch (e) {}
+
+          // Clean up any residual tracking cookies
+          try {
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+              var cName = cookies[i].split("=")[0].trim();
+              if (cName.indexOf('ph_') === 0 || cName.indexOf('mp_') === 0) {
+                document.cookie = cName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+                document.cookie = cName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              }
+            }
+          } catch (e) {}
+        }
+
         if (consentStatusText) {
           consentStatusText.textContent = isGranted
-            ? 'Aktiv rejim: Analitika və SHA-256 Gelişmiş Dönüşüm (Enhanced Conversions) aktivdir.'
-            : 'Aktiv rejim: Yalnız zəruri texniki çerezlər aktivdir (analitika deaktiv edildi).';
+            ? 'Aktiv rejim: Anonim məhsul analitikası (Mixpanel, PostHog) aktivdir.'
+            : 'Aktiv rejim: Yalnız zəruri texniki çerezlər aktivdir (bütün analitika və sessiya qeydləri dayandırılıb).';
           consentStatusText.style.color = isGranted ? 'var(--accent-lime)' : 'var(--accent-cyan)';
         }
       }
@@ -3023,8 +3093,8 @@
         if (existingConsent && consentStatusText) {
           var isGranted = existingConsent.mode === 'granted';
           consentStatusText.textContent = isGranted
-            ? 'Aktiv rejim: Analitika və SHA-256 Gelişmiş Dönüşüm (Enhanced Conversions) aktivdir.'
-            : 'Aktiv rejim: Yalnız zəruri texniki çerezlər aktivdir (analitika deaktiv edildi).';
+            ? 'Aktiv rejim: Anonim məhsul analitikası (Mixpanel, PostHog) aktivdir.'
+            : 'Aktiv rejim: Yalnız zəruri texniki çerezlər aktivdir (bütün analitika və sessiya qeydləri dayandırılıb).';
           consentStatusText.style.color = isGranted ? 'var(--accent-lime)' : 'var(--accent-cyan)';
         }
       } catch (e) {}

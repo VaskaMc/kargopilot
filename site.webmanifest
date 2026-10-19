@@ -1,9 +1,9 @@
 {
-  "name": "KargoPilot v4.0 — Gömrük və Kargo Kopilotu",
+  "name": "KargoPilot v6.5 Enterprise — Sərhədsiz Kargo və Gömrük Otopilotu",
   "short_name": "KargoPilot",
-  "description": "Azərbaycan üzrə sərhədsiz e-ticarət, SmartCustoms $300 kvota mühafizəsi və 4 daşıyıcı tarif optimizasiyası.",
-  "start_url": "/kargopilot/",
-  "scope": "/kargopilot/",
+  "description": "Azərbaycan üzrə sərhədsiz e-ticarət, SmartCustoms $300 kvota mühafizəsi və daşıyıcı tarif optimizasiyası.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0b0f14",
   "theme_color": "#0b0f14",
