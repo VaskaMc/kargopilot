@@ -1,5 +1,5 @@
 """Script to seed/ensure the official KargoPilot Demo Account on local or VPS database.
-User: demo@kargopilot.az / ***REMOVED*** / FIN: 7KP2026
+User: demo@kargopilot.az / Password: KARGOPILOT_DEMO_PASSWORD env var / FIN: 7KP2026
 Contains 2 active parcels totaling $260.00 USD (DGK 300$ Warning status).
 Etap 7: Seeds active external sessions (Trendyol, Starex, SmartCustoms) and 1-click customs declaration.
 """
@@ -31,14 +31,19 @@ if not db_path:
 
 print(f"Targeting Database at: {db_path}")
 
+demo_password = os.environ.get("KARGOPILOT_DEMO_PASSWORD", "")
+if not demo_password:
+    print("ERROR: KARGOPILOT_DEMO_PASSWORD environment variable is required.", file=sys.stderr)
+    sys.exit(1)
+
 # Import password hasher
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "web_panel"))
 try:
     from app.security.crypto import password_manager
-    hashed_pwd = password_manager.hash_password("***REMOVED***")
+    hashed_pwd = password_manager.hash_password(demo_password)
 except Exception:
     import bcrypt
-    hashed_pwd = bcrypt.hashpw("***REMOVED***".encode(), bcrypt.gensalt(12)).decode()
+    hashed_pwd = bcrypt.hashpw(demo_password.encode(), bcrypt.gensalt(12)).decode()
 
 conn = sqlite3.connect(str(db_path), timeout=30.0)
 conn.row_factory = sqlite3.Row
@@ -244,7 +249,7 @@ conn.commit()
 conn.close()
 print("[OK] Demo Account seeded successfully:")
 print(f"  Email: {email}")
-print(f"  Password: ***REMOVED*** / ***REMOVED***")
+print("  Password: (set via KARGOPILOT_DEMO_PASSWORD)")
 print(f"  FIN: {fin}")
 print(f"  Parcels: 2 ($85.00 + $175.00 = $260.00 USD, Warning status, 1 Declared)")
 print("  Custom Store: Morhipo VIP (TR)")
