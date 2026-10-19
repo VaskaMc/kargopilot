@@ -98,36 +98,44 @@
     })();
   </script>
 
-  <!-- Mixpanel SDK (EU Endpoint: Token 3631e317d2e1801975834aa438a679c3) - Consent-First Strict Mode -->
+  <!-- Analytics & Telemetry Layer (Strict Consent-First Zero-Footprint Lazy-Loading) -->
   <script type="text/javascript">
-    (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");for(h=0;h<i.length;h++)g(a,i[h]);b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
+    // Safe stubs to prevent runtime errors before consent
+    window.mixpanel = window.mixpanel || { track: function(){}, opt_in_tracking: function(){}, opt_out_tracking: function(){}, reset: function(){} };
+    window.posthog = window.posthog || { capture: function(){}, opt_in_capturing: function(){}, opt_out_capturing: function(){}, reset: function(){}, startSessionRecording: function(){}, stopSessionRecording: function(){} };
 
-    // Check GDPR / User Consent state
-    var kpInitialConsent = null;
-    try { kpInitialConsent = JSON.parse(localStorage.getItem('kp_consent_v2')); } catch (e) {}
-    var kpHasUserGranted = kpInitialConsent && kpInitialConsent.mode === 'granted';
+    window.kpAnalyticsLoaded = false;
 
-    mixpanel.init('3631e317d2e1801975834aa438a679c3', {
-      api_host: 'https://api-eu.mixpanel.com',
-      autocapture: kpHasUserGranted,
-      track_pageview: kpHasUserGranted,
-      opt_out_tracking_by_default: !kpHasUserGranted,
-      persistence: 'localStorage'
-    });
-  </script>
+    window.kpLoadAnalytics = function() {
+      if (window.kpAnalyticsLoaded) return;
+      window.kpAnalyticsLoaded = true;
 
-  <!-- PostHog Analytics & Session Replay (EU Cloud) - Consent-First Strict Mode -->
-  <script>
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}p||((p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",p.onerror=function(){p=null},(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r));var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="vu pu gu mu init Gu Qu Hu Wu Xu il Vu Yu ju oc ac lc uc cc hc capture getExtension Zu hu gc calculateEventProperties vc register register_once register_for_session unregister unregister_for_session zu mc getFeatureFlag getFeatureFlagPayload getFeatureFlagResult getAllFeatureFlags isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys onActiveMatchingSurveysChanged renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync wc identify setPersonProperties unsetPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset kc shutdown setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty yc nc createPersonProfile setInternalOrTestUser bc xu ku opt_in_capturing opt_out_capturing Su has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing tc debug nl Os getPageViewId captureTraceFeedback captureTraceMetric Du".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+      // 1. Lazy-load Mixpanel SDK (EU Endpoint)
+      (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");for(h=0;h<i.length;h++)g(a,i[h]);b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
 
-    posthog.init('phc_rHThF2hE6NYM2JHoAhgp6TEc4BXzNH5eTXov5ZbxHyWS', {
-      api_host: 'https://eu.i.posthog.com',
-      opt_out_capturing_by_default: !kpHasUserGranted,
-      disable_session_recording: !kpHasUserGranted,
-      autocapture: kpHasUserGranted,
-      capture_pageview: kpHasUserGranted,
-      person_profiles: kpHasUserGranted ? 'always' : 'identified_only'
-    });
+      window.mixpanel.init('3631e317d2e1801975834aa438a679c3', {
+        api_host: 'https://api-eu.mixpanel.com',
+        autocapture: true,
+        track_pageview: true,
+        persistence: 'localStorage'
+      });
+
+      // 2. Lazy-load PostHog SDK (EU Cloud)
+      !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}p||((p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",p.onerror=function(){p=null},(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r));var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="vu pu gu mu init Gu Qu Hu Wu Xu il Vu Yu ju oc ac lc uc cc hc capture getExtension Zu hu gc calculateEventProperties vc register register_once register_for_session unregister unregister_for_session zu mc getFeatureFlag getFeatureFlagPayload getFeatureFlagResult getAllFeatureFlags isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys onActiveMatchingSurveysChanged renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync wc identify setPersonProperties unsetPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset kc shutdown setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty yc nc createPersonProfile setInternalOrTestUser bc xu ku opt_in_capturing opt_out_capturing Su has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing tc debug nl Os getPageViewId captureTraceFeedback captureTraceMetric Du".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+
+      window.posthog.init('phc_rHThF2hE6NYM2JHoAhgp6TEc4BXzNH5eTXov5ZbxHyWS', {
+        api_host: 'https://eu.i.posthog.com',
+        person_profiles: 'always'
+      });
+    };
+
+    // If user previously granted consent, load immediately
+    try {
+      var kpInitConsent = JSON.parse(localStorage.getItem('kp_consent_v2') || 'null');
+      if (kpInitConsent && kpInitConsent.mode === 'granted') {
+        window.kpLoadAnalytics();
+      }
+    } catch (e) {}
   </script>
 
   <!-- Sentry Real-Time Error Tracking (Browser SDK) -->
@@ -137,7 +145,7 @@
       if (window.Sentry) {
         window.Sentry.init({
           dsn: "https://0ab0f2abadfa9d2075b3e8190f1f1c7b@o4512279968153600.ingest.de.sentry.io/4512280926421072",
-          tracesSampleRate: 1.0,
+          tracesSampleRate: 0.1,
           environment: "production"
         });
       }
@@ -2496,8 +2504,13 @@
         3. <strong>Məlumat Təhlükəsizliyi:</strong> Açıq repozitoriyada heç bir şəxsi identifikator saxlanılmır. Əlaqə formalarında daxil edilən məlumatlar brauzerdə Web Crypto API vasitəsilə SHA-256 alqoritmi ilə qorunur.
       </p>
       <p class="body-copy">
-        4. <strong>Məhsul Analitikası və Sessiya Qeydi:</strong> Yalnız çerez bannerində "Hamısını Qəbul Et" razılığı verildikdə anonim məhsul analitikası (Mixpanel EU) və interfeys xətalarını aşkar etmək üçün anonim ekran yazısı (PostHog EU) aktivləşir. "Yalnız Zəruri" seçildikdə bütün analitika və sessiya qeydi dərhal dayandırılır, çerezlər təmizlənir və heç bir şəbəkə sorğusu göndərilmir.
+        4. <strong>Məhsul Analitikası və Sessiya Qeydi:</strong> Yalnız çerez bannerində "Hamısını Qəbul Et" razılığı verildikdə analitika skriptləri aktivləşir və anonim məhsul statistikası (Mixpanel EU) və interfeys xətalarını aşkar etmək üçün ekran davranışı (PostHog EU) işə düşür. Razılıq verilmədikdə və ya "Yalnız Zəruri" seçildikdə bu skriptlər ümumiyyətlə yüklənmir, çerezlər yazılmır və vendorlara heç bir şəbəkə sorğusu göndərilmir.
       </p>
+      <p class="body-copy">
+        5. <strong>Texniki Xəta Monitorinqi (Sentry):</strong> Platformanın çökməsinin və JavaScript xətalarının qarşısını almaq üçün zəruri texniki sazlıq monitorinqi (Sentry) tətbiq olunur. Bu monitorinq heç bir şəxsi məlumat (PII) toplamır və yalnız brauzer xətalarının konsol kodunu qeydə alır.
+      </p>
+    </div>
+  </div>
 
   <!-- Modal 3: DGK $300 Compliance -->
   <div class="modal-backdrop" id="modal-dgk" role="dialog" aria-modal="true" aria-labelledby="title-dgk">
@@ -3017,14 +3030,19 @@
         }
 
         if (isGranted) {
-          // Explicit opt-in for Mixpanel EU
+          // 1. Lazy load external analytics SDKs
+          if (typeof window.kpLoadAnalytics === 'function') {
+            window.kpLoadAnalytics();
+          }
+
+          // 2. Explicit opt-in for Mixpanel EU
           try {
             if (window.mixpanel && typeof window.mixpanel.opt_in_tracking === 'function') {
               window.mixpanel.opt_in_tracking();
             }
           } catch (e) {}
 
-          // Explicit opt-in for PostHog EU
+          // 3. Explicit opt-in for PostHog EU
           try {
             if (window.posthog && typeof window.posthog.opt_in_capturing === 'function') {
               window.posthog.opt_in_capturing();
@@ -3034,47 +3052,56 @@
             }
           } catch (e) {}
 
-          // Send confirmation telemetry
+          // 4. Send confirmation telemetry
           if (typeof window.kpTrack === 'function') {
             window.kpTrack('Consent Granted', { mode: 'granted' });
           }
         } else {
-          // Strict Opt-Out & Teardown for Mixpanel EU
-          try {
-            if (window.mixpanel) {
-              if (typeof window.mixpanel.opt_out_tracking === 'function') {
+          // Strict Deny / Opt-Out
+          if (window.kpAnalyticsLoaded) {
+            // If previously loaded, opt-out gracefully
+            try {
+              if (window.mixpanel && typeof window.mixpanel.opt_out_tracking === 'function') {
                 window.mixpanel.opt_out_tracking();
               }
-              if (typeof window.mixpanel.reset === 'function') {
-                window.mixpanel.reset();
-              }
-            }
-          } catch (e) {}
+            } catch (e) {}
 
-          // Strict Opt-Out & Teardown for PostHog EU
-          try {
-            if (window.posthog) {
-              if (typeof window.posthog.stopSessionRecording === 'function') {
-                window.posthog.stopSessionRecording();
-              }
-              if (typeof window.posthog.opt_out_capturing === 'function') {
+            try {
+              if (window.posthog && typeof window.posthog.opt_out_capturing === 'function') {
                 window.posthog.opt_out_capturing();
               }
-              if (typeof window.posthog.reset === 'function') {
-                window.posthog.reset();
-              }
-            }
-          } catch (e) {}
+            } catch (e) {}
 
-          // Clean up any residual tracking cookies
+            window.kpAnalyticsLoaded = false;
+          }
+
+          // Stub out instances so no further network requests or /flags calls can fire
+          window.mixpanel = { track: function(){}, opt_in_tracking: function(){}, opt_out_tracking: function(){}, reset: function(){} };
+          window.posthog = { capture: function(){}, opt_in_capturing: function(){}, opt_out_capturing: function(){}, reset: function(){}, startSessionRecording: function(){}, stopSessionRecording: function(){} };
+
+          // Clean up all telemetry cookies across host and root domains
           try {
             var cookies = document.cookie.split(";");
             for (var i = 0; i < cookies.length; i++) {
               var cName = cookies[i].split("=")[0].trim();
-              if (cName.indexOf('ph_') === 0 || cName.indexOf('mp_') === 0) {
+              if (cName.indexOf('ph_') === 0 || cName.indexOf('mp_') === 0 || cName.indexOf('__mp') === 0) {
                 document.cookie = cName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
                 document.cookie = cName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = cName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
               }
+            }
+          } catch (e) {}
+
+          // Clean up any telemetry localStorage items
+          try {
+            var toRemove = [];
+            for (var k in localStorage) {
+              if (k.indexOf('ph_') === 0 || k.indexOf('mp_') === 0 || k.indexOf('__mp') === 0) {
+                toRemove.push(k);
+              }
+            }
+            for (var j = 0; j < toRemove.length; j++) {
+              localStorage.removeItem(toRemove[j]);
             }
           } catch (e) {}
         }
