@@ -136,7 +136,7 @@
         window.fetch = function(input, init) {
           var url = typeof input === 'string' ? input : (input && input.url) || '';
           if (!window.kpTelemetryAllowed() && window.kpVendorUrl(url)) {
-            return Promise.resolve(new Response('', { status: 204, statusText: 'No Content' }));
+            return Promise.resolve(new Response(null, { status: 204, statusText: 'No Content' }));
           }
           return origFetch.apply(this, arguments);
         };
